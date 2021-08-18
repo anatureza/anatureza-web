@@ -8,7 +8,7 @@ function App() {
     <BrowserRouter>
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/app" />
+        {/* <Route path="/animais-adocao" component={} /> */}
       </Switch>
     </BrowserRouter>
   );
