@@ -1,4 +1,6 @@
 import { Fragment } from "react";
+import { useLocation } from "react-router-dom";
+
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,7 +15,7 @@ const user = {
 };
 
 const navigation = [
-  { name: "Página inicial", href: "/", current: true },
+  { name: "Página inicial", href: "/", current: false },
   { name: "Ajuda", href: "/faq", current: false },
   { name: "Animais para adoção", href: "/todos-os-animais", current: false },
 ];
@@ -29,6 +31,13 @@ function classNames(...classes: ClassesTypes) {
 }
 
 export default function Navbar() {
+  const location = useLocation();
+  navigation.forEach((page) => {
+    if (page.href === location.pathname) {
+      page.current = true;
+    }
+  });
+
   return (
     <Disclosure as="nav" className="bg-blue-400">
       {({ open }) => (
