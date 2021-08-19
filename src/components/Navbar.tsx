@@ -17,7 +17,7 @@ const user = {
 const navigation = [
   { name: "Página inicial", href: "/", current: false },
   { name: "Ajuda", href: "/faq", current: false },
-  { name: "Animais para adoção", href: "/todos-os-animais", current: false },
+  { name: "Animais para adoção", href: "/animais-adocao", current: false },
 ];
 
 const authenticated = true;

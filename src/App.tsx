@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import Home from "./pages/Home";
 import FAQ from "./pages/FAQ";
+import AnimalsAdoption from "./pages/AnimalsAdoption";
 
 function App() {
   return (
@@ -10,7 +11,7 @@ function App() {
       <Switch>
         <Route path="/" exact component={Home} />
         <Route path="/faq" component={FAQ} />
-        {/* <Route path="/animais-adocao" component={} /> */}
+        <Route path="/animais-adocao" component={AnimalsAdoption} />
       </Switch>
     </BrowserRouter>
   );
