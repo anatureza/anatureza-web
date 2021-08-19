@@ -146,7 +146,7 @@ export default function Home() {
               </div>
               <div className="lg:w-1/2">
                 <div
-                  id="image-showcase-top"
+                  id="image-showcase-bottom"
                   className="h-64 bg-cover lg:rounded-lg lg:h-full"
                 ></div>
               </div>
