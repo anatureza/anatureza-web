@@ -1,5 +1,3 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import { AnimalCard } from "../components/AnimalCard";
 
 const animals = [
@@ -19,11 +17,9 @@ const animals = [
   },
 ];
 
-export default function AnimalsAdoption() {
+export function AnimalsAdoption() {
   return (
     <>
-      <Navbar />
-
       <div className="w-full bg-white p-12">
         <div className="header flex items-end justify-between mb-12">
           <div className="title">
@@ -54,8 +50,6 @@ export default function AnimalsAdoption() {
           ))}
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }

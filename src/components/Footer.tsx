@@ -6,7 +6,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-white dark:bg-gray-800 w-full py-8">
       <div className="max-w-screen-xl mx-auto px-4">

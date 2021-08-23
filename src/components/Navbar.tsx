@@ -1,12 +1,19 @@
 import { Fragment } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 
+import LogoNavbar from "../assets/images/logo-an-navbar.png";
+import { useState } from "react";
+
 type ClassesTypes = string[];
+
+type AuthProps = {
+  authenticated: boolean;
+};
 
 const user = {
   id: "1",
@@ -14,29 +21,26 @@ const user = {
   avatar: "",
 };
 
-const navigation = [
-  { name: "Página inicial", href: "/", current: false },
-  { name: "Ajuda", href: "/faq", current: false },
-  { name: "Animais para adoção", href: "/animais-adocao", current: false },
-];
-
-const authenticated = true;
-
-if (authenticated) {
-  navigation.push({ name: "Dashboard", href: "/dashboard", current: false });
-}
-
 function classNames(...classes: ClassesTypes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Navbar() {
+export function Navbar({ authenticated }: AuthProps) {
   const location = useLocation();
-  navigation.forEach((page) => {
-    if (page.href === location.pathname) {
-      page.current = true;
-    }
-  });
+
+  // const [isAuthenticated, setIsAuthenticated] = useState(authenticated);
+
+  // const handleOnLogout = () => {}
+
+  const navigation = [
+    { name: "Página inicial", href: "/", current: location.pathname === "/" },
+    { name: "Ajuda", href: "/faq", current: location.pathname === "/faq" },
+    {
+      name: "Animais para adoção",
+      href: "/animais-adocao",
+      current: location.pathname === "/animais-adocao",
+    },
+  ];
 
   return (
     <Disclosure as="nav" className="bg-blue-400">
@@ -67,31 +71,32 @@ export default function Navbar() {
                 <div className="flex-shrink-0 flex items-center">
                   <img
                     className="block lg:hidden h-8 w-auto"
-                    src={`${process.env.PUBLIC_URL}/img/logo-an-navbar.png`}
+                    src={LogoNavbar}
                     alt="Logo Amantes da Natureza"
                   />
                   <img
                     className="hidden lg:block h-8 w-auto"
-                    src={`${process.env.PUBLIC_URL}/img/logo-an-navbar.png`}
+                    src={LogoNavbar}
                     alt="Logo Amantes da Natureza"
                   />
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
-                      <a
-                        key={item.name}
-                        href={item.href}
-                        className={classNames(
-                          item.current
-                            ? "bg-gray-600 bg-opacity-50 text-white"
-                            : "text-gray-300 hover:bg-gray-700 hover:bg-opacity-75 hover:text-white",
-                          "px-3 py-2 rounded-md text-sm font-medium"
-                        )}
-                        aria-current={item.current ? "page" : undefined}
-                      >
-                        {item.name}
-                      </a>
+                      <Link to={item.href}>
+                        <span
+                          key={item.name}
+                          className={classNames(
+                            item.current
+                              ? "bg-gray-600 bg-opacity-50 text-white"
+                              : "text-gray-300 hover:bg-gray-700 hover:bg-opacity-75 hover:text-white",
+                            "px-3 py-2 rounded-md text-sm font-medium"
+                          )}
+                          aria-current={item.current ? "page" : undefined}
+                        >
+                          {item.name}
+                        </span>
+                      </Link>
                     ))}
                   </div>
                 </div>
@@ -136,6 +141,20 @@ export default function Navbar() {
                             </a>
                           )}
                         </Menu.Item>
+                        {/*Admin/Volunteer Only*/}
+                        <Menu.Item>
+                          {({ active }) => (
+                            <a
+                              href="/app"
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
+                              )}
+                            >
+                              Dashboard
+                            </a>
+                          )}
+                        </Menu.Item>
                         <Menu.Item>
                           {({ active }) => (
                             <a
@@ -155,14 +174,20 @@ export default function Navbar() {
                 ) : (
                   <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
                     <a
-                      href="/login"
-                      className="whitespace-nowrap text-base font-medium text-gray-50 hover:text-gray-200"
+                      href="/signin"
+                      className={`ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
+                        location.pathname === "/signin" ? "bg-blue-500" : ""
+                      } hover:bg-blue-700`}
                     >
                       Já tem conta?
                     </a>
                     <a
                       href="/cadastre-se"
-                      className="ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-blue-500 hover:bg-blue-700"
+                      className={`ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
+                        location.pathname === "/cadastre-se"
+                          ? "bg-blue-500"
+                          : ""
+                      } hover:bg-blue-700`}
                     >
                       Cadastre-se
                     </a>
@@ -175,19 +200,21 @@ export default function Navbar() {
           <Disclosure.Panel className="sm:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={classNames(
-                    item.current
-                      ? "bg-gray-900 bg-opacity-50 text-white"
-                      : "text-gray-200 hover:bg-gray-800 hover:bg-opacity-75 hover:text-white",
-                    "block px-3 py-2 rounded-md text-base font-medium"
-                  )}
-                  aria-current={item.current ? "page" : undefined}
-                >
-                  {item.name}
-                </a>
+                <Link to={item.href}>
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className={classNames(
+                      item.current
+                        ? "bg-gray-900 bg-opacity-50 text-white"
+                        : "text-gray-200 hover:bg-gray-800 hover:bg-opacity-75 hover:text-white",
+                      "block px-3 py-2 rounded-md text-base font-medium"
+                    )}
+                    aria-current={item.current ? "page" : undefined}
+                  >
+                    {item.name}
+                  </a>
+                </Link>
               ))}
             </div>
           </Disclosure.Panel>

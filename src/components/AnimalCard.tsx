@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 type AnimalDataProps = {
   id: string;
   name: string;
@@ -22,7 +24,7 @@ export function AnimalCard({
 }: AnimalDataProps) {
   return (
     <div className="overflow-hidden shadow-lg rounded-lg h-90 w-60 md:w-80 cursor-pointer m-auto">
-      <a href={`/animal/${id}`} className="w-full block h-full">
+      <Link to={`/animal/${id}`} className="w-full block h-full">
         <img
           alt={`Animal ${name}`}
           src={`${avatar}`}
@@ -36,13 +38,15 @@ export function AnimalCard({
           <p className="text-gray-800 text-xl font-medium mb-2 truncate">
             {name}
           </p>
-          <p className="text-gray-600 font-light text-md">{description}</p>
+          <p className="text-gray-600 font-light text-md h-12 max-h-14 overflow-auto">
+            {description}
+          </p>
           <div className="flex items-center mt-4">
             <a href={`/user/${volunteer.id}`} className="block relative">
               <img
                 alt={`Volunteer ${volunteer.name} profile`}
                 src={`${volunteer.avatar}`}
-                className="mx-auto object-cover rounded-full h-10 w-10 "
+                className="mx-auto object-cover rounded-full w-10 "
               />
             </a>
             <div className="flex flex-col justify-between ml-4 text-sm">
@@ -56,7 +60,7 @@ export function AnimalCard({
             </div>
           </div>
         </div>
-      </a>
+      </Link>
     </div>
   );
 }

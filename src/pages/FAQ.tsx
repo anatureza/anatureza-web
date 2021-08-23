@@ -1,22 +1,22 @@
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Disclosure } from "@headlessui/react";
 import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const questions = [
   {
+    id: "1",
     title: "Quando devo castrar meus cães e gatos?",
     answer: "Cachorros recomenda-se com no máximo 7 meses e gatos com 6 meses",
   },
   {
+    id: "2",
     title: "Qual importância do vermífugo na saúde geral dos animais?",
     answer:
       "Vermífugos são essenciais para manter a boa saúde dos animais, evitando" +
       "vários problemas que podem ocorrer caso os animais estejam infestados com vermes",
   },
   {
+    id: "3",
     title: "Devo castrar os cães e gatos machos? Por quê? Há contraindicação?",
     answer:
       "Os machos devem ser castrados, não há contraindicação e eles não" +
@@ -26,6 +26,7 @@ const questions = [
       " de fêmeas no cio, que ocasionam brigas e até fuga de muitos animais machos.",
   },
   {
+    id: "4",
     title: "Quais as principais vacinas que devo dar nos cães e gatos?",
     answer:
       "Gatos: tríplice felina ou quádrupla e antirrábica." +
@@ -35,6 +36,7 @@ const questions = [
       " ( 3 doses com intervalo de 21- 30 dias ) ",
   },
   {
+    id: "5",
     title: "O que configura maus tratos?",
     answer:
       "As leis contra maus tratos felizmente estão bastante severas." +
@@ -43,6 +45,7 @@ const questions = [
       " e chuva, atendimento veterinário em caso de necessidade.",
   },
   {
+    id: "6",
     title: "Quantas vezes devo alimentar meu pet ao dia?",
     answer:
       "Em geral a maioria das pessoas alimentam seus pets 2x ao dia e essa é a" +
@@ -50,10 +53,9 @@ const questions = [
   },
 ];
 
-export default function FAQ() {
+export function FAQ() {
   return (
     <>
-      <Navbar />
       <div className="container ml-auto mr-auto mt-8 leading-6 max-w-screen-md">
         <div className="main px-32">
           <div className="block box-border w-auto m-auto">
@@ -65,13 +67,12 @@ export default function FAQ() {
             </div>
             <div className="my-12">
               {questions.map((question) => {
-                return <AccordionItem {...question} />;
+                return <AccordionItem key={question.id} {...question} />;
               })}
             </div>
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }
