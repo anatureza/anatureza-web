@@ -1,4 +1,18 @@
+import { useContext } from "react";
+
+import { useHistory } from "react-router-dom";
+
+import { AuthContext } from "../contexts/AuthContext";
+
 export function SignUp() {
+  const history = useHistory();
+
+  const { handleLogin, authenticated } = useContext(AuthContext);
+
+  if (authenticated) {
+    history.push("/");
+  }
+
   return (
     <section className="bg-gray-100 bg-opacity-50 pt-8 pb-14">
       <form className="container max-w-2xl mx-auto shadow-md md:w-3/4">

@@ -1,19 +1,16 @@
-import { Fragment } from "react";
+import { Fragment, useState, useContext } from "react";
+
 import { Link, useLocation } from "react-router-dom";
+
+import { AuthContext } from "../contexts/AuthContext";
 
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
-
 import LogoNavbar from "../assets/images/logo-an-navbar.png";
-import { useState } from "react";
 
 type ClassesTypes = string[];
-
-type AuthProps = {
-  authenticated: boolean;
-};
 
 const user = {
   id: "1",
@@ -25,12 +22,10 @@ function classNames(...classes: ClassesTypes) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function Navbar({ authenticated }: AuthProps) {
+export function Navbar() {
   const location = useLocation();
 
-  // const [isAuthenticated, setIsAuthenticated] = useState(authenticated);
-
-  // const handleOnLogout = () => {}
+  const { authenticated, handleLogout } = useContext(AuthContext);
 
   const navigation = [
     { name: "Página inicial", href: "/", current: location.pathname === "/" },
@@ -82,8 +77,8 @@ export function Navbar({ authenticated }: AuthProps) {
                 </div>
                 <div className="hidden sm:block sm:ml-6">
                   <div className="flex space-x-4">
-                    {navigation.map((item) => (
-                      <Link to={item.href}>
+                    {navigation.map((item, index) => (
+                      <Link key={index} to={item.href}>
                         <span
                           key={item.name}
                           className={classNames(
@@ -157,15 +152,15 @@ export function Navbar({ authenticated }: AuthProps) {
                         </Menu.Item>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href="/logout"
+                            <button
+                              onClick={handleLogout}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
                               Desconectar
-                            </a>
+                            </button>
                           )}
                         </Menu.Item>
                       </Menu.Items>
@@ -199,8 +194,8 @@ export function Navbar({ authenticated }: AuthProps) {
 
           <Disclosure.Panel className="sm:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {navigation.map((item) => (
-                <Link to={item.href}>
+              {navigation.map((item, index) => (
+                <Link key={index} to={item.href}>
                   <a
                     key={item.name}
                     href={item.href}
