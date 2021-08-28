@@ -5,6 +5,7 @@ import { Home } from "./pages/Home";
 import { FAQ } from "./pages/FAQ";
 import { AnimalsAdoption } from "./pages/AnimalsAdoption";
 import { AnimalProfile } from "./pages/AnimalProfile";
+
 import { NewReservationQuiz } from "./pages/NewReservationQuiz";
 
 import { SignIn } from "./pages/SignIn";
@@ -27,11 +28,14 @@ function App() {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/faq" component={FAQ} />
-          <Route path="/animais-adocao" component={AnimalsAdoption} />
-          <Route path="/animal/:id" component={AnimalProfile} />
-          <Route path="/adotar/:animal_id" component={NewReservationQuiz} />
+
           <Route path="/signin" component={SignIn} />
           <Route path="/cadastre-se" component={SignUp} />
+
+          <Route path="/animais-adocao" component={AnimalsAdoption} />
+          <Route path="/animal/:id" component={AnimalProfile} />
+
+          <Route path="/adotar/:animal_id" component={NewReservationQuiz} />
 
           <Route path="/app" exact component={Dashboard} />
           <Route path="/app/reservas" component={ManageReservation} />

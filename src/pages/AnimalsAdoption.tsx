@@ -79,9 +79,11 @@ export function AnimalsAdoption() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
-          {animals.map((animal) => (
-            <AnimalCard key={animal.id} {...animal} />
-          ))}
+          {animals.length > 0 ? (
+            animals.map((animal) => <AnimalCard key={animal.id} {...animal} />)
+          ) : (
+            <h1>Nenhum animal disponivel para adocao</h1>
+          )}
         </div>
       </div>
     </>

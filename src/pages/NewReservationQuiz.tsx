@@ -29,7 +29,7 @@ export function NewReservationQuiz() {
       <form className="container max-w-2xl mx-auto shadow-md md:w-3/4 py-8 rounded-md bg-gray-200">
         <h1 className="text-4xl font-bold m-4">Questionário para reserva</h1>
         {questions.map((question, index) => (
-          <div className="mt-6 px-4">
+          <div key={index} className="mt-6 px-4">
             <label className="text-gray-700 text-justify" htmlFor="answer">
               {question}
             </label>
