@@ -1,4 +1,4 @@
-import { RequestsTableList } from "./RequestsTableList";
+import { ReservationsTableList } from "./ReservationsTableList";
 
 type CurrentRequestData = {
   request_id: string;
@@ -26,17 +26,17 @@ type CurrentRequestData = {
   };
 };
 
-type RequestTableProps = {
+type ReservationRequestTableProps = {
   currentRequests: CurrentRequestData[];
   children: JSX.Element;
   title: string;
 };
 
-export function RequestsTable({
+export function ReservationsTable({
   currentRequests,
   children,
   title,
-}: RequestTableProps) {
+}: ReservationRequestTableProps) {
   return (
     <main>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -45,7 +45,7 @@ export function RequestsTable({
             {children}
             <div className="px-4 py-6 sm:px-0">
               <h1 className="text-xl">Reservas {title}</h1>
-              <RequestsTableList cardInfo={currentRequests} />
+              <ReservationsTableList cardInfo={currentRequests} />
             </div>
           </div>
         ) : (

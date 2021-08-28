@@ -5,16 +5,11 @@ import { useHistory } from "react-router-dom";
 
 import api from "../services/api";
 
-export enum UserType {
-  ADMIN = "admin",
-  VOLUNTEER = "volunteer",
-  USER = "user",
-}
-
 type AuthContextType = {
   authenticated: boolean;
   handleLogin: ({ email, password }: LoginData) => Promise<void>;
   handleLogout: () => Promise<void>;
+  userType: string;
 };
 
 type AuthContextProviderProps = {
@@ -46,23 +41,27 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
   }, []);
 
   async function handleLogin({ email, password }: LoginData) {
-    const {
-      data: { token, userType },
-    } = await api.post("/login", { email, password });
+    try {
+      const {
+        data: { token, userType },
+      } = await api.post("/login", { email, password });
 
-    console.log(token);
+      console.log(token);
 
-    localStorage.setItem("token", JSON.stringify(token));
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+      localStorage.setItem("token", JSON.stringify(token));
+      api.defaults.headers.Authorization = `Bearer ${token}`;
 
-    userType === "user"
-      ? history.push("/animais-adocao")
-      : history.push("/dashboard");
+      userType === "user"
+        ? history.push("/animais-adocao")
+        : history.push("/dashboard");
 
-    setAuthenticated(true);
-    setUserType(userType);
+      setAuthenticated(true);
+      setUserType(userType);
 
-    history.push("/");
+      history.push("/");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function handleLogout() {
@@ -73,7 +72,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
     localStorage.removeItem("userType");
     api.defaults.headers.Authorization = undefined;
 
-    history.push("/login");
+    history.push("/signin");
   }
 
   if (loading) {
@@ -81,7 +80,9 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ authenticated, handleLogin, handleLogout }}>
+    <AuthContext.Provider
+      value={{ authenticated, handleLogin, handleLogout, userType }}
+    >
       {props.children}
     </AuthContext.Provider>
   );

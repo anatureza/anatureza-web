@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { AppHeader } from "../components/AppHeader";
 import { ButtonGroup } from "../components/ButtonGroup";
-import { RequestsTable } from "../components/RequestsTable";
+import { ReservationsTable } from "../components/ReservationsTable";
 
 type CurrentRequestData = {
   request_id: string;
@@ -31,7 +31,7 @@ type CurrentRequestData = {
   };
 };
 
-export function ManageRequests() {
+export function ManageReservation() {
   enum ReservationStatus {
     NEW = "new",
     APPROVED = "approved",
@@ -113,9 +113,9 @@ export function ManageRequests() {
 
   return (
     <AppHeader title="Pedidos de reserva">
-      <RequestsTable title={title} currentRequests={currentRequests}>
+      <ReservationsTable title={title} currentRequests={currentRequests}>
         <ButtonGroup handleOnClick={handleOnClick} />
-      </RequestsTable>
+      </ReservationsTable>
     </AppHeader>
   );
 }

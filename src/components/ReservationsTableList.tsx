@@ -31,7 +31,7 @@ type CardInfoProp = {
   cardInfo: ReservationData[];
 };
 
-export function RequestsTableList({ cardInfo }: CardInfoProp) {
+export function ReservationsTableList({ cardInfo }: CardInfoProp) {
   return (
     <>
       {cardInfo.length > 0 ? (

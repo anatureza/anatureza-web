@@ -1,23 +1,57 @@
+import { useEffect, useState } from "react";
 import { AnimalCard } from "../components/AnimalCard";
+import api from "../services/api";
 
-const animals = [
-  {
-    id: "1",
-    name: "Rex",
-    description: "orem ipsum dolor sit amet, conse",
-    avatar:
-      "https://images.unsplash.com/photo-1456926631375-92c8ce872def?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
-    city: "Águas de Lindoia",
-    volunteer: {
-      id: "123",
-      name: "Amantes da natureza",
-      phone_number: "12345678901",
-      avatar: "https://github.com/anatureza.png",
-    },
-  },
-];
+type AnimalData = {
+  id: string;
+  name: string;
+  available: boolean;
+  birth_date: string;
+  description: string;
+  gender: string;
+  kind: string;
+  main_image_url?: string;
+  created_at: string;
+  updated_at: string;
+  address_id: string;
+  address: {
+    place: string;
+    zip: number;
+    city: string;
+    complement: string;
+    id: string;
+    neighborhood: string;
+    number: string;
+    created_at: string;
+    updated_at: string;
+  };
+  volunteer_id: string;
+  user: {
+    address_id: string;
+    authorizes_image: boolean;
+    avatar?: string;
+    avatar_url?: string;
+    birth_date: string;
+    created_at: string;
+    email: string;
+    id: string;
+    name: string;
+    phone_number: string;
+    type: string;
+    updated_at: string;
+  };
+};
 
 export function AnimalsAdoption() {
+  const [animals, setAnimals] = useState<AnimalData[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      await api.get("/animals").then((response) => {
+        setAnimals(response.data);
+      });
+    })();
+  }, []);
   return (
     <>
       <div className="w-full bg-white p-12">
@@ -46,7 +80,7 @@ export function AnimalsAdoption() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
           {animals.map((animal) => (
-            <AnimalCard {...animal} />
+            <AnimalCard key={animal.id} {...animal} />
           ))}
         </div>
       </div>

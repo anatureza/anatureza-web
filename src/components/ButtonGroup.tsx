@@ -29,11 +29,11 @@ export function ButtonGroup({ handleOnClick }: ButtonGroupProps) {
       <button
         id="DISAPPROVED"
         type="button"
-        value="Desaprovadas"
+        value="Recusadas"
         className="w-full border-t border-b border-r text-base font-medium rounded-r-md text-black bg-white hover:bg-gray-100 px-4 py-2"
         onClick={handleOnClick}
       >
-        Desaprovado
+        Recusadas
       </button>
     </div>
   );

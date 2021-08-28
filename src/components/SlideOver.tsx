@@ -115,8 +115,8 @@ export function SlideOver({ open, setOpen }: SlideOverProps) {
                     </Dialog.Title>
                   </div>
                   <div className="mt-6 relative flex-1 px-4 sm:px-6">
-                    {adminNavigation.map((item) => (
-                      <Link to={item.href}>
+                    {adminNavigation.map((item, index) => (
+                      <Link key={index} to={item.href}>
                         <div className="mt-8">
                           <span
                             key={item.name}

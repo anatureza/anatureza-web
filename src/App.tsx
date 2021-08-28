@@ -11,7 +11,7 @@ import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 
 import { Dashboard } from "./pages/Dashboard";
-import { ManageRequests } from "./pages/ManageRequests";
+import { ManageReservation } from "./pages/ManageReservation";
 
 import { Footer } from "./components/Footer";
 import { Tasks } from "./components/Tasks";
@@ -34,7 +34,7 @@ function App() {
           <Route path="/cadastre-se" component={SignUp} />
 
           <Route path="/app" exact component={Dashboard} />
-          <Route path="/app/reservas" component={ManageRequests} />
+          <Route path="/app/reservas" component={ManageReservation} />
           <Route path="/app/animais" component={ManageAnimals} />
           <Route path="/teste" component={Tasks} />
         </Switch>

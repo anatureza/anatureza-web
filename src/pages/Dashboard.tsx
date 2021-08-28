@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppHeader } from "../components/AppHeader";
 // import { NotificationRequests } from "../components/NotificationRequests";
-import { RequestsTableList } from "../components/RequestsTableList";
+import { ReservationsTableList } from "../components/ReservationsTableList";
 
 export function Dashboard() {
   const mockData = [
@@ -13,12 +13,12 @@ export function Dashboard() {
         id: "string",
         name: "string",
         phone_number: "string",
-        avatar: "https://github.com/gusgalote.png",
+        avatar: "https://github.com/anatureza.png",
       },
       animal: {
         id: "string",
         name: "string",
-        avatar: "https://github.com/gusgalote.png",
+        avatar: "https://github.com/anatureza.png",
         description: "string",
         city: "string",
         available: true,
@@ -26,7 +26,7 @@ export function Dashboard() {
           id: "string",
           name: "string",
           phone_number: "string",
-          avatar: "https://github.com/gusgalote.png",
+          avatar: "https://github.com/anatureza.png",
         },
       },
     },
@@ -35,12 +35,6 @@ export function Dashboard() {
   const [lateRequests, setLateRequests] = useState(mockData);
   const [currentWeekRequests, setCurrentWeekRequests] = useState(mockData);
   const [nextWeekRequests, setNextWeekRequests] = useState(mockData);
-
-  // useEffect(() => {
-  //   setLateRequests(mo);
-  //   setCurrentWeekRequests(mockData);
-  //   setNextWeekRequests(mockData);
-  // }, [lateRequests, currentWeekRequests, nextWeekRequests]);
 
   const noRequests =
     lateRequests.length <= 0 &&
@@ -55,16 +49,16 @@ export function Dashboard() {
             <>
               <div className="px-4 py-6 sm:px-0">
                 <h1 className="text-xl">Reservas atrasadas</h1>
-                <RequestsTableList cardInfo={lateRequests} />
+                <ReservationsTableList cardInfo={lateRequests} />
               </div>
               <hr />
               <div className="px-4 py-6 sm:px-0">
                 <h1 className="text-xl">Reservas Feitas essa semana</h1>
-                <RequestsTableList cardInfo={currentWeekRequests} />
+                <ReservationsTableList cardInfo={currentWeekRequests} />
               </div>
               <div className="px-4 py-6 sm:px-0">
                 <h1 className="text-xl">Próximas Reservas</h1>
-                <RequestsTableList cardInfo={nextWeekRequests} />
+                <ReservationsTableList cardInfo={nextWeekRequests} />
               </div>
             </>
           ) : (
