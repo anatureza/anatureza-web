@@ -25,7 +25,7 @@ function classNames(...classes: ClassesTypes) {
 export function Navbar() {
   const location = useLocation();
 
-  const { authenticated, handleLogout } = useContext(AuthContext);
+  const { handleLogout, authenticated, userType } = useContext(AuthContext);
 
   const navigation = [
     { name: "Página inicial", href: "/", current: location.pathname === "/" },
