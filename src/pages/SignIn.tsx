@@ -22,8 +22,6 @@ export function SignIn() {
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    console.log(email + password);
-
     handleLogin({ email, password });
   }
 

@@ -1,21 +1,65 @@
+import { FormEvent, useState } from "react";
 import { useContext } from "react";
 
 import { useHistory } from "react-router-dom";
 
 import { AuthContext } from "../contexts/AuthContext";
+import api from "../services/api";
 
 export function SignUp() {
   const history = useHistory();
 
-  const { handleLogin, authenticated } = useContext(AuthContext);
+  const { authenticated } = useContext(AuthContext);
 
   if (authenticated) {
     history.push("/");
   }
 
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phone_number, setPhoneNumber] = useState("");
+  const [birth_date, setBirthDate] = useState(Date.now());
+  const [authorizes_image, setAuthorizesImage] = useState(false);
+
+  const [place, setPlace] = useState("");
+  const [number, setNumber] = useState(95);
+  const [complement, setComplement] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
+  const [zip, setZip] = useState("");
+  const [city, setCity] = useState("");
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    await api
+      .post("/user", {
+        name,
+        email,
+        password,
+        phone_number,
+        authorizes_image,
+        birth_date,
+        place,
+        number,
+        complement,
+        neighborhood,
+        zip,
+        city,
+      })
+      .then(() => {
+        alert("Cadastro realizado com sucesso");
+
+        history.push("/signin");
+      });
+  }
+
   return (
     <section className="bg-gray-100 bg-opacity-50 pt-8 pb-14">
-      <form className="container max-w-2xl mx-auto shadow-md md:w-3/4">
+      <form
+        onSubmit={handleSubmit}
+        className="container max-w-2xl mx-auto shadow-md md:w-3/4"
+      >
         <div className="p-4 bg-gray-100 border-t-2 border-indigo-400 rounded-lg bg-opacity-5">
           <h1 className="text-xl">Cadastre-se</h1>
         </div>
@@ -28,6 +72,8 @@ export function SignUp() {
                   type="email"
                   id="user-info-email"
                   required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                   className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent mb-4"
                   placeholder="Email"
                 />
@@ -35,6 +81,8 @@ export function SignUp() {
                   type="text"
                   id="user-info-password"
                   required
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
                   className=" mb-4 rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   placeholder="Senha"
                 />
@@ -58,6 +106,8 @@ export function SignUp() {
                     type="text"
                     id="user-info-name"
                     required
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Nome completo"
                   />
@@ -69,6 +119,8 @@ export function SignUp() {
                     type="text"
                     id="user-info-phone"
                     required
+                    value={phone_number}
+                    onChange={(event) => setPhoneNumber(event.target.value)}
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Telefone (Ex: 19 999999999)"
                   />
@@ -86,13 +138,17 @@ export function SignUp() {
                     type="text"
                     id="address-place"
                     required
+                    value={place}
+                    onChange={(event) => setPlace(event.target.value)}
                     className="inline-block rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-3/6 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Logradouro (Rua, Av. ...)"
                   />
                   <input
-                    type="text"
+                    type="number"
                     id="address-number"
                     required
+                    value={number}
+                    onChange={(event) => setNumber(event.target.valueAsNumber)}
                     className=" inline-block rounded-lg border-transparent flex-1 appearance-none border md:w-40 lg:w-40 md:ml-4 lg:ml-4 border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Número"
                   />
@@ -103,6 +159,8 @@ export function SignUp() {
                   <input
                     type="text"
                     id="address-city"
+                    value={city}
+                    onChange={(event) => setCity(event.target.value)}
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Cidade"
                   />
@@ -113,6 +171,9 @@ export function SignUp() {
                   <input
                     type="text"
                     id="address-neighborhood"
+                    required
+                    value={neighborhood}
+                    onChange={(event) => setNeighborhood(event.target.value)}
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Bairro"
                   />
@@ -123,6 +184,8 @@ export function SignUp() {
                   <input
                     type="text"
                     id="address-complement"
+                    value={complement}
+                    onChange={(event) => setComplement(event.target.value)}
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Complemento"
                   />
@@ -134,6 +197,8 @@ export function SignUp() {
                     type="text"
                     id="address-zip"
                     required
+                    value={zip}
+                    onChange={(event) => setZip(event.target.value)}
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="CEP (Ex: 13940000)"
                   />
@@ -152,6 +217,10 @@ export function SignUp() {
             <input
               type="checkbox"
               name="checked"
+              checked={authorizes_image}
+              onClick={() => {
+                setAuthorizesImage(!authorizes_image);
+              }}
               className="form-tick appearance-none bg-white bg-check h-6 w-6 border border-gray-300 rounded-md checked:bg-blue-500 checked:border-transparent focus:outline-none"
             />
             <span className="text-gray-700 dark:text-white font-normal">

@@ -9,13 +9,20 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import LogoNavbar from "../assets/images/logo-an-navbar.png";
+import { useEffect } from "react";
+import api from "../services/api";
 
 type ClassesTypes = string[];
 
-const user = {
-  id: "1",
-  name: "username",
-  avatar: "",
+type UserData = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  phone_number: string;
+  birth_date: Date;
+  type?: string;
+  avatar: string;
 };
 
 function classNames(...classes: ClassesTypes) {
@@ -25,7 +32,8 @@ function classNames(...classes: ClassesTypes) {
 export function Navbar() {
   const location = useLocation();
 
-  const { handleLogout, authenticated, userType } = useContext(AuthContext);
+  const { handleLogout, authenticated } = useContext(AuthContext);
+  const [user, setUser] = useState<UserData | undefined>();
 
   const navigation = [
     { name: "Página inicial", href: "/", current: location.pathname === "/" },
@@ -37,6 +45,21 @@ export function Navbar() {
     },
   ];
 
+  useEffect(() => {
+    if (authenticated) {
+      api.get("/user").then(({ data }) => {
+        setUser(data);
+      });
+    }
+  }, [authenticated]);
+
+  if (authenticated) {
+    if (!user) {
+      return <h1>Carregando...</h1>;
+    }
+  }
+
+  console.log(user);
   return (
     <Disclosure as="nav" className="bg-blue-400">
       {({ open }) => (
@@ -105,8 +128,8 @@ export function Navbar() {
                         <img
                           className="h-8 w-8 rounded-full"
                           src={
-                            user.avatar !== ""
-                              ? user.avatar
+                            user?.avatar !== null
+                              ? user?.avatar
                               : "https://github.com/anatureza.png"
                           }
                           alt="User"
@@ -126,7 +149,7 @@ export function Navbar() {
                         <Menu.Item>
                           {({ active }) => (
                             <a
-                              href={`/user/${user.id}`}
+                              href={`/user/${user?.id}`}
                               className={classNames(
                                 active ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm text-gray-700"
