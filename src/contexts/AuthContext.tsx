@@ -10,6 +10,7 @@ type AuthContextType = {
   handleLogin: ({ email, password }: LoginData) => Promise<void>;
   handleLogout: () => Promise<void>;
   userType: string;
+  userId: string;
 };
 
 type AuthContextProviderProps = {
@@ -29,6 +30,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userType, setUserType] = useState("");
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -43,12 +45,12 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
   async function handleLogin({ email, password }: LoginData) {
     try {
       const {
-        data: { token, userType },
+        data: { token, userType, userId },
       } = await api.post("/login", { email, password });
 
-      console.log(token);
-
       localStorage.setItem("token", JSON.stringify(token));
+      localStorage.setItem("userType", JSON.stringify(userType));
+      localStorage.setItem("userId", JSON.stringify(userId));
       api.defaults.headers.Authorization = `Bearer ${token}`;
 
       userType === "user"
@@ -57,6 +59,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 
       setAuthenticated(true);
       setUserType(userType);
+      setUserId(userId);
 
       history.push("/");
     } catch (error) {
@@ -67,9 +70,11 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
   async function handleLogout() {
     setAuthenticated(false);
     setUserType("");
+    setUserId("");
 
     localStorage.removeItem("token");
     localStorage.removeItem("userType");
+    localStorage.removeItem("userId");
     api.defaults.headers.Authorization = undefined;
 
     history.push("/signin");
@@ -81,7 +86,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ authenticated, handleLogin, handleLogout, userType }}
+      value={{ authenticated, handleLogin, handleLogout, userType, userId }}
     >
       {props.children}
     </AuthContext.Provider>

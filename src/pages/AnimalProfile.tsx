@@ -75,7 +75,7 @@ export function AnimalProfile() {
       <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
         <div className="p-4 bg-gray-100 border-t-2 border-blue-400 rounded-lg bg-opacity-5">
           <h1 className="text-2xl">{mockAnimal.name}</h1>
-          <SelectImages images={mockImages} name={mockAnimal.name} />
+          <SelectImages images={mockImages} animalName={mockAnimal.name} />
         </div>
         <div className="space-y-6 bg-white">
           <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">

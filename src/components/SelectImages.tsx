@@ -5,10 +5,10 @@ type ImageProps = {
     id: string;
     path: string;
   }>;
-  name: string;
+  animalName: string;
 };
 
-export function SelectImages({ images, name }: ImageProps) {
+export function SelectImages({ images, animalName }: ImageProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const imagesLenght = images.length;
 
@@ -17,7 +17,7 @@ export function SelectImages({ images, name }: ImageProps) {
       <img
         className="flex-1 h-full w-full rounded-md object-cover"
         src={images[activeImageIndex].path}
-        alt={name}
+        alt={animalName}
       />
       <div
         className={`flex-1 grid grid-cols-${
@@ -35,7 +35,11 @@ export function SelectImages({ images, name }: ImageProps) {
               setActiveImageIndex(index);
             }}
           >
-            <img src={image.path} alt={name} className="h-60 object-cover" />
+            <img
+              src={image.path}
+              alt={animalName}
+              className="h-60 object-cover"
+            />
           </button>
         ))}
       </div>

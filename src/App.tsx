@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { AuthContextProvider } from "./contexts/AuthContext";
 
 import { Home } from "./pages/Home";
 import { FAQ } from "./pages/FAQ";
@@ -15,10 +16,9 @@ import { Dashboard } from "./pages/Dashboard";
 import { ManageReservation } from "./pages/ManageReservation";
 
 import { Footer } from "./components/Footer";
-import { Tasks } from "./components/Tasks";
 import { Navbar } from "./components/Navbar";
 import { ManageAnimals } from "./pages/ManageAnimals";
-import { AuthContextProvider } from "./contexts/AuthContext";
+import { CreateAnimal } from "./pages/CreateAnimal";
 
 function App() {
   return (
@@ -40,7 +40,7 @@ function App() {
           <Route path="/app" exact component={Dashboard} />
           <Route path="/app/reservas" component={ManageReservation} />
           <Route path="/app/animais" component={ManageAnimals} />
-          <Route path="/teste" component={Tasks} />
+          <Route path="/app/animal/" component={CreateAnimal} />
         </Switch>
         <Footer />
       </AuthContextProvider>
