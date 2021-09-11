@@ -8,7 +8,7 @@ import api from "../services/api";
 type AuthContextType = {
   authenticated: boolean;
   handleLogin: ({ email, password }: LoginData) => Promise<void>;
-  handleLogout: () => Promise<void>;
+  handleLogout: () => void;
   userType: string;
   userId: string;
 };
@@ -53,21 +53,19 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
       localStorage.setItem("userId", JSON.stringify(userId));
       api.defaults.headers.Authorization = `Bearer ${token}`;
 
-      userType === "user"
-        ? history.push("/animais-adocao")
-        : history.push("/dashboard");
-
       setAuthenticated(true);
       setUserType(userType);
       setUserId(userId);
 
-      history.push("/");
+      userType === "user"
+        ? history.push("/animais-adocao")
+        : history.push("/app");
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function handleLogout() {
+  function handleLogout() {
     setAuthenticated(false);
     setUserType("");
     setUserId("");

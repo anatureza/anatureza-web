@@ -47,9 +47,14 @@ export function Navbar() {
 
   useEffect(() => {
     if (authenticated) {
-      api.get("/user").then(({ data }) => {
-        setUser(data);
-      });
+      api
+        .get("/user")
+        .then(({ data }) => {
+          setUser(data);
+        })
+        .catch(() => {
+          handleLogout();
+        });
     }
   }, [authenticated]);
 
@@ -59,7 +64,6 @@ export function Navbar() {
     }
   }
 
-  console.log(user);
   return (
     <Disclosure as="nav" className="bg-blue-400">
       {({ open }) => (
@@ -130,7 +134,7 @@ export function Navbar() {
                           src={
                             user?.avatar !== null
                               ? user?.avatar
-                              : "https://github.com/anatureza.png"
+                              : "https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-24.jpg"
                           }
                           alt="User"
                         />
@@ -160,19 +164,21 @@ export function Navbar() {
                           )}
                         </Menu.Item>
                         {/*Admin/Volunteer Only*/}
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="/app"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Dashboard
-                            </a>
-                          )}
-                        </Menu.Item>
+                        {user?.type !== "user" && (
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="/app"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700"
+                                )}
+                              >
+                                Dashboard
+                              </a>
+                            )}
+                          </Menu.Item>
+                        )}
                         <Menu.Item>
                           {({ active }) => (
                             <button

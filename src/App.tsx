@@ -1,6 +1,14 @@
-import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { AuthContextProvider } from "./contexts/AuthContext";
+import { useContext } from "react";
+
+import {
+  BrowserRouter,
+  Route,
+  Switch,
+  Redirect,
+  RouteProps,
+} from "react-router-dom";
+
+import { AuthContext, AuthContextProvider } from "./contexts/AuthContext";
 
 import { Home } from "./pages/Home";
 import { FAQ } from "./pages/FAQ";
@@ -20,6 +28,38 @@ import { Navbar } from "./components/Navbar";
 import { ManageAnimals } from "./pages/ManageAnimals";
 import { CreateAnimal } from "./pages/CreateAnimal";
 
+interface IAuthRouteData extends RouteProps {}
+
+interface IProtectedRouteData extends RouteProps {}
+
+function AuthRoute({ ...rest }: IAuthRouteData) {
+  const { authenticated } = useContext(AuthContext);
+
+  if (!authenticated) {
+    <Redirect to="/login" />;
+  }
+
+  return <Route {...rest} />;
+}
+
+function ProtectedRoute({ ...rest }: IProtectedRouteData) {
+  const { authenticated, userType } = useContext(AuthContext);
+
+  if (!authenticated) {
+    <Redirect to="/signin" />;
+  }
+
+  console.log(userType);
+  if (userType === "admin" || userType === "volunteer") {
+    return <Route {...rest} />;
+  }
+
+  if (authenticated) {
+    <Redirect to="/" />;
+  }
+  return <Redirect to="/signin" />;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -35,12 +75,13 @@ function App() {
           <Route path="/animais-adocao" component={AnimalsAdoption} />
           <Route path="/animal/:id" component={AnimalProfile} />
 
-          <Route path="/adotar/:animal_id" component={NewReservationQuiz} />
+          <AuthRoute path="/adotar/:animal_id" component={NewReservationQuiz} />
 
-          <Route path="/app" exact component={Dashboard} />
-          <Route path="/app/reservas" component={ManageReservation} />
-          <Route path="/app/animais" component={ManageAnimals} />
-          <Route path="/app/animal/" component={CreateAnimal} />
+          <ProtectedRoute path="/app" exact component={Dashboard} />
+          <ProtectedRoute path="/app/reservas" component={ManageReservation} />
+          <ProtectedRoute path="/app/animais" component={ManageAnimals} />
+          <ProtectedRoute path="/app/animal/" component={CreateAnimal} />
+          <ProtectedRoute path="/app/animal/" component={CreateAnimal} />
         </Switch>
         <Footer />
       </AuthContextProvider>
