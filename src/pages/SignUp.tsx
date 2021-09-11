@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useContext } from "react";
 
 import { useHistory } from "react-router-dom";
@@ -15,6 +15,10 @@ export function SignUp() {
     history.push("/");
   }
 
+  const [passwordIsValid, setPasswordIsValid] = useState(false);
+  const [passwordAlreadyTyped, setPasswordAlreadyTyped] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,11 +27,25 @@ export function SignUp() {
   const [authorizes_image, setAuthorizesImage] = useState(false);
 
   const [place, setPlace] = useState("");
-  const [number, setNumber] = useState(95);
+  const [number, setNumber] = useState<number>();
   const [complement, setComplement] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [zip, setZip] = useState("");
   const [city, setCity] = useState("");
+
+  useEffect(() => {
+    if (password.length > 0) {
+      setPasswordAlreadyTyped(true);
+
+      if (confirmPassword === password) {
+        setPasswordIsValid(true);
+      } else {
+        setPasswordIsValid(false);
+      }
+    } else {
+      setPasswordAlreadyTyped(false);
+    }
+  }, [password, confirmPassword]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -67,7 +85,7 @@ export function SignUp() {
           <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
             <h2 className="max-w-sm mx-auto md:w-1/3">Dados de Acesso</h2>
             <div className="max-w-sm mx-auto md:w-2/3">
-              <div className="relative">
+              <div className=" relative ">
                 <input
                   type="email"
                   id="user-info-email"
@@ -77,54 +95,74 @@ export function SignUp() {
                   className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent mb-4"
                   placeholder="Email"
                 />
+                <label htmlFor="password" className="text-gray-700">
+                  Senha
+                  <span className="text-red-500 required-dot">*</span>
+                </label>
                 <input
-                  type="text"
-                  id="user-info-password"
+                  type="password"
+                  name="password"
+                  id="password"
                   required
                   value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  className=" mb-4 rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  onChange={(event) => {
+                    setPassword(event.target.value);
+                  }}
+                  className="mb-1 rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   placeholder="Senha"
                 />
+                <label htmlFor="confirm-password" className="text-gray-700">
+                  Confirmar Senha
+                  <span className="text-red-500 required-dot">*</span>
+                </label>
                 <input
-                  type="text"
-                  id="user-info-confirm-password"
+                  type="password"
+                  name="confirm-password"
+                  id="confirm-password"
                   required
-                  className=" mb-4 rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  onChange={(event) => {
+                    setConfirmPassword(event.target.value);
+                  }}
+                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   placeholder="Confirmar senha"
                 />
+                <div
+                  className={`mt-2 mb-4 text-${
+                    passwordIsValid ? "green" : "red"
+                  }-500 mb-4`}
+                  hidden={!passwordAlreadyTyped}
+                >
+                  As Senhas {!passwordIsValid && "não"} se Correspondem!
+                </div>
               </div>
+              <div className="relative"></div>
             </div>
           </div>
           <hr />
           <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
             <h2 className="max-w-sm mx-auto md:w-1/3">Informações Pessoais</h2>
             <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
-              <div>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="user-info-name"
-                    required
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    placeholder="Nome completo"
-                  />
-                </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="user-info-name"
+                  required
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  placeholder="Nome completo"
+                />
               </div>
-              <div>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="user-info-phone"
-                    required
-                    value={phone_number}
-                    onChange={(event) => setPhoneNumber(event.target.value)}
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    placeholder="Telefone (Ex: 19 999999999)"
-                  />
-                </div>
+              <div className="relative">
+                <input
+                  type="text"
+                  id="user-info-phone"
+                  required
+                  value={phone_number}
+                  onChange={(event) => setPhoneNumber(event.target.value)}
+                  className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  placeholder="Telefone (Ex: 19 999999999)"
+                />
               </div>
             </div>
           </div>
@@ -217,7 +255,7 @@ export function SignUp() {
             <input
               type="checkbox"
               name="checked"
-              checked={authorizes_image}
+              defaultChecked={authorizes_image}
               onClick={() => {
                 setAuthorizesImage(!authorizes_image);
               }}
@@ -230,7 +268,12 @@ export function SignUp() {
           <div className="w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
             <button
               type="submit"
-              className="py-2 px-4  bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className={`py-2 px-4 ${
+                passwordIsValid
+                  ? "bg-blue-600 hover:bg-blue-700"
+                  : "bg-gray-600 cursor-not-allowed"
+              } focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg`}
+              disabled={!passwordIsValid}
             >
               Criar conta
             </button>
