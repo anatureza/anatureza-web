@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import api from "../services/api";
 
 type AuthContextType = {
+  loading: boolean;
   authenticated: boolean;
   handleLogin: ({ email, password }: LoginData) => Promise<void>;
   handleLogout: () => void;
@@ -29,8 +30,12 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userType, setUserType] = useState("");
-  const [userId, setUserId] = useState("");
+  const [userType, setUserType] = useState(
+    JSON.parse(localStorage.getItem("userType") || "")
+  );
+  const [userId, setUserId] = useState(
+    JSON.parse(localStorage.getItem("userId") || "")
+  );
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -78,13 +83,16 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
     history.push("/signin");
   }
 
-  if (loading) {
-    return <h1>Carregando...</h1>;
-  }
-
   return (
     <AuthContext.Provider
-      value={{ authenticated, handleLogin, handleLogout, userType, userId }}
+      value={{
+        loading,
+        authenticated,
+        handleLogin,
+        handleLogout,
+        userType,
+        userId,
+      }}
     >
       {props.children}
     </AuthContext.Provider>

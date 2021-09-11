@@ -33,7 +33,11 @@ interface IAuthRouteData extends RouteProps {}
 interface IProtectedRouteData extends RouteProps {}
 
 function AuthRoute({ ...rest }: IAuthRouteData) {
-  const { authenticated } = useContext(AuthContext);
+  const { loading, authenticated } = useContext(AuthContext);
+
+  if (loading) {
+    return <h1>Carregando...</h1>;
+  }
 
   if (!authenticated) {
     <Redirect to="/login" />;
@@ -43,7 +47,11 @@ function AuthRoute({ ...rest }: IAuthRouteData) {
 }
 
 function ProtectedRoute({ ...rest }: IProtectedRouteData) {
-  const { authenticated, userType } = useContext(AuthContext);
+  const { loading, authenticated, userType } = useContext(AuthContext);
+
+  if (loading) {
+    return <h1>Carregando...</h1>;
+  }
 
   if (!authenticated) {
     <Redirect to="/signin" />;
