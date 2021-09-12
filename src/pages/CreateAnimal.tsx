@@ -190,12 +190,16 @@ export function CreateAnimal() {
                       <select
                         className="form-select block w-full mt-1 rounded-lg"
                         defaultValue={
-                          kind === "dog" ? "dog" : kind === "cat" ? "cat" : ""
+                          kind === "dog"
+                            ? "dog"
+                            : kind === "cat"
+                            ? "cat"
+                            : "none"
                         }
                       >
                         <option
                           value="dog"
-                          onSelect={() => {
+                          onClick={() => {
                             setKind("dog");
                           }}
                         >
@@ -203,11 +207,19 @@ export function CreateAnimal() {
                         </option>
                         <option
                           value="cat"
-                          onSelect={() => {
+                          onClick={() => {
                             setKind("cat");
                           }}
                         >
                           Gato
+                        </option>
+                        <option
+                          value="none"
+                          onClick={() => {
+                            setKind("none");
+                          }}
+                        >
+                          Escolha
                         </option>
                       </select>
                     </label>
@@ -222,22 +234,32 @@ export function CreateAnimal() {
                             ? "female"
                             : gender === "male"
                             ? "male"
-                            : ""
+                            : "none"
                         }
                       >
                         <option
-                          onSelect={() => {
+                          value="female"
+                          onClick={() => {
                             setGender("female");
                           }}
                         >
                           Fêmea
                         </option>
                         <option
-                          onSelect={() => {
+                          value="male"
+                          onClick={() => {
                             setGender("male");
                           }}
                         >
                           Macho
+                        </option>
+                        <option
+                          value="none"
+                          onClick={() => {
+                            setGender("none");
+                          }}
+                        >
+                          Escolha
                         </option>
                       </select>
                     </label>
