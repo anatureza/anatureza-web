@@ -10,8 +10,8 @@ type AuthContextType = {
   authenticated: boolean;
   handleLogin: ({ email, password }: LoginData) => Promise<void>;
   handleLogout: () => void;
-  userType: string;
-  userId: string;
+  userType: string | null;
+  userId: string | null;
 };
 
 type AuthContextProviderProps = {
@@ -30,18 +30,17 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userType, setUserType] = useState(
-    JSON.parse(localStorage.getItem("userType") || "")
-  );
-  const [userId, setUserId] = useState(
-    JSON.parse(localStorage.getItem("userId") || "")
-  );
+  const [userType, setUserType] = useState<string | null>("");
+  const [userId, setUserId] = useState<string | null>("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      api.defaults.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+      api.defaults.headers.Authorization = `Bearer ${token}`;
       setAuthenticated(true);
+
+      setUserId(localStorage.getItem("userId"));
+      setUserType(localStorage.getItem("userType"));
     }
 
     setLoading(false);
@@ -53,9 +52,9 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
         data: { token, userType, userId },
       } = await api.post("/login", { email, password });
 
-      localStorage.setItem("token", JSON.stringify(token));
-      localStorage.setItem("userType", JSON.stringify(userType));
-      localStorage.setItem("userId", JSON.stringify(userId));
+      localStorage.setItem("token", token);
+      localStorage.setItem("userType", userType);
+      localStorage.setItem("userId", userId);
       api.defaults.headers.Authorization = `Bearer ${token}`;
 
       setAuthenticated(true);
