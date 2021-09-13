@@ -27,6 +27,7 @@ import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { ManageAnimals } from "./pages/ManageAnimals";
 import { CreateAnimal } from "./pages/CreateAnimal";
+import { EditAnimal } from "./pages/EditAnimal";
 
 interface IAuthRouteData extends RouteProps {}
 
@@ -81,15 +82,18 @@ function App() {
           <Route path="/cadastre-se" component={SignUp} />
 
           <Route path="/animais-adocao" component={AnimalsAdoption} />
-          <Route path="/animal/:id" component={AnimalProfile} />
+          <Route path="/animal/:animal_id" component={AnimalProfile} />
 
           <AuthRoute path="/adotar/:animal_id" component={NewReservationQuiz} />
 
           <ProtectedRoute path="/app" exact component={Dashboard} />
           <ProtectedRoute path="/app/reservas" component={ManageReservation} />
           <ProtectedRoute path="/app/animais" component={ManageAnimals} />
-          <ProtectedRoute path="/app/animal/" component={CreateAnimal} />
-          <ProtectedRoute path="/app/animal/" component={CreateAnimal} />
+          <ProtectedRoute path="/app/animal/novo" component={CreateAnimal} />
+          <ProtectedRoute
+            path="/app/animal/:animal_id"
+            component={EditAnimal}
+          />
         </Switch>
         <Footer />
       </AuthContextProvider>

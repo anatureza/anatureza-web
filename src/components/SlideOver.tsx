@@ -48,7 +48,7 @@ export function SlideOver({ open, setOpen }: SlideOverProps) {
     },
     {
       name: "Adicionar animal",
-      href: "/app/animal/new",
+      href: "/app/animal/novo",
       current: location.pathname === "/app/animal/new",
       icon: faPlusCircle,
     },
