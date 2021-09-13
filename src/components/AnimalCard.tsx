@@ -1,3 +1,5 @@
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
 type AnimalDataProps = {
@@ -44,15 +46,13 @@ export function AnimalCard(animal: AnimalDataProps) {
   return (
     <div className="overflow-hidden shadow-lg rounded-lg h-90 w-60 md:w-80 cursor-pointer m-auto">
       <Link to={`/animal/${animal.id}`} className="w-full block h-full">
-        <img
-          alt={`Animal ${animal.name}`}
-          src={`${
-            !animal.main_image_url
-              ? `https://github.com/anatureza.png`
-              : animal.main_image_url
-          }`}
-          className="max-h-40 w-full object-cover"
-        />
+        {animal.main_image_url && (
+          <img
+            className="max-h-40 w-full object-cover"
+            src={animal.main_image_url}
+            alt={`Animal ${animal.name}`}
+          />
+        )}
         <div className="bg-white w-full p-4">
           <p className="text-gray-600 text-sm font-medium">
             <span className="font-bold">Em: </span>
@@ -66,15 +66,19 @@ export function AnimalCard(animal: AnimalDataProps) {
           </p>
           <div className="flex items-center mt-4">
             <span className="block relative">
-              <img
-                alt={`Volunteer ${animal.user.name} profile`}
-                src={`${
-                  !animal.user.avatar
-                    ? `https://github.com/anatureza.png`
-                    : animal.user.avatar
-                }`}
-                className="mx-auto object-cover rounded-full w-10 "
-              />
+              {animal.user.avatar ? (
+                <img
+                  className="mx-auto object-cover rounded-full w-10"
+                  src={animal.user.avatar}
+                  alt={`Animal ${animal.name}`}
+                />
+              ) : (
+                <FontAwesomeIcon
+                  icon={faUser}
+                  size="2x"
+                  className="mx-auto object-cover rounded-full w-10"
+                />
+              )}
             </span>
             <div className="flex flex-col justify-between ml-4 text-sm">
               <p className="text-gray-800 truncate">

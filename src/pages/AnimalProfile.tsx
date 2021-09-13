@@ -1,81 +1,77 @@
-import { useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+
+import { AuthContext } from "../contexts/AuthContext";
+
 import { Link, useParams } from "react-router-dom";
+
 import { SelectImages } from "../components/SelectImages";
+import api from "../services/api";
+import moment from "moment";
 
-// type OrphanageParams = {
-//   id: string;
-// };
+type AnimalIdParams = {
+  animal_id: string;
+};
 
-const mockImages = [
-  {
-    id: "1",
-    path: "https://images.unsplash.com/photo-1574870111867-089730e5a72b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80",
-  },
-  {
-    id: "2",
-    path: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=376&q=80",
-  },
-  {
-    id: "3",
-    path: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=376&q=80",
-  },
-  {
-    id: "4",
-    path: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=376&q=80",
-  },
-  {
-    id: "5",
-    path: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=376&q=80",
-  },
-  {
-    id: "6",
-    path: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=376&q=80",
-  },
-  {
-    id: "7",
-    path: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=376&q=80",
-  },
-  {
-    id: "8",
-    path: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=376&q=80",
-  },
-  // {
-  //   id: "9",
-  //   path: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=376&q=80",
-  // },
-];
-
-const mockAnimal = {
-  id: "1",
-  name: "Cachorro/girafa",
-  description: "lorem ipsum",
-  kind: "dog",
-  gender: "female",
-  birth_date: "2020-01-01",
-  volunteer: {
-    name: "Voluntário",
-    phone_number: "232132",
-  },
+type AnimalData = {
+  id: string;
+  volunteer_id: string;
+  address_id: string;
+  name: string;
+  description: string;
+  kind: string;
+  gender: string;
+  birth_date: string;
+  images?: Array<{
+    id: string;
+    path: string;
+  }>;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    password: string;
+    phone_number: string;
+    birth_date: Date;
+    type: string;
+    avatar?: string;
+  };
   address: {
-    place: "Rua etste stses",
-    number: 12,
-    complement: "",
-    city: "Cidade feliz",
-    zip: "12345678",
-  },
+    place: string;
+    number: number;
+    complement: string;
+    neighborhood: string;
+    zip: number;
+    city: string;
+  };
 };
 
 export function AnimalProfile() {
-  // const {animal_id} = useParams<OrphanageParams>();
+  const { authenticated } = useContext(AuthContext);
 
-  // useEffect(() => {}, []);
+  const { animal_id } = useParams<AnimalIdParams>();
+
+  const [animal, setAnimal] = useState<AnimalData>();
+
+  useEffect(() => {
+    (async () => {
+      await api.get(`/animal/${animal_id}`).then(({ data }) => {
+        setAnimal(data);
+      });
+    })();
+  }, [animal_id]);
+
+  if (typeof animal === "undefined") {
+    return <h1>Carregando dados do animal...</h1>;
+  }
 
   return (
     <section className="bg-gray-100 bg-opacity-50 pt-8 pb-14">
       <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
         <div className="p-4 bg-gray-100 border-t-2 border-blue-400 rounded-lg bg-opacity-5">
-          <h1 className="text-2xl">{mockAnimal.name}</h1>
-          <SelectImages images={mockImages} animalName={mockAnimal.name} />
+          <h1 className="text-2xl">{animal.name}</h1>
+          {animal.images && (
+            <SelectImages images={animal.images} animalName={animal.name} />
+          )}
         </div>
         <div className="space-y-6 bg-white">
           <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
@@ -89,7 +85,7 @@ export function AnimalProfile() {
                   type="text"
                   id="name"
                   disabled
-                  value={mockAnimal.name}
+                  value={animal.name}
                   className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent mb-4"
                 />
                 <label htmlFor="description" className="text-gray-900">
@@ -98,7 +94,7 @@ export function AnimalProfile() {
                 <textarea
                   className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   id="description"
-                  value={mockAnimal.description}
+                  value={animal.description}
                   name="comment"
                   rows={5}
                   cols={40}
@@ -111,7 +107,7 @@ export function AnimalProfile() {
                       type="radio"
                       name="kind"
                       value="cat"
-                      checked={mockAnimal.kind === "cat"}
+                      checked={animal.kind === "cat"}
                       disabled
                       className="h-5 w-5 text-indigo-600"
                     />
@@ -122,7 +118,7 @@ export function AnimalProfile() {
                       type="radio"
                       name="kind"
                       value="dog"
-                      checked={mockAnimal.kind === "dog"}
+                      checked={animal.kind === "dog"}
                       disabled
                       className="h-5 w-5 text-indigo-600"
                     />
@@ -136,7 +132,7 @@ export function AnimalProfile() {
                       type="radio"
                       name="gender"
                       value="female"
-                      checked={mockAnimal.gender === "female"}
+                      checked={animal.gender === "female"}
                       disabled
                       className="h-5 w-5 text-indigo-600"
                     />
@@ -147,7 +143,7 @@ export function AnimalProfile() {
                       type="radio"
                       name="gender"
                       value="male"
-                      checked={mockAnimal.gender === "male"}
+                      checked={animal.gender === "male"}
                       disabled
                       className="h-5 w-5 text-indigo-600"
                     />
@@ -164,10 +160,8 @@ export function AnimalProfile() {
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     id="animal-birth_date"
                     name="birth_date"
-                    value={mockAnimal.birth_date}
-                    // disabled
-                    // min="2018-01-01"
-                    // max="2018-12-31"
+                    value={moment(animal.birth_date).format("YYYY-MM-DD")}
+                    disabled
                   />
                 </div>
               </div>
@@ -191,7 +185,7 @@ export function AnimalProfile() {
                     type="text"
                     id="animal-volunteer-name"
                     disabled
-                    value={mockAnimal.volunteer.name}
+                    value={animal.user.name}
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     placeholder="Nome completo"
                   />
@@ -206,7 +200,7 @@ export function AnimalProfile() {
                     Número de contato
                   </label>
                   <a
-                    href={`https://api.whatsapp.com/send?phone=+5519998869951&text=Olá,%20quero%20falar%20sobre%20o%20animal%20${mockAnimal.name}`}
+                    href={`https://api.whatsapp.com/send?phone=+5519998869951&text=Olá,%20quero%20falar%20sobre%20o%20animal%20${animal.name}`}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -214,7 +208,7 @@ export function AnimalProfile() {
                       type="text"
                       id="animal-volunteer-phone_number"
                       disabled
-                      value={mockAnimal.volunteer.phone_number}
+                      value={animal.user.phone_number}
                       className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                     />
                   </a>
@@ -229,28 +223,26 @@ export function AnimalProfile() {
               <div>
                 <div className="relative border-box md:py-2">
                   <label htmlFor="address-place" className="text-gray-900">
-                    Endereço
+                    Logradouro
                   </label>
                   <input
                     type="text"
                     id="address-place"
+                    value={animal.address.place}
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     disabled
-                    value={mockAnimal.address.place}
-                    className="inline-block rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-3/6 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    placeholder="Logradouro (Rua, Av. ...)"
                   />
                 </div>
                 <div className="relative border-box md:py-2">
                   <label htmlFor="address-number" className="text-gray-900">
-                    Número:
+                    Número
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     id="address-number"
+                    value={animal.address.number}
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     disabled
-                    value={mockAnimal.address.number}
-                    className=" inline-block rounded-lg border-transparent flex-1 appearance-none border md:w-40 lg:w-40 md:ml-4 lg:ml-4 border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    placeholder="Número"
                   />
                 </div>
               </div>
@@ -262,10 +254,9 @@ export function AnimalProfile() {
                   <input
                     type="text"
                     id="address-city"
-                    value={mockAnimal.address.city}
+                    value={animal.address.city}
+                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     disabled
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    placeholder="Cidade"
                   />
                 </div>
               </div>
@@ -280,27 +271,24 @@ export function AnimalProfile() {
                   <input
                     type="text"
                     id="address-neighborhood"
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    value={animal.address.neighborhood}
                     disabled
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    placeholder="Bairro"
                   />
                 </div>
               </div>
               <div>
-                {mockAnimal.address.complement && (
-                  <div className="relative">
-                    <label htmlFor="address-number" className="text-gray-900">
-                      Complemento
-                    </label>
-                    <input
-                      type="text"
-                      id="address-complement"
-                      value={mockAnimal.address.complement}
-                      disabled
-                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                    />
-                  </div>
-                )}
+                <div className="relative">
+                  <label htmlFor="address-number" className="text-gray-900">
+                    Complemento
+                  </label>
+                  <input
+                    type="text"
+                    id="address-complement"
+                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    value={animal.address.complement}
+                  />
+                </div>
               </div>
               <div>
                 <div className="relative">
@@ -308,33 +296,36 @@ export function AnimalProfile() {
                     CEP
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     id="address-zip"
-                    value={mockAnimal.address.zip}
+                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    value={animal.address.zip}
                     disabled
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
                   />
                 </div>
               </div>
             </div>
           </div>
           <hr />
-          <p className="ml-4">
-            Para adotar, você precisa estar{" "}
-            <a className="text-blue-800" href="/termos-de-uso" target="_blank">
-              Logado
-            </a>
-          </p>
-          <div className="w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
-            <Link to={`/adotar/${mockAnimal.id}`}>
-              <button
-                type="button"
-                className="py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
-              >
-                Adotar
-              </button>
-            </Link>
-          </div>
+          {authenticated ? (
+            <div className="w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
+              <Link to={`/adotar/${animal_id}`}>
+                <button
+                  type="button"
+                  className="py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+                >
+                  Adotar
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <p className="ml-4">
+              Para adotar, você precisa estar{" "}
+              <a className="text-blue-800" href="/signin" target="_blank">
+                Logado
+              </a>
+            </p>
+          )}
         </div>
       </div>
     </section>
