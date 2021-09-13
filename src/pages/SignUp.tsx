@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useContext } from "react";
 
 import { useHistory } from "react-router-dom";
@@ -23,7 +23,7 @@ export function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone_number, setPhoneNumber] = useState("");
-  const [birth_date, setBirthDate] = useState(Date.now());
+  const [birth_date, setBirthDate] = useState("");
   const [authorizes_image, setAuthorizesImage] = useState(false);
 
   const [place, setPlace] = useState("");
@@ -142,6 +142,18 @@ export function SignUp() {
           <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
             <h2 className="max-w-sm mx-auto md:w-1/3">Informações Pessoais</h2>
             <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
+              <div className="relative">
+                <label htmlFor="birth_date">Data de nascimento</label>
+
+                <input
+                  type="date"
+                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  id="animal-birth_date"
+                  name="birth_date"
+                  value={birth_date}
+                  onChange={(event) => setBirthDate(event.target.value)}
+                />
+              </div>
               <div className="relative">
                 <input
                   type="text"
