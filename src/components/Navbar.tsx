@@ -56,7 +56,7 @@ export function Navbar() {
           handleLogout();
         });
     }
-  }, [authenticated]);
+  }, [authenticated, handleLogout]);
 
   if (authenticated) {
     if (!user) {

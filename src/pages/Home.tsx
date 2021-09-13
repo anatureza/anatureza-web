@@ -85,15 +85,12 @@ export function Home() {
               </div>
               <div className="py-12 px-6 max-w-xl lg:max-w-5xl lg:w-1/2">
                 <h2 className="text-3xl text-gray-800 font-bold">
-                  O Bem-estar dos Animais{" "}
-                  <span className="text-blue-600">Importam</span>
+                  Quem <span className="text-blue-600">Somos</span>
                 </h2>
                 <p className="mt-4 text-gray-600">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Quidem modi reprehenderit vitae exercitationem aliquid dolores
-                  ullam temporibus enim expedita aperiam mollitia iure
-                  consectetur dicta tenetur, porro consequuntur saepe
-                  accusantium consequatur.
+                  Somos um grupo preocupados com a fauna e a flora, nossos
+                  integrantes são compostos de leigos que se preocupam com a
+                  causa, até os especialistas, veterinários
                 </p>
                 <div className="mt-8">
                   <a
@@ -115,15 +112,17 @@ export function Home() {
             <div className="bg-white lg:mx-8 lg:flex lg:max-w-5xl lg:shadow-lg lg:rounded-lg">
               <div className="py-12 px-6 max-w-xl lg:max-w-5xl lg:w-1/2">
                 <h2 className="text-3xl text-gray-800 font-bold">
-                  Juntos Podemos Ser{" "}
-                  <span className="text-red-600">Melhores</span>
+                  Nossos <span className="text-red-600">Objetivos</span>
                 </h2>
                 <p className="mt-4 text-gray-600">
-                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                  Quidem modi reprehenderit vitae exercitationem aliquid dolores
-                  ullam temporibus enim expedita aperiam mollitia iure
-                  consectetur dicta tenetur, porro consequuntur saepe
-                  accusantium consequatur.
+                  Temos com objetivo primordial melhorar o relacionamento das
+                  pessoas com a natureza, socorrendo os animais em situação de
+                  risco. Também pegamos e castramos animais de rua para diminuir
+                  a população de animais nestas situações. Além disso,
+                  oferecemos animais passíveis de serem domesticados, educando a
+                  todos sobre o cuidado e proteção dos pets. Para que tudo isso
+                  seja possível arrecadamos fundos de parcerias e doações para
+                  financiar as adoções.
                 </p>
                 <div className="mt-8">
                   <a
