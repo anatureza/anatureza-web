@@ -54,7 +54,7 @@ function ProtectedRoute({ ...rest }: IProtectedRouteData) {
   }
 
   if (!authenticated) {
-    <Redirect to="/signin" />;
+    return <Redirect to="/signin" />;
   }
 
   console.log(userType);
@@ -63,7 +63,7 @@ function ProtectedRoute({ ...rest }: IProtectedRouteData) {
   }
 
   if (authenticated) {
-    <Redirect to="/" />;
+    return <Redirect to="/" />;
   }
   return <Redirect to="/signin" />;
 }

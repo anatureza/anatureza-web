@@ -28,8 +28,8 @@ export function AppHeader({ title, children }: AppHeaderProps) {
             onClick={() => setOpen((opened) => !opened)}
           />
         </div>
-        {children}
       </header>
+      {children}
     </div>
   );
 }

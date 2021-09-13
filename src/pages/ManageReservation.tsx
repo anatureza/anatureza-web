@@ -5,6 +5,8 @@ import { AppHeader } from "../components/AppHeader";
 import { ButtonGroup } from "../components/ButtonGroup";
 import { ReservationsTable } from "../components/ReservationsTable";
 
+import api from "../services/api";
+
 type CurrentRequestData = {
   request_id: string;
   adopter_id: string;
@@ -32,44 +34,7 @@ type CurrentRequestData = {
 };
 
 export function ManageReservation() {
-  enum ReservationStatus {
-    NEW = "new",
-    APPROVED = "approved",
-    DISAPPROVED = "disapproved",
-    ADOPTED = "adopted",
-  }
-  const mockData = [
-    {
-      request_id: "sdfsdfasdf",
-      adopter_id: "dfksdhfkjd",
-      date: "2020/01/2004",
-      adopter: {
-        id: "string",
-        name: "string",
-        phone_number: "string",
-        avatar: "https://github.com/gusgalote.png",
-      },
-      animal: {
-        id: "string",
-        name: "string",
-        avatar: "https://github.com/gusgalote.png",
-        description: "string",
-        city: "string",
-        available: true,
-        volunteer: {
-          id: "string",
-          name: "string",
-          phone_number: "string",
-          avatar: "https://github.com/gusgalote.png",
-        },
-      },
-    },
-  ];
-
-  const [activeStatus, setActiveStatus] = useState(ReservationStatus.NEW);
-
-  const [newRequests, NewRequests] =
-    useState<Array<CurrentRequestData>>(mockData);
+  const [newRequests, setNewRequests] = useState<Array<CurrentRequestData>>([]);
   const [approvedRequests, setApprovedRequests] = useState<
     Array<CurrentRequestData>
   >([]);
@@ -80,41 +45,58 @@ export function ManageReservation() {
   const [currentRequests, setCurrentRequests] =
     useState<Array<CurrentRequestData>>(newRequests);
 
+  const [activeStatus, setActiveStatus] = useState("Novos");
   const [title, setTitle] = useState("Novas");
 
-  const handleOnClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    const buttonValue = event.currentTarget.id;
-    buttonValue === "NEW"
-      ? setActiveStatus(ReservationStatus.NEW)
-      : buttonValue === "APPROVED"
-      ? setActiveStatus(ReservationStatus.APPROVED)
-      : buttonValue === "DISAPPROVED"
-      ? setActiveStatus(ReservationStatus.DISAPPROVED)
-      : setActiveStatus(ReservationStatus.NEW);
+  const handleButtonChanged = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const buttonValue = event.currentTarget.value;
+    buttonValue === "Novos"
+      ? setActiveStatus("Novos")
+      : buttonValue === "Aprovados"
+      ? setActiveStatus("Aprovados")
+      : buttonValue === "Desaprovados"
+      ? setActiveStatus("Desaprovados")
+      : setActiveStatus("Novos");
 
     setTitle(event.currentTarget.value);
   };
 
   useEffect(() => {
-    activeStatus === ReservationStatus.NEW
-      ? setCurrentRequests(newRequests)
-      : activeStatus === ReservationStatus.APPROVED
+    activeStatus === "Aprovados"
       ? setCurrentRequests(approvedRequests)
-      : activeStatus === ReservationStatus.DISAPPROVED
+      : activeStatus === "Desaprovados"
       ? setCurrentRequests(disapprovedRequests)
-      : setActiveStatus(ReservationStatus.NEW);
-  }, [
-    activeStatus,
-    newRequests,
-    approvedRequests,
-    disapprovedRequests,
-    ReservationStatus,
-  ]);
+      : setCurrentRequests(newRequests);
+  }, [activeStatus, newRequests, approvedRequests, disapprovedRequests]);
+
+  useEffect(() => {
+    (async () => {
+      await api.get("/reservations/new").then(({ data }) => {
+        setNewRequests(data);
+      });
+    })();
+    (async () => {
+      await api.get("/reservations/approved").then(({ data }) => {
+        setApprovedRequests(data);
+      });
+    })();
+    (async () => {
+      await api.get("/reservations/approved").then(({ data }) => {
+        setDisapprovedRequests(data);
+      });
+    })();
+  }, []);
 
   return (
     <AppHeader title="Pedidos de reserva">
       <ReservationsTable title={title} currentRequests={currentRequests}>
-        <ButtonGroup handleOnClick={handleOnClick} />
+        <ButtonGroup
+          leftButton="Novos"
+          middleButton="Aprovados"
+          rightButton="Desaprovados"
+          selectedButton={activeStatus}
+          handleButtonChanged={handleButtonChanged}
+        />
       </ReservationsTable>
     </AppHeader>
   );

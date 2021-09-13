@@ -47,8 +47,8 @@ export function AnimalsAdoption() {
 
   useEffect(() => {
     (async () => {
-      await api.get("/animals").then((response) => {
-        setAnimals(response.data);
+      await api.get("/all-animals").then(({ data }) => {
+        setAnimals(data);
       });
     })();
   }, []);

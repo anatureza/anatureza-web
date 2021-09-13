@@ -44,7 +44,9 @@ export function ReservationsTable({
           <div>
             {children}
             <div className="px-4 py-6 sm:px-0">
-              <h1 className="text-xl">Reservas {title}</h1>
+              <h1 className="text-xl">
+                Pedidos de Reserva: <span className="font-bold">{title}</span>
+              </h1>
               <ReservationsTableList cardInfo={currentRequests} />
             </div>
           </div>
