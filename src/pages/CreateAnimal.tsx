@@ -9,43 +9,10 @@ import {
   useState,
 } from "react";
 
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 import { AuthContext } from "../contexts/AuthContext";
 import api from "../services/api";
-
-type AnimalData = {
-  id: string;
-  user_id: string;
-  address_id: string;
-  name: string;
-  description: string;
-  kind: string;
-  gender: string;
-  birth_date: string;
-  images?: Array<{
-    id: string;
-    path: string;
-  }>;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    phone_number: string;
-    birth_date: Date;
-    type: string;
-    avatar?: string;
-  };
-  address: {
-    place: string;
-    number: number;
-    complement: string;
-    neighborhood: string;
-    zip: number;
-    city: string;
-  };
-};
 
 type UserData = {
   id: string;

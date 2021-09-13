@@ -393,7 +393,7 @@ export function EditAnimal() {
               >
                 Cancelar (Voltar)
               </button>
-              {animal && (
+              {userHasPermission && (
                 <>
                   <button
                     type="button"

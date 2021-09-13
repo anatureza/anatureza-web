@@ -9,7 +9,7 @@ import { ButtonGroup } from "../components/ButtonGroup";
 import api from "../services/api";
 
 export function ManageAnimals() {
-  const { userId, userType } = useContext(AuthContext);
+  const { userType } = useContext(AuthContext);
 
   const [currentAnimals, setCurrentAnimals] = useState();
   const [allAnimals, setAllAnimals] = useState();
