@@ -1,6 +1,7 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Disclosure } from "@headlessui/react";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 const questions = [
   {
@@ -52,64 +53,47 @@ const questions = [
       " recomendação dos fabricantes de ração.",
   },
 ];
-
 export function FAQ() {
   return (
-    <>
-      <div className="container ml-auto mr-auto mt-8 leading-6 max-w-screen-md">
-        <div className="main px-32">
-          <div className="block box-border w-auto m-auto">
-            <div className="top text-center">
-              <h2 className="font-sans text-4xl">Perguntas Frequentes</h2>
-              <p className="text-gray-600">
-                Algumas dúvidas mais recorrentes que recebemos
-              </p>
-            </div>
-            <div className="my-12">
-              {questions.map((question) => {
-                return <AccordionItem key={question.id} {...question} />;
-              })}
+    <div className="container mx-auto mt-12 leading-6 max-w-screen-md">
+      <div className="main">
+        <div className="block box-border w-auto m-auto">
+          <div className="top text-center">
+            <h2 className="font-sans text-4xl">Perguntas Frequentes</h2>
+            <p className="text-gray-600">
+              Algumas dúvidas mais recorrentes que recebemos
+            </p>
+          </div>
+          <div className="w-full px-4 pt-16 mb-32">
+            <div className="w-full max-w-md p-2 mx-auto bg-white rounded-2xl">
+              {questions.map((question, index) => (
+                <Disclosure
+                  as="div"
+                  className={index > 0 ? "mt-2" : ""}
+                  key={index}
+                >
+                  {({ open }) => (
+                    <>
+                      <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75">
+                        <span>{question.title}</span>
+                        <FontAwesomeIcon
+                          icon={faChevronUp}
+                          className={`${
+                            open ? "transform rotate-180" : ""
+                          } w-5 h-5 text-blue-500`}
+                        />
+                      </Disclosure.Button>
+                      <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                        {question.answer}
+                      </Disclosure.Panel>
+                    </>
+                  )}
+                </Disclosure>
+              ))}
             </div>
           </div>
         </div>
       </div>
-    </>
-  );
-}
-
-type AccordionProps = {
-  title: string;
-  answer: string;
-};
-
-function AccordionItem({ title, answer }: AccordionProps) {
-  return (
-    <Disclosure>
-      {({ open }) => (
-        <div className="">
-          <Disclosure.Button className="box-border w-full m-0 py-3.5 px-5 space-x-1 bg-gray-200 bg-opacity-75 border-2 text-left">
-            <h2 className="inline-block font-sans text-md m-w-md">{title}</h2>
-            <div className="inline-block">
-              {open ? (
-                <FontAwesomeIcon
-                  icon={faChevronUp}
-                  className="h-6 w-6"
-                  aria-hidden="true"
-                />
-              ) : (
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className="h-6 w-6"
-                  aria-hidden="true"
-                />
-              )}
-            </div>
-          </Disclosure.Button>
-          <Disclosure.Panel className="relative">
-            <div className="pl-6 pr-5 pb-5">{answer}</div>
-          </Disclosure.Panel>
-        </div>
-      )}
-    </Disclosure>
+    </div>
   );
 }
