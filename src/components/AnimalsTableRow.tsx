@@ -1,13 +1,18 @@
 import { Link } from "react-router-dom";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCat, faDog } from "@fortawesome/free-solid-svg-icons";
+
 type AnimalData = {
   id: string;
   name: string;
-  avatar: string;
+  main_image_url?: string;
   description: string;
   city: string;
   available: boolean;
   birth_date: string;
+  kind: string;
+  gender: string;
   volunteer: {
     id: string;
     name: string;
@@ -61,11 +66,23 @@ export function AnimalsTableRow({ animalsList }: AnimalsListProp) {
                           <Link to={`/app/animal/${animal.id}`}>
                             <div className="flex items-center">
                               <div className="flex-shrink-0 h-10 w-10">
-                                <img
-                                  className="h-10 w-10 rounded-full"
-                                  src={animal.avatar}
-                                  alt={`Animal ${animal.name}`}
-                                />
+                                {animal.main_image_url ? (
+                                  <img
+                                    className="h-10 w-10 rounded-full"
+                                    src={animal.main_image_url}
+                                    alt={`Animal ${animal.name}`}
+                                  />
+                                ) : animal.kind === "cat" ? (
+                                  <FontAwesomeIcon
+                                    icon={faCat}
+                                    className="h-10 w-10 rounded-full"
+                                  />
+                                ) : (
+                                  <FontAwesomeIcon
+                                    icon={faDog}
+                                    className="h-10 w-10 rounded-full"
+                                  />
+                                )}
                               </div>
                               <div className="ml-4">
                                 <div className="text-sm font-medium text-gray-900">
@@ -109,9 +126,7 @@ export function AnimalsTableRow({ animalsList }: AnimalsListProp) {
           </div>
         </div>
       ) : (
-        <h1 className="ml-4 mt-2 text-gray-500">
-          Nenhuma reserva encontrada :(
-        </h1>
+        <h1 className="ml-4 mt-2 text-gray-500">Nenhum animal encontrado :(</h1>
       )}
     </>
   );

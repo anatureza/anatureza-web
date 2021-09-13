@@ -1,14 +1,16 @@
-import { Link } from "react-router-dom";
+import { ReactNode } from "react";
 import { AnimalsTableRow } from "./AnimalsTableRow";
 
 type AnimalData = {
   id: string;
   name: string;
-  avatar: string;
+  main_image_url?: string;
   description: string;
   city: string;
   available: boolean;
   birth_date: string;
+  kind: string;
+  gender: string;
   volunteer: {
     id: string;
     name: string;
@@ -18,15 +20,17 @@ type AnimalData = {
 };
 
 type AnimalsDataProp = {
-  animalsData: AnimalData[];
+  animalsData: AnimalData[] | undefined;
+  children: ReactNode;
 };
 
-export function AnimalsTable({ animalsData }: AnimalsDataProp) {
+export function AnimalsTable({ animalsData, children }: AnimalsDataProp) {
   return (
     <main>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {animalsData ? (
           <div>
+            {children}
             <div className="px-4 py-6 sm:px-0">
               <h1 className="text-xl">Gerenciar animais</h1>
               <AnimalsTableRow animalsList={animalsData} />
@@ -34,7 +38,7 @@ export function AnimalsTable({ animalsData }: AnimalsDataProp) {
           </div>
         ) : (
           <div className="min-h-screen">
-            <h1 className="text-2xl text-gray-700">Nenhum animal cadastrado</h1>
+            <h1 className="text-2xl text-gray-700">Nenhum animal encontrado</h1>
           </div>
         )}
       </div>
