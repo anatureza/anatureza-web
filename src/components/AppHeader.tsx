@@ -24,7 +24,7 @@ export function AppHeader({ title, children }: AppHeaderProps) {
           <FontAwesomeIcon
             icon={faBars}
             size="lg"
-            className="inline-block float-right"
+            className="inline-block float-right cursor-pointer"
             onClick={() => setOpen((opened) => !opened)}
           />
         </div>

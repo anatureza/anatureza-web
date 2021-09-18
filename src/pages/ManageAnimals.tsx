@@ -11,10 +11,10 @@ import api from "../services/api";
 export function ManageAnimals() {
   const { userType } = useContext(AuthContext);
 
-  const [currentAnimals, setCurrentAnimals] = useState();
-  const [allAnimals, setAllAnimals] = useState();
-  const [availableAnimals, setAvailableAnimals] = useState();
-  const [adoptedAnimals, setAdoptedAnimals] = useState();
+  const [currentAnimals, setCurrentAnimals] = useState([]);
+  const [allAnimals, setAllAnimals] = useState([]);
+  const [availableAnimals, setAvailableAnimals] = useState([]);
+  const [adoptedAnimals, setAdoptedAnimals] = useState([]);
 
   const [activeStatus, setActiveStatus] = useState("Disponíveis");
 
@@ -48,7 +48,7 @@ export function ManageAnimals() {
       })();
     } else {
       (async () => {
-        await api.get("/animals").then(({ data }) => {
+        await api.get("/all-animals").then(({ data }) => {
           setAllAnimals(data);
         });
       })();
@@ -60,10 +60,12 @@ export function ManageAnimals() {
       ? setCurrentAnimals(allAnimals)
       : activeStatus === "Adotados"
       ? setCurrentAnimals(adoptedAnimals)
-      : setCurrentAnimals(availableAnimals);
+      : activeStatus === "Disponíveis"
+      ? setCurrentAnimals(availableAnimals)
+      : setCurrentAnimals([]);
   }, [activeStatus, allAnimals, adoptedAnimals, availableAnimals]);
 
-  if (!currentAnimals) {
+  if (typeof currentAnimals === "undefined") {
     return <h1>Carregando Animais...</h1>;
   }
 
