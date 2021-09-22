@@ -6,7 +6,7 @@ import { faCat, faDog } from "@fortawesome/free-solid-svg-icons";
 type AnimalData = {
   id: string;
   name: string;
-  main_image_url?: string;
+  main_image_url: string | null;
   description: string;
   city: string;
   available: boolean;

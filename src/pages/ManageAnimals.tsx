@@ -11,10 +11,10 @@ import api from "../services/api";
 export function ManageAnimals() {
   const { userType } = useContext(AuthContext);
 
-  const [currentAnimals, setCurrentAnimals] = useState([]);
-  const [allAnimals, setAllAnimals] = useState([]);
-  const [availableAnimals, setAvailableAnimals] = useState([]);
-  const [adoptedAnimals, setAdoptedAnimals] = useState([]);
+  const [currentAnimals, setCurrentAnimals] = useState();
+  const [allAnimals, setAllAnimals] = useState();
+  const [availableAnimals, setAvailableAnimals] = useState();
+  const [adoptedAnimals, setAdoptedAnimals] = useState();
 
   const [activeStatus, setActiveStatus] = useState("Disponíveis");
 
@@ -31,26 +31,46 @@ export function ManageAnimals() {
 
   useEffect(() => {
     (async () => {
-      await api.get("/animals/unavailable").then(({ data }) => {
-        setAdoptedAnimals(data);
-      });
+      await api
+        .get("/animals/unavailable")
+        .then(({ data }) => {
+          setAdoptedAnimals(data);
+        })
+        .catch(() => {
+          setAdoptedAnimals(undefined);
+        });
     })();
     (async () => {
-      await api.get("/animals/available").then(({ data }) => {
-        setAvailableAnimals(data);
-      });
+      await api
+        .get("/animals/available")
+        .then(({ data }) => {
+          setAvailableAnimals(data);
+        })
+        .catch(() => {
+          setAvailableAnimals(undefined);
+        });
     })();
     if (userType === "volunteer") {
       (async () => {
-        await api.get("/animals").then(({ data }) => {
-          setAllAnimals(data);
-        });
+        await api
+          .get("/animals")
+          .then(({ data }) => {
+            setAllAnimals(data);
+          })
+          .catch(() => {
+            setAllAnimals(undefined);
+          });
       })();
     } else {
       (async () => {
-        await api.get("/all-animals").then(({ data }) => {
-          setAllAnimals(data);
-        });
+        await api
+          .get("/all-animals")
+          .then(({ data }) => {
+            setAllAnimals(data);
+          })
+          .catch(() => {
+            setAllAnimals(undefined);
+          });
       })();
     }
   }, [userType]);
@@ -62,7 +82,7 @@ export function ManageAnimals() {
       ? setCurrentAnimals(adoptedAnimals)
       : activeStatus === "Disponíveis"
       ? setCurrentAnimals(availableAnimals)
-      : setCurrentAnimals([]);
+      : setCurrentAnimals(undefined);
   }, [activeStatus, allAnimals, adoptedAnimals, availableAnimals]);
 
   if (typeof currentAnimals === "undefined") {

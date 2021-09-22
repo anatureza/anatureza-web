@@ -4,7 +4,7 @@ import { AnimalsTableRow } from "./AnimalsTableRow";
 type AnimalData = {
   id: string;
   name: string;
-  main_image_url?: string;
+  main_image_url: string | null;
   description: string;
   city: string;
   available: boolean;
