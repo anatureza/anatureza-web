@@ -1,53 +1,64 @@
-import { ReservationsTableList } from "./ReservationsTableList";
+import { ReactNode } from "react";
+import { ReservationsTableRow } from "./ReservationsTableRow";
 
-type CurrentRequestData = {
-  request_id: string;
+interface IReservation {
+  id: string;
   adopter_id: string;
-  date: string;
-  adopter: {
-    id: string;
-    name: string;
-    phone_number: string;
-    avatar: string;
-  };
+  animal_id: string;
+  status: string;
+  quiz_id: string;
+  scheduled_at: Date | string | null;
+  created_at: Date;
+  updated_at: Date;
   animal: {
     id: string;
+    volunteer_id: string;
+    address_id: string;
     name: string;
-    avatar: string;
     description: string;
-    city: string;
     available: boolean;
-    volunteer: {
-      id: string;
-      name: string;
-      phone_number: string;
-      avatar: string;
-    };
+    kind: string;
+    gender: string;
+    birth_date: Date;
+    created_at: Date;
+    updated_at: Date;
+    main_image_url: string | null;
   };
-};
+  userAdopter: {
+    id: string;
+    name: string;
+    email: string;
+    phone_number: string;
+    address_id: string;
+    birth_date: Date | string;
+    type: string;
+    authorizes_image: boolean;
+    avatar: string | null;
+    created_at: Date;
+    updated_at: Date;
+    avatar_url: string | null;
+  };
+  volunteer_id: string;
+}
 
 type ReservationRequestTableProps = {
-  currentRequests: CurrentRequestData[];
-  children: JSX.Element;
-  title: string;
+  reservationsData: IReservation[] | undefined;
+  children: ReactNode;
 };
 
 export function ReservationsTable({
-  currentRequests,
+  reservationsData,
   children,
-  title,
 }: ReservationRequestTableProps) {
   return (
     <main>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {currentRequests ? (
+        {reservationsData ? (
           <div>
             {children}
             <div className="px-4 py-6 sm:px-0">
-              <h1 className="text-xl">
-                Pedidos de Reserva: <span className="font-bold">{title}</span>
-              </h1>
-              <ReservationsTableList cardInfo={currentRequests} />
+              <h1 className="text-xl">Pedidos de Reserva</h1>
+              <ReservationsTableRow reservations={reservationsData} />
             </div>
           </div>
         ) : (

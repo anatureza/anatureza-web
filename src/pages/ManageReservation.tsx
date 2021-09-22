@@ -1,5 +1,7 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useState } from "react";
+
+import { AuthContext } from "../contexts/AuthContext";
 
 import { AppHeader } from "../components/AppHeader";
 import { ButtonGroup } from "../components/ButtonGroup";
@@ -7,46 +9,15 @@ import { ReservationsTable } from "../components/ReservationsTable";
 
 import api from "../services/api";
 
-type CurrentRequestData = {
-  request_id: string;
-  adopter_id: string;
-  date: string;
-  adopter: {
-    id: string;
-    name: string;
-    phone_number: string;
-    avatar: string;
-  };
-  animal: {
-    id: string;
-    name: string;
-    avatar: string;
-    description: string;
-    city: string;
-    available: boolean;
-    volunteer: {
-      id: string;
-      name: string;
-      phone_number: string;
-      avatar: string;
-    };
-  };
-};
-
 export function ManageReservation() {
-  const [newRequests, setNewRequests] = useState<Array<CurrentRequestData>>([]);
-  const [approvedRequests, setApprovedRequests] = useState<
-    Array<CurrentRequestData>
-  >([]);
-  const [disapprovedRequests, setDisapprovedRequests] = useState<
-    Array<CurrentRequestData>
-  >([]);
+  const { userId } = useContext(AuthContext);
 
-  const [currentRequests, setCurrentRequests] =
-    useState<Array<CurrentRequestData>>(newRequests);
+  const [newReservations, setNewReservations] = useState();
+  const [approvedReservations, setApprovedReservations] = useState();
+  const [disapprovedReservations, setDisapprovedReservations] = useState();
+  const [currentReservations, setCurrentReservations] = useState();
 
   const [activeStatus, setActiveStatus] = useState("Novos");
-  const [title, setTitle] = useState("Novas");
 
   const handleButtonChanged = (event: React.MouseEvent<HTMLButtonElement>) => {
     const buttonValue = event.currentTarget.value;
@@ -57,39 +28,68 @@ export function ManageReservation() {
       : buttonValue === "Desaprovados"
       ? setActiveStatus("Desaprovados")
       : setActiveStatus("Novos");
-
-    setTitle(event.currentTarget.value);
   };
 
   useEffect(() => {
-    activeStatus === "Aprovados"
-      ? setCurrentRequests(approvedRequests)
-      : activeStatus === "Desaprovados"
-      ? setCurrentRequests(disapprovedRequests)
-      : setCurrentRequests(newRequests);
-  }, [activeStatus, newRequests, approvedRequests, disapprovedRequests]);
+    (async () => {
+      api
+        .get("/reservations/new")
+        .then(({ data }) => {
+          setNewReservations(data);
+        })
+        .catch(() => {
+          setNewReservations(undefined);
+        });
+    })();
 
-  useEffect(() => {
     (async () => {
-      await api.get("/reservations/new").then(({ data }) => {
-        setNewRequests(data);
-      });
+      api
+        .get("/reservations/approved")
+        .then(({ data }) => {
+          setApprovedReservations(data);
+        })
+        .catch(() => {
+          setApprovedReservations(undefined);
+        });
     })();
+
     (async () => {
-      await api.get("/reservations/approved").then(({ data }) => {
-        setApprovedRequests(data);
-      });
-    })();
-    (async () => {
-      await api.get("/reservations/approved").then(({ data }) => {
-        setDisapprovedRequests(data);
-      });
+      api
+        .get("/reservations/disapproved")
+        .then(({ data }) => {
+          setDisapprovedReservations(data);
+        })
+        .catch(() => {
+          setDisapprovedReservations(undefined);
+        });
     })();
   }, []);
 
+  useEffect(() => {
+    setCurrentReservations(undefined);
+
+    if (activeStatus === "Aprovados") {
+      setCurrentReservations(approvedReservations);
+    }
+
+    if (activeStatus === "Desaprovados") {
+      setCurrentReservations(disapprovedReservations);
+    }
+
+    if (activeStatus === "Novos") {
+      setCurrentReservations(newReservations);
+    }
+  }, [
+    userId,
+    activeStatus,
+    newReservations,
+    approvedReservations,
+    disapprovedReservations,
+  ]);
+
   return (
     <AppHeader title="Pedidos de reserva">
-      <ReservationsTable title={title} currentRequests={currentRequests}>
+      <ReservationsTable reservationsData={currentReservations}>
         <ButtonGroup
           leftButton="Novos"
           middleButton="Aprovados"
