@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+
 import { AnimalCard } from "../components/AnimalCard";
+
 import api from "../services/api";
 
-type AnimalData = {
+interface IAnimal {
   id: string;
   name: string;
   available: boolean;
@@ -40,15 +42,17 @@ type AnimalData = {
     type: string;
     updated_at: string;
   };
-};
+}
 
 export function AnimalsAdoption() {
-  const [animals, setAnimals] = useState<AnimalData[]>([]);
+  const [animals, setAnimals] = useState<IAnimal[]>([]);
 
   useEffect(() => {
     (async () => {
-      await api.get("/all-animals").then(({ data }) => {
-        setAnimals(data);
+      await api.get<IAnimal[] | undefined>("/all-animals").then(({ data }) => {
+        if (typeof data !== "undefined") {
+          setAnimals(data.filter((animal) => animal.available));
+        }
       });
     })();
   }, []);

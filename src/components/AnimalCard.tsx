@@ -1,8 +1,11 @@
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
-type AnimalDataProps = {
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import DefaultImage from "../assets/images/default_image.png";
+
+interface IAnimal {
   id: string;
   name: string;
   available: boolean;
@@ -40,19 +43,17 @@ type AnimalDataProps = {
     type: string;
     updated_at: string;
   };
-};
+}
 
-export function AnimalCard(animal: AnimalDataProps) {
+export function AnimalCard(animal: IAnimal) {
   return (
-    <div className="overflow-hidden shadow-lg rounded-lg h-90 w-60 md:w-80 cursor-pointer m-auto">
-      <Link to={`/animal/${animal.id}`} className="w-full block h-full">
-        {animal.main_image_url && (
-          <img
-            className="max-h-40 w-full object-cover"
-            src={animal.main_image_url}
-            alt={`Animal ${animal.name}`}
-          />
-        )}
+    <div className="overflow-hidden shadow-lg rounded-lg sm:h-full w-60 md:w-80 cursor-pointer m-auto">
+      <Link to={`/animal/${animal.id}`}>
+        <img
+          className="h-64 w-full object-cover"
+          src={animal.main_image_url || DefaultImage}
+          alt={`Animal ${animal.name}`}
+        />
         <div className="bg-white w-full p-4">
           <p className="text-gray-600 text-sm font-medium">
             <span className="font-bold">Em: </span>
