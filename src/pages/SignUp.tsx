@@ -4,6 +4,9 @@ import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 
 import { AuthContext } from "../contexts/AuthContext";
+
+import moment from "moment";
+
 import api from "../services/api";
 
 export function SignUp() {
@@ -57,7 +60,7 @@ export function SignUp() {
         password,
         phone_number,
         authorizes_image,
-        birth_date,
+        birth_date: moment(birth_date).format("YYYY/MM/DD").toString(),
         place,
         number,
         complement,
