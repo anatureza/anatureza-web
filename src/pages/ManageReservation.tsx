@@ -9,13 +9,61 @@ import { ReservationsTable } from "../components/ReservationsTable";
 
 import api from "../services/api";
 
+interface IReservation {
+  id: string;
+  adopter_id: string;
+  animal_id: string;
+  status: string;
+  quiz_id: string;
+  scheduled_at: Date | string | null;
+  created_at: Date;
+  updated_at: Date;
+  animal: {
+    id: string;
+    volunteer_id: string;
+    address_id: string;
+    name: string;
+    description: string;
+    available: boolean;
+    kind: string;
+    gender: string;
+    birth_date: Date;
+    created_at: Date;
+    updated_at: Date;
+    main_image_url: string | null;
+  };
+  userAdopter: {
+    id: string;
+    name: string;
+    email: string;
+    phone_number: string;
+    address_id: string;
+    birth_date: Date | string;
+    type: string;
+    authorizes_image: boolean;
+    avatar: string | null;
+    created_at: Date;
+    updated_at: Date;
+    avatar_url: string | null;
+  };
+  volunteer_id: string;
+}
+
 export function ManageReservation() {
   const { userId } = useContext(AuthContext);
 
-  const [newReservations, setNewReservations] = useState();
-  const [approvedReservations, setApprovedReservations] = useState();
-  const [disapprovedReservations, setDisapprovedReservations] = useState();
-  const [currentReservations, setCurrentReservations] = useState();
+  const [newReservations, setNewReservations] = useState<
+    IReservation[] | undefined
+  >();
+  const [approvedReservations, setApprovedReservations] = useState<
+    IReservation[] | undefined
+  >();
+  const [disapprovedReservations, setDisapprovedReservations] = useState<
+    IReservation[] | undefined
+  >();
+  const [currentReservations, setCurrentReservations] = useState<
+    IReservation[] | undefined
+  >();
 
   const [activeStatus, setActiveStatus] = useState("Novos");
 
@@ -32,10 +80,12 @@ export function ManageReservation() {
 
   useEffect(() => {
     (async () => {
-      api
-        .get("/reservations/new")
+      await api
+        .get<IReservation[]>("/reservations/new")
         .then(({ data }) => {
-          setNewReservations(data);
+          setNewReservations(
+            data.filter((reservation) => reservation.volunteer_id === userId)
+          );
         })
         .catch(() => {
           setNewReservations(undefined);
@@ -43,10 +93,12 @@ export function ManageReservation() {
     })();
 
     (async () => {
-      api
-        .get("/reservations/approved")
+      await api
+        .get<IReservation[]>("/reservations/approved")
         .then(({ data }) => {
-          setApprovedReservations(data);
+          setApprovedReservations(
+            data.filter((reservation) => reservation.volunteer_id === userId)
+          );
         })
         .catch(() => {
           setApprovedReservations(undefined);
@@ -54,16 +106,18 @@ export function ManageReservation() {
     })();
 
     (async () => {
-      api
-        .get("/reservations/disapproved")
+      await api
+        .get<IReservation[]>("/reservations/disapproved")
         .then(({ data }) => {
-          setDisapprovedReservations(data);
+          setDisapprovedReservations(
+            data.filter((reservation) => reservation.volunteer_id === userId)
+          );
         })
         .catch(() => {
           setDisapprovedReservations(undefined);
         });
     })();
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     setCurrentReservations(undefined);

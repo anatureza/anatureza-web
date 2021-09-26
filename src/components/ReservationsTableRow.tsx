@@ -153,10 +153,8 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {console.log(reservations)}
                     {reservations.map((reservation, index) => (
                       <tr key={index}>
-                        {console.log(reservation)}
                         <td className="px-6 py-4 whitespace-nowrap">
                           <Link to={`/app/animal/${reservation.animal.id}`}>
                             <div className="flex items-center">
