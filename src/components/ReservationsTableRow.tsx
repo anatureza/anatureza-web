@@ -80,6 +80,7 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
 
   function handleOnSubmitAdoption(event: FormEvent) {
     event.preventDefault();
+
     api
       .post(`/reservation/adopt/${reservationId}`)
       .then(() => {
@@ -207,26 +208,29 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
                                 "DD-MM-YYYY"
                               )}
                         </td>
-                        <td className="flex px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <span
-                            onClick={() => {
-                              handleOnClickQuiz(reservation.id);
-                            }}
-                            className="flex-1 text-blue-600 hover:text-blue-900 cursor-pointer"
-                          >
-                            Visualizar
-                          </span>
-                          {reservation.status === "approved" && (
-                            <span
-                              onClick={() => {
-                                handleResolveReservation(reservation.id);
-                              }}
-                              className="flex-1 text-green-600 hover:text-blue-900 cursor-pointer"
-                            >
-                              Resolver
-                            </span>
-                          )}
-                        </td>
+                        {reservation.status !== "adopted" && (
+                          <td className="flex px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            {reservation.status === "approved" ? (
+                              <span
+                                onClick={() => {
+                                  handleResolveReservation(reservation.id);
+                                }}
+                                className="flex-1 text-green-600 hover:text-blue-900 cursor-pointer"
+                              >
+                                Resolver
+                              </span>
+                            ) : (
+                              <span
+                                onClick={() => {
+                                  handleOnClickQuiz(reservation.id);
+                                }}
+                                className="flex-1 text-blue-600 hover:text-blue-900 cursor-pointer"
+                              >
+                                Visualizar
+                              </span>
+                            )}
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
