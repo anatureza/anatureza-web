@@ -16,6 +16,7 @@ import { AnimalsAdoption } from "./pages/AnimalsAdoption";
 import { AnimalProfile } from "./pages/AnimalProfile";
 
 import { NewReservationQuiz } from "./pages/NewReservationQuiz";
+import { UserProfile } from "./pages/UserProfile";
 
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
@@ -85,6 +86,7 @@ function App() {
           <Route path="/animal/:animal_id" component={AnimalProfile} />
 
           <AuthRoute path="/adotar/:animal_id" component={NewReservationQuiz} />
+          <AuthRoute path="/meus-dados" component={UserProfile} />
 
           <ProtectedRoute path="/app" exact component={Dashboard} />
           <ProtectedRoute path="/app/reservas" component={ManageReservation} />

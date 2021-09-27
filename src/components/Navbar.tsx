@@ -22,7 +22,7 @@ type UserData = {
   phone_number: string;
   birth_date: Date;
   type?: string;
-  avatar: string;
+  avatar_url: string | null | undefined;
 };
 
 function classNames(...classes: ClassesTypes) {
@@ -34,6 +34,8 @@ export function Navbar() {
 
   const { handleLogout, authenticated } = useContext(AuthContext);
   const [user, setUser] = useState<UserData | undefined>();
+
+  // const [userAvatar, setUserAvatar] = useState
 
   const navigation = [
     { name: "Página inicial", href: "/", current: location.pathname === "/" },
@@ -129,15 +131,16 @@ export function Navbar() {
                     <div>
                       <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src={
-                            user?.avatar !== null
-                              ? user?.avatar
-                              : "https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-24.jpg"
-                          }
-                          alt="User"
-                        />
+                        {typeof user !== "undefined" && (
+                          <img
+                            className="h-8 w-8 rounded-full"
+                            src={
+                              user.avatar_url ||
+                              "https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-24.jpg"
+                            }
+                            alt="User"
+                          />
+                        )}
                       </Menu.Button>
                     </div>
                     <Transition
@@ -152,15 +155,16 @@ export function Navbar() {
                       <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <Menu.Item>
                           {({ active }) => (
-                            <a
-                              href={`/user/${user?.id}`}
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Meus dados
-                            </a>
+                            <Link to="/meus-dados">
+                              <span
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700"
+                                )}
+                              >
+                                Meus dados
+                              </span>
+                            </Link>
                           )}
                         </Menu.Item>
                         {/*Admin/Volunteer Only*/}
