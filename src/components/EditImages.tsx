@@ -11,15 +11,41 @@ interface IAnimalImage {
 
 interface IImageProps {
   images: IAnimalImage[];
+  animalId: string;
   setImages: React.Dispatch<React.SetStateAction<any>>;
   altAnimalName: string;
 }
 
-export function EditImages({ images, altAnimalName, setImages }: IImageProps) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [deleteImagePath, setDeleteImagePath] = useState("");
+interface IHandleDeleteImage {
+  animal_id: string;
+  image_id: string;
+}
 
-  async function handleDeleteImage() {}
+export function EditImages({
+  images,
+  altAnimalName,
+  setImages,
+  animalId,
+}: IImageProps) {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [deleteImageId, setDeleteAnimalImageId] = useState("");
+  const [deleteImagePath, setDeleteAnimalImagePath] = useState("");
+
+  async function handleDeleteImage({
+    animal_id,
+    image_id,
+  }: IHandleDeleteImage) {
+    await api
+      .delete<IAnimalImage>(`/animal/${animal_id}/image/${image_id}`)
+      .then(({ data }) => {
+        setModalOpen(false);
+        setImages(data);
+      })
+      .catch(() => {
+        alert("Ocorreu algum erro!");
+      });
+  }
 
   return (
     <>
@@ -32,7 +58,8 @@ export function EditImages({ images, altAnimalName, setImages }: IImageProps) {
                 key={image.id}
                 className={`relative h-full border-0 cursor-pointer rounded-md bg-none outline-none}`}
                 onClick={() => {
-                  setDeleteImagePath(image.path);
+                  setDeleteAnimalImageId(image.id);
+                  setDeleteAnimalImagePath(image.path);
                   setModalOpen(true);
                 }}
               >
@@ -57,7 +84,9 @@ export function EditImages({ images, altAnimalName, setImages }: IImageProps) {
       </div>
       <ModalDelete
         title={"Você deseja realmente excluir esta foto?"}
-        handleSubmit={handleDeleteImage}
+        handleSubmit={() => {
+          handleDeleteImage({ animal_id: animalId, image_id: deleteImageId });
+        }}
         imagePath={deleteImagePath}
         open={modalOpen}
         setOpen={setModalOpen}

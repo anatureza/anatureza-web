@@ -181,6 +181,7 @@ export function EditAnimal() {
                   altAnimalName={name}
                   images={images}
                   setImages={setImages}
+                  animalId={animal.id}
                 />
                 <hr />
               </>
