@@ -18,22 +18,18 @@ export function SelectImages({ images, animalName }: ImageProps) {
   }, [images.length]);
 
   return (
-    <div className="flex p-4 h-60">
+    <div className="flex p-4 h-72">
       <img
         className="flex-1 h-full w-full rounded-md object-cover"
         src={`${api.defaults.baseURL}/uploads/${images[activeImageIndex].path}`}
         alt={animalName}
       />
       {imagesLength > 1 && (
-        <div
-          className={`flex-1 grid grid-cols-${
-            imagesLength <= 3 ? "3" : "6"
-          } gap-x-1 mx-2 overflow-y-scroll`}
-        >
+        <div className={`flex-1 grid grid-cols-3 gap-x-1 gap-y-1 mx-2`}>
           {images.map((image, index) => (
             <button
               key={image.id}
-              className={`border-0 h-60 cursor-pointer rounded-md bg-none overflow-hidden outline=none opacity-60 ${
+              className={`h-full border-0 cursor-pointer rounded-md bg-none overflow-hidden outline-none opacity-50 ${
                 activeImageIndex === index ? "opacity-100" : ""
               }`}
               type="button"
@@ -44,7 +40,7 @@ export function SelectImages({ images, animalName }: ImageProps) {
               <img
                 src={`${api.defaults.baseURL}/uploads/${image.path}`}
                 alt={animalName}
-                className="h-60 object-cover"
+                className="h-72 object-cover"
               />
             </button>
           ))}

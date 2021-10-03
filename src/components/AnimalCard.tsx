@@ -49,11 +49,13 @@ export function AnimalCard(animal: IAnimal) {
   return (
     <div className="overflow-hidden shadow-lg rounded-lg sm:h-full w-60 md:w-80 cursor-pointer m-auto">
       <Link to={`/animal/${animal.id}`}>
-        <img
-          className="h-64 w-full object-cover"
-          src={animal.main_image_url || DefaultImage}
-          alt={`Animal ${animal.name}`}
-        />
+        <div className="h-64 w-full">
+          <img
+            className="h-full w-full object-cover"
+            src={animal.main_image_url || DefaultImage}
+            alt={`Animal ${animal.name}`}
+          />
+        </div>
         <div className="bg-white w-full p-4">
           <p className="text-gray-600 text-sm font-medium">
             <span className="font-bold">Em: </span>
