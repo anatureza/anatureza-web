@@ -13,7 +13,7 @@ interface IAnimal {
   description: string;
   gender: string;
   kind: string;
-  main_image_url?: string;
+  main_image_url?: string | null;
   created_at: string;
   updated_at: string;
   address_id: string;
@@ -32,8 +32,8 @@ interface IAnimal {
   user: {
     address_id: string;
     authorizes_image: boolean;
-    avatar?: string;
-    avatar_url?: string;
+    avatar?: string | null;
+    avatar_url?: string | null;
     birth_date: string;
     created_at: string;
     email: string;
@@ -67,17 +67,17 @@ export function AnimalCard(animal: IAnimal) {
           </p>
           <div className="flex items-center mt-4">
             <span className="block relative">
-              {animal.user.avatar ? (
+              {animal.user.avatar_url ? (
                 <img
-                  className="mx-auto object-cover rounded-full w-10"
-                  src={animal.user.avatar}
-                  alt={`Animal ${animal.name}`}
+                  className="mx-auto object-cover rounded-full w-12 h-12"
+                  src={animal.user.avatar_url}
+                  alt={`User ${animal.user.name}`}
                 />
               ) : (
                 <FontAwesomeIcon
                   icon={faUser}
                   size="2x"
-                  className="mx-auto object-cover rounded-full w-10"
+                  className="mx-auto object-cover rounded-full w-12 h-12"
                 />
               )}
             </span>

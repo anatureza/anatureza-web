@@ -1,4 +1,9 @@
-# To-do
+# To-do ( 02/10/2021 - Monday )
 
-[ ] Connect to the API
-[ ] Login, Show user info and logout
+[x] Fix: Animal Profile not loading when Animal does not have any image
+[ ] Fix Animal Images Layout
+[ ] Add option to edit animals' images
+
+## Maybe
+
+[ ] Add ViaCEP webservice to search

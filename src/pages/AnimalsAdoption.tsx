@@ -45,16 +45,12 @@ interface IAnimal {
 }
 
 export function AnimalsAdoption() {
-  const [animals, setAnimals] = useState<IAnimal[]>([]);
+  const [animals, setAnimals] = useState<IAnimal[] | undefined>([]);
 
   useEffect(() => {
-    (async () => {
-      await api.get<IAnimal[] | undefined>("/all-animals").then(({ data }) => {
-        if (typeof data !== "undefined") {
-          setAnimals(data.filter((animal) => animal.available));
-        }
-      });
-    })();
+    api.get<IAnimal[]>("/all-animals").then(({ data }) => {
+      setAnimals(data.filter((animal) => animal.available));
+    });
   }, []);
   return (
     <>
@@ -83,11 +79,16 @@ export function AnimalsAdoption() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
-          {animals.length > 0 ? (
-            animals.map((animal) => <AnimalCard key={animal.id} {...animal} />)
-          ) : (
-            <h1>Nenhum animal disponivel para adocao</h1>
-          )}
+          {typeof animals !== "undefined" &&
+            (animals.length > 0 ? (
+              animals.map((animal) => (
+                <AnimalCard key={animal.id} {...animal} />
+              ))
+            ) : (
+              <div className="container h-screen">
+                <h1>Nenhum animal disponivel para ado&#231;&#227;o</h1>
+              </div>
+            ))}
         </div>
       </div>
     </>

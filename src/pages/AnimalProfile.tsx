@@ -8,11 +8,11 @@ import { SelectImages } from "../components/SelectImages";
 import api from "../services/api";
 import moment from "moment";
 
-type AnimalIdParams = {
+interface IAnimalIdParams {
   animal_id: string;
-};
+}
 
-type AnimalData = {
+interface IAnimal {
   id: string;
   volunteer_id: string;
   address_id: string;
@@ -33,7 +33,7 @@ type AnimalData = {
     phone_number: string;
     birth_date: Date;
     type: string;
-    avatar?: string;
+    avatar?: string | null;
   };
   address: {
     place: string;
@@ -43,14 +43,14 @@ type AnimalData = {
     zip: number;
     city: string;
   };
-};
+}
 
 export function AnimalProfile() {
   const { authenticated } = useContext(AuthContext);
 
-  const { animal_id } = useParams<AnimalIdParams>();
+  const { animal_id } = useParams<IAnimalIdParams>();
 
-  const [animal, setAnimal] = useState<AnimalData>();
+  const [animal, setAnimal] = useState<IAnimal>();
 
   useEffect(() => {
     (async () => {
@@ -69,7 +69,7 @@ export function AnimalProfile() {
       <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
         <div className="p-4 bg-gray-100 border-t-2 border-blue-400 rounded-lg bg-opacity-5">
           <h1 className="text-2xl">{animal.name}</h1>
-          {animal.images && (
+          {animal.images && animal.images.length > 0 && (
             <SelectImages images={animal.images} animalName={animal.name} />
           )}
         </div>
