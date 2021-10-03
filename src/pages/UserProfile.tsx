@@ -2,8 +2,6 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { UserAvatar } from "../components/UserAvatar";
 
-import moment from "moment";
-
 import api from "../services/api";
 import { useHistory } from "react-router";
 
@@ -42,7 +40,7 @@ export function UserProfile() {
   const [userPreviewAvatar, setUserPreviewAvatar] = useState<string | null>("");
 
   const [place, setPlace] = useState("");
-  const [number, setNumber] = useState<number>();
+  const [number, setNumber] = useState("");
   const [complement, setComplement] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [zip, setZip] = useState("");
@@ -55,13 +53,13 @@ export function UserProfile() {
       setName(data.name);
       setEmail(data.email);
       setPhoneNumber(data.phone_number);
-      setBirthDate(moment(data.birth_date).format("YYYY-MM-DD"));
+      setBirthDate(data.birth_date);
       setAuthorizesImage(data.authorizes_image);
 
       setUserPreviewAvatar(data.avatar_url);
 
       setPlace(data.address.place);
-      setNumber(Number(data.address.number));
+      setNumber(data.address.number);
       setComplement(data.address.complement);
       setNeighborhood(data.address.neighborhood);
       setZip(data.address.zip);
@@ -72,19 +70,30 @@ export function UserProfile() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
+    const data = new FormData();
+
+    data.append("name", name);
+    data.append("phone_number", phone_number);
+    data.append("birth_date", birth_date);
+    data.append("place", place);
+    data.append("number", number);
+    data.append("complement", complement);
+    data.append("neighborhood", neighborhood);
+    data.append("zip", zip);
+    data.append("city", city);
+
     api
       .put("/user", {
         name,
-        email,
         phone_number,
-        birth_date: moment(birth_date).format("YYYY/MM/DD").toString(),
-        authorizes_image,
+        birth_date,
         place,
         number,
         complement,
         neighborhood,
         zip,
         city,
+        authorizes_image,
       })
       .then(() => {
         alert("Dados editados com sucesso!");
@@ -183,8 +192,9 @@ export function UserProfile() {
                     type="date"
                     id="user-info-birth_date"
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    value={moment(birth_date).format("YYYY-MM-DD")}
+                    value={birth_date}
                     onChange={(event) => {
+                      console.log(event.target.value);
                       setBirthDate(event.target.value);
                     }}
                   />
@@ -230,12 +240,12 @@ export function UserProfile() {
                 <div className=" relative ">
                   <label htmlFor="address-number">N&#250;mero</label>
                   <input
-                    type="text"
+                    type="number"
                     id="address-number"
                     required
                     value={number}
                     onChange={(event) => {
-                      setNumber(event.target.valueAsNumber);
+                      setNumber(event.target.value);
                     }}
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder="N&uacute;mero"
@@ -280,7 +290,6 @@ export function UserProfile() {
                   <input
                     type="text"
                     id="address-complement"
-                    required
                     value={complement}
                     onChange={(event) => {
                       setComplement(event.target.value);
@@ -294,7 +303,7 @@ export function UserProfile() {
                 <div className=" relative ">
                   <label htmlFor="address-zip">CEP</label>
                   <input
-                    type="text"
+                    type="number"
                     id="address-zip"
                     required
                     value={zip}
@@ -309,6 +318,22 @@ export function UserProfile() {
             </div>
           </div>
           <hr />
+          <div className="w-full px-4 mr-auto ">
+            <div className=" relative ">
+              <input
+                type="checkbox"
+                name="checked"
+                defaultChecked={authorizes_image}
+                onClick={() => {
+                  setAuthorizesImage(!authorizes_image);
+                }}
+                className="form-tick appearance-none bg-white bg-check h-6 w-6 border border-gray-300 rounded-md checked:bg-blue-500 checked:border-transparent focus:outline-none"
+              />
+              <span className="text-gray-700 dark:text-white font-normal pl-2">
+                Aceito a divulgação de fotos e/ou vídeos com minha imagem
+              </span>
+            </div>
+          </div>
           <div className="w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
             <button
               type="submit"
