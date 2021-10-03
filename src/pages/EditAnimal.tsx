@@ -2,15 +2,24 @@ import { FormEvent, useContext, useEffect, useState } from "react";
 
 import { useHistory, useParams } from "react-router-dom";
 
+import { EditImages } from "../components/EditImages";
+import { ModalDelete } from "../components/ModalDelete";
+
+import { AuthContext } from "../contexts/AuthContext";
+
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import moment from "moment";
 
-import { AuthContext } from "../contexts/AuthContext";
 import api from "../services/api";
 
-type AnimalData = {
+interface IAnimalImage {
+  id: string;
+  path: string;
+}
+
+interface IAnimal {
   id: string;
   volunteer_id: string;
   address_id: string;
@@ -19,10 +28,7 @@ type AnimalData = {
   kind: string;
   gender: string;
   birth_date: string;
-  images?: Array<{
-    id: string;
-    path: string;
-  }>;
+  images: Array<IAnimalImage> | [];
   user: {
     id: string;
     name: string;
@@ -41,20 +47,20 @@ type AnimalData = {
     zip: number;
     city: string;
   };
-};
+}
 
-type AnimalIdParams = {
+interface IAnimalIdParams {
   animal_id: string;
-};
+}
 
 export function EditAnimal() {
   const history = useHistory();
-  const { animal_id } = useParams<AnimalIdParams>();
+  const { animal_id } = useParams<IAnimalIdParams>();
 
   const { userId, userType } = useContext(AuthContext);
   const [userHasPermission, setUserHasPermission] = useState(false);
 
-  const [animal, setAnimal] = useState<AnimalData | undefined>();
+  const [animal, setAnimal] = useState<IAnimal | undefined>();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -68,6 +74,10 @@ export function EditAnimal() {
   const [neighborhood, setNeighborhood] = useState("");
   const [zip, setZip] = useState<number>();
   const [city, setCity] = useState("");
+
+  const [images, setImages] = useState<IAnimalImage[]>([]);
+
+  const [openModal, setOpenModal] = useState(false);
 
   async function handleSave(event: FormEvent) {
     event.preventDefault();
@@ -135,6 +145,8 @@ export function EditAnimal() {
       setNeighborhood(animal.address.neighborhood);
       setZip(animal.address.zip);
       setCity(animal.address.city);
+
+      setImages(animal.images);
     }
   }, [animal]);
 
@@ -156,9 +168,23 @@ export function EditAnimal() {
       <form onSubmit={handleSave}>
         <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
           <div className="p-4 bg-gray-100 border-t-2 border-blue-400 rounded-lg bg-opacity-5">
-            <h1 className="text-2xl">Editar animal</h1>
+            <h1 className="text-2xl">
+              <span className="font-semibold">Editar animal: </span>
+              {name}
+            </h1>
           </div>
           <div className="space-y-6 bg-white">
+            <hr />
+            {images.length > 0 && (
+              <>
+                <EditImages
+                  altAnimalName={name}
+                  images={images}
+                  setImages={setImages}
+                />
+                <hr />
+              </>
+            )}
             <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
               <h2 className="max-w-sm mx-auto md:w-1/3">
                 Informações do animal
@@ -397,7 +423,9 @@ export function EditAnimal() {
                 <>
                   <button
                     type="button"
-                    onClick={handleDelete}
+                    onClick={() => {
+                      setOpenModal(true);
+                    }}
                     className="inline-block ml-2 py-2 px-4 left-0 inset-y-0 items-center pl-3 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
                   >
                     <FontAwesomeIcon
@@ -419,6 +447,12 @@ export function EditAnimal() {
           </div>
         </div>
       </form>
+      <ModalDelete
+        title={"Você deseja realmente excluir este animal?"}
+        handleSubmit={handleDelete}
+        open={openModal}
+        setOpen={setOpenModal}
+      />
     </section>
   );
 }
