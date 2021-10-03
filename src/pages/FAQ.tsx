@@ -55,17 +55,18 @@ const questions = [
 ];
 export function FAQ() {
   return (
-    <div className="container mx-auto mt-12 leading-6 max-w-screen-md">
-      <div className="main">
-        <div className="block box-border w-auto m-auto">
-          <div className="top text-center">
+    <div className="bg-gray-50 pt-12">
+      <div className="container mx-auto leading-6 max-w-screen-md h-screen">
+        <div className="block box-border w-auto">
+          <div className="top text-center mb-4">
             <h2 className="font-sans text-4xl">Perguntas Frequentes</h2>
             <p className="text-gray-600">
               Algumas dúvidas mais recorrentes que recebemos
             </p>
           </div>
+          <hr />
           <div className="w-full px-4 pt-16 mb-32">
-            <div className="w-full max-w-md p-2 mx-auto bg-white rounded-2xl">
+            <div className="w-full max-w-md p-2 mx-auto  bg-white shadow-sm rounded-2xl max-h-screen overflow-y-auto">
               {questions.map((question, index) => (
                 <Disclosure
                   as="div"
@@ -75,7 +76,7 @@ export function FAQ() {
                   {({ open }) => (
                     <>
                       <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75">
-                        <span>{question.title}</span>
+                        <span className="text-lg">{question.title}</span>
                         <FontAwesomeIcon
                           icon={faChevronUp}
                           className={`${
@@ -91,9 +92,9 @@ export function FAQ() {
                         leaveFrom="transform scale-100 opacity-100"
                         leaveTo="transform scale-95 opacity-0"
                       >
-                      <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
-                        {question.answer}
-                      </Disclosure.Panel>
+                        <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                          {question.answer}
+                        </Disclosure.Panel>
                       </Transition>
                     </>
                   )}

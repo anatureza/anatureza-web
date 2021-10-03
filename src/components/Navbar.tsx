@@ -171,29 +171,30 @@ export function Navbar() {
                         {user?.type !== "user" && (
                           <Menu.Item>
                             {({ active }) => (
-                              <a
-                                href="/app"
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700"
-                                )}
-                              >
-                                Dashboard
-                              </a>
+                              <Link to="/app">
+                                <span
+                                  className={classNames(
+                                    active ? "bg-gray-100" : "",
+                                    "block px-4 py-2 text-sm text-gray-700"
+                                  )}
+                                >
+                                  Dashboard
+                                </span>
+                              </Link>
                             )}
                           </Menu.Item>
                         )}
                         <Menu.Item>
                           {({ active }) => (
-                            <button
+                            <span
                               onClick={handleLogout}
                               className={classNames(
-                                active ? "bg-gray-100" : "",
+                                active ? "bg-gray-100 cursor-pointer" : "",
                                 "block px-4 py-2 text-sm text-gray-700"
                               )}
                             >
                               Desconectar
-                            </button>
+                            </span>
                           )}
                         </Menu.Item>
                       </Menu.Items>
