@@ -34,8 +34,8 @@ export function CreateAnimal() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [kind, setKind] = useState("");
-  const [gender, setGender] = useState("");
+  const [kind, setKind] = useState("none");
+  const [gender, setGender] = useState("none");
   const [birth_date, setBirthDate] = useState("");
 
   const [images, setImages] = useState<File[]>([]);
@@ -157,31 +157,13 @@ export function CreateAnimal() {
                       <select
                         className="form-select block w-full mt-1 rounded-lg"
                         value={kind}
+                        onChange={(event) => {
+                          setKind(event.target.value);
+                        }}
                       >
-                        <option
-                          value=""
-                          onClick={() => {
-                            setKind("none");
-                          }}
-                        >
-                          Selecione uma opção
-                        </option>
-                        <option
-                          value="dog"
-                          onClick={() => {
-                            setKind("dog");
-                          }}
-                        >
-                          Cachorro
-                        </option>
-                        <option
-                          value="cat"
-                          onClick={() => {
-                            setKind("cat");
-                          }}
-                        >
-                          Gato
-                        </option>
+                        <option value="none">Selecione uma opção</option>
+                        <option value="dog">Cachorro</option>
+                        <option value="cat">Gato</option>
                       </select>
                     </label>
                   </div>
@@ -191,31 +173,13 @@ export function CreateAnimal() {
                       <select
                         className="form-select block w-full mt-1 rounded-lg"
                         value={gender}
+                        onChange={(event) => {
+                          setGender(event.target.value);
+                        }}
                       >
-                        <option
-                          value=""
-                          onClick={() => {
-                            setKind("none");
-                          }}
-                        >
-                          Selecione uma opção
-                        </option>
-                        <option
-                          value="female"
-                          onClick={() => {
-                            setGender("female");
-                          }}
-                        >
-                          Fêmea
-                        </option>
-                        <option
-                          value="male"
-                          onClick={() => {
-                            setGender("male");
-                          }}
-                        >
-                          Macho
-                        </option>
+                        <option value="none">Selecione uma opção</option>
+                        <option value="female">Fêmea</option>
+                        <option value="male">Macho</option>
                       </select>
                     </label>
                   </div>

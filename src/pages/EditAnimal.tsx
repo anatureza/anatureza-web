@@ -64,15 +64,15 @@ export function EditAnimal() {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [kind, setKind] = useState("");
-  const [gender, setGender] = useState("");
+  const [kind, setKind] = useState("none");
+  const [gender, setGender] = useState("none");
   const [birth_date, setBirthDate] = useState("");
 
   const [place, setPlace] = useState("");
-  const [number, setNumber] = useState<number>();
+  const [number, setNumber] = useState(0);
   const [complement, setComplement] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
-  const [zip, setZip] = useState<number>();
+  const [zip, setZip] = useState(0);
   const [city, setCity] = useState("");
 
   const [images, setImages] = useState<IAnimalImage[]>([]);
@@ -223,27 +223,14 @@ export function EditAnimal() {
                       <span className="text-gray-700">Tipo</span>
                       <select
                         className="form-select block w-full mt-1 rounded-lg"
+                        onChange={(event) => {
+                          setKind(event.target.value);
+                        }}
                         value={kind}
                       >
-                        <option value="dog" onClick={() => setKind("dog")}>
-                          Cachorro
-                        </option>
-                        <option
-                          value="cat"
-                          onClick={() => {
-                            setKind("cat");
-                          }}
-                        >
-                          Gato
-                        </option>
-                        <option
-                          value="none"
-                          onClick={() => {
-                            setKind("none");
-                          }}
-                        >
-                          Escolha
-                        </option>
+                        <option value="dog">Cachorro</option>
+                        <option value="cat">Gato</option>
+                        <option value="none">Escolha</option>
                       </select>
                     </label>
                   </div>
@@ -253,31 +240,13 @@ export function EditAnimal() {
                       <select
                         className="form-select block w-full mt-1 rounded-lg"
                         value={gender}
+                        onChange={(event) => {
+                          setGender(event.target.value);
+                        }}
                       >
-                        <option
-                          value="female"
-                          onClick={() => {
-                            setGender("female");
-                          }}
-                        >
-                          Fêmea
-                        </option>
-                        <option
-                          value="male"
-                          onClick={() => {
-                            setGender("male");
-                          }}
-                        >
-                          Macho
-                        </option>
-                        <option
-                          value="none"
-                          onClick={() => {
-                            setGender("none");
-                          }}
-                        >
-                          Escolha
-                        </option>
+                        <option value="female">Fêmea</option>
+                        <option value="male">Macho</option>
+                        <option value="none">Escolha</option>
                       </select>
                     </label>
                   </div>

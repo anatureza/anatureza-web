@@ -59,7 +59,6 @@ function ProtectedRoute({ ...rest }: IProtectedRouteData) {
     return <Redirect to="/signin" />;
   }
 
-  console.log(userType);
   if (userType === "admin" || userType === "volunteer") {
     return <Route {...rest} />;
   }
