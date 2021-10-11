@@ -82,8 +82,8 @@ export function EditAnimal() {
   async function handleSave(event: FormEvent) {
     event.preventDefault();
 
-    await api
-      .put(`/animal/${animal_id}`, {
+    try {
+      await api.put(`/animal/${animal_id}`, {
         name,
         description,
         kind,
@@ -95,40 +95,34 @@ export function EditAnimal() {
         neighborhood,
         zip,
         city,
-      })
-      .then(() => {
-        alert("Animal Editado com sucesso!");
-
-        history.push("/app/animais");
-      })
-      .catch(() => {
-        alert("Animal Não Pôde Ser Editado!");
       });
+      alert("Animal Editado com sucesso!");
+
+      history.push("/app/animais");
+    } catch {
+      alert("Animal Não Pôde Ser Editado!");
+    }
   }
 
   async function handleDelete() {
-    await api
-      .delete(`/animal/${animal_id}`)
-      .then(() => {
-        alert(`${name} Excluído com sucesso!`);
-        history.push("/app/animais");
-      })
-      .catch(() => {
-        alert("Aconteceu algum erro durante a exclusão!");
-      });
+    try {
+      await api.delete(`/animal/${animal_id}`);
+      alert(`${name} Excluído com sucesso!`);
+      history.push("/app/animais");
+    } catch {
+      alert("Aconteceu algum erro durante a exclusão!");
+    }
   }
 
   useEffect(() => {
     (async () => {
-      await api
-        .get(`/animal/${animal_id}`)
-        .then(({ data }) => {
-          setAnimal(data);
-        })
-        .catch(() => {
-          alert("Animal Não Encontrado!");
-          history.push("/app/animais");
-        });
+      try {
+        const { data } = await api.get(`/animal/${animal_id}`);
+        setAnimal(data);
+      } catch {
+        alert("Animal Não Encontrado!");
+        history.push("/app/animais");
+      }
     })();
   }, [animal_id, history]);
 
@@ -175,17 +169,13 @@ export function EditAnimal() {
           </div>
           <div className="space-y-6 bg-white">
             <hr />
-            {images.length > 0 && (
-              <>
-                <EditImages
-                  altAnimalName={name}
-                  images={images}
-                  setImages={setImages}
-                  animalId={animal.id}
-                />
-                <hr />
-              </>
-            )}
+            <EditImages
+              altAnimalName={name}
+              images={images}
+              setImages={setImages}
+              animalId={animal.id}
+            />
+            <hr />
             <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
               <h2 className="max-w-sm mx-auto md:w-1/3">
                 Informações do animal
