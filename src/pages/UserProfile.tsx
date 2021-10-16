@@ -1,9 +1,11 @@
 import { FormEvent, useEffect, useState } from "react";
 
+import { useHistory } from "react-router";
+
 import { UserAvatar } from "../components/UserAvatar";
+import { AddressInputGroup } from "../components/AddressInputGroup";
 
 import api from "../services/api";
-import { useHistory } from "react-router";
 
 interface IUserRequest {
   id: string;
@@ -17,6 +19,7 @@ interface IUserRequest {
   avatar: string | null;
   address: {
     id: string;
+    uf: string;
     place: string;
     number: string;
     complement: string;
@@ -32,7 +35,7 @@ export function UserProfile() {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
+  const [uf, setUF] = useState("");
   const [phone_number, setPhoneNumber] = useState("");
   const [birth_date, setBirthDate] = useState("");
   const [authorizes_image, setAuthorizesImage] = useState(false);
@@ -58,6 +61,7 @@ export function UserProfile() {
 
       setUserPreviewAvatar(data.avatar_url);
 
+      setUF(data.address.uf);
       setPlace(data.address.place);
       setNumber(data.address.number);
       setComplement(data.address.complement);
@@ -217,106 +221,23 @@ export function UserProfile() {
             </div>
           </div>
           <hr />
-          <div className="items-center w-full p-4 space-y-4 text-gray-500 md:inline-flex md:space-y-0">
-            <h2 className="max-w-sm mx-auto md:w-1/3">Endere&#231;o</h2>
-            <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
-              <div>
-                <div className=" relative ">
-                  <label htmlFor="address-place">Logradouro</label>
-                  <input
-                    type="text"
-                    id="address-place"
-                    required
-                    value={place}
-                    onChange={(event) => {
-                      setPlace(event.target.value);
-                    }}
-                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Logradouro (Rua, Av. ...)"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className=" relative ">
-                  <label htmlFor="address-number">N&#250;mero</label>
-                  <input
-                    type="number"
-                    id="address-number"
-                    required
-                    value={number}
-                    onChange={(event) => {
-                      setNumber(event.target.value);
-                    }}
-                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="N&uacute;mero"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className=" relative ">
-                  <label htmlFor="address-number">Cidade</label>
-                  <input
-                    type="text"
-                    id="address-city"
-                    required
-                    value={city}
-                    onChange={(event) => {
-                      setCity(event.target.value);
-                    }}
-                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Cidade"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className=" relative ">
-                  <label htmlFor="address-neighborhood">Bairro</label>
-                  <input
-                    type="text"
-                    id="address-neighborhood"
-                    required
-                    value={neighborhood}
-                    onChange={(event) => {
-                      setNeighborhood(event.target.value);
-                    }}
-                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Bairro"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className=" relative ">
-                  <label htmlFor="address-complement">Complemento</label>
-                  <input
-                    type="text"
-                    id="address-complement"
-                    value={complement}
-                    onChange={(event) => {
-                      setComplement(event.target.value);
-                    }}
-                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Complemento"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className=" relative ">
-                  <label htmlFor="address-zip">CEP</label>
-                  <input
-                    type="number"
-                    id="address-zip"
-                    required
-                    value={zip}
-                    onChange={(event) => {
-                      setZip(event.target.value);
-                    }}
-                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="CEP (Ex: 13940000)"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <AddressInputGroup
+            autoCompleteOnProp={true}
+            uf={uf}
+            setUF={setUF}
+            place={place}
+            setPlace={setPlace}
+            number={number}
+            setNumber={setNumber}
+            city={city}
+            setCity={setCity}
+            neighborhood={neighborhood}
+            setNeighborhood={setNeighborhood}
+            complement={complement}
+            setComplement={setComplement}
+            zip={zip}
+            setZip={setZip}
+          />
           <hr />
           <div className="w-full px-4 mr-auto ">
             <div className=" relative ">

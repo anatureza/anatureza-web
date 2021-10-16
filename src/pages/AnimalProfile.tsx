@@ -5,7 +5,9 @@ import { AuthContext } from "../contexts/AuthContext";
 import { Link, useParams } from "react-router-dom";
 
 import { SelectImages } from "../components/SelectImages";
+
 import api from "../services/api";
+
 import moment from "moment";
 
 interface IAnimalIdParams {
@@ -36,6 +38,7 @@ interface IAnimal {
     avatar?: string | null;
   };
   address: {
+    uf: string;
     place: string;
     number: number;
     complement: string;
@@ -54,9 +57,9 @@ export function AnimalProfile() {
 
   useEffect(() => {
     (async () => {
-      await api.get(`/animal/${animal_id}`).then(({ data }) => {
-        setAnimal(data);
-      });
+      const { data } = await api.get(`/animal/${animal_id}`);
+
+      setAnimal(data);
     })();
   }, [animal_id]);
 
@@ -86,13 +89,13 @@ export function AnimalProfile() {
                   id="name"
                   disabled
                   value={animal.name}
-                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent mb-4"
+                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent mb-4"
                 />
                 <label htmlFor="description" className="text-gray-900">
                   Descrição
                 </label>
                 <textarea
-                  className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                  className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   id="description"
                   value={animal.description}
                   name="comment"
@@ -109,7 +112,7 @@ export function AnimalProfile() {
                       value="cat"
                       checked={animal.kind === "cat"}
                       disabled
-                      className="h-5 w-5 text-indigo-600"
+                      className="h-5 w-5 text-blue-600"
                     />
                     <span className="ml-2 text-gray-700">Gato</span>
                   </label>
@@ -120,7 +123,7 @@ export function AnimalProfile() {
                       value="dog"
                       checked={animal.kind === "dog"}
                       disabled
-                      className="h-5 w-5 text-indigo-600"
+                      className="h-5 w-5 text-blue-600"
                     />
                     <span className="ml-2 text-gray-700">Cachorro</span>
                   </label>
@@ -134,7 +137,7 @@ export function AnimalProfile() {
                       value="female"
                       checked={animal.gender === "female"}
                       disabled
-                      className="h-5 w-5 text-indigo-600"
+                      className="h-5 w-5 text-blue-600"
                     />
                     <span className="ml-2 text-gray-700">Fêmea</span>
                   </label>
@@ -145,7 +148,7 @@ export function AnimalProfile() {
                       value="male"
                       checked={animal.gender === "male"}
                       disabled
-                      className="h-5 w-5 text-indigo-600"
+                      className="h-5 w-5 text-blue-600"
                     />
                     <span className="ml-2 text-gray-700">Macho</span>
                   </label>
@@ -157,7 +160,7 @@ export function AnimalProfile() {
 
                   <input
                     type="date"
-                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     id="animal-birth_date"
                     name="birth_date"
                     value={moment(animal.birth_date).format("YYYY-MM-DD")}
@@ -186,7 +189,7 @@ export function AnimalProfile() {
                     id="animal-volunteer-name"
                     disabled
                     value={animal.user.name}
-                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder="Nome completo"
                   />
                 </div>
@@ -209,7 +212,7 @@ export function AnimalProfile() {
                       id="animal-volunteer-phone_number"
                       disabled
                       value={animal.user.phone_number}
-                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     />
                   </a>
                 </div>
@@ -221,6 +224,18 @@ export function AnimalProfile() {
             <h2 className="max-w-sm mx-auto md:w-1/3">Endereço</h2>
             <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
               <div>
+                <div className="relative border-box md:py-2">
+                  <label htmlFor="address-place" className="text-gray-900">
+                    Logradouro
+                  </label>
+                  <input
+                    type="text"
+                    id="address-place"
+                    value={animal.address.uf}
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    disabled
+                  />
+                </div>
                 <div className="relative border-box md:py-2">
                   <label htmlFor="address-place" className="text-gray-900">
                     Logradouro

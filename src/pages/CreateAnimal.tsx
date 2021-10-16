@@ -12,6 +12,9 @@ import {
 import { useHistory } from "react-router-dom";
 
 import { AuthContext } from "../contexts/AuthContext";
+
+import { AddressInputGroup } from "../components/AddressInputGroup";
+
 import api from "../services/api";
 
 type UserData = {
@@ -28,7 +31,7 @@ type UserData = {
 export function CreateAnimal() {
   const history = useHistory();
 
-  const { userId, userType } = useContext(AuthContext);
+  const { userId } = useContext(AuthContext);
 
   const [currentUser, setCurrentUser] = useState<UserData | undefined>();
 
@@ -41,26 +44,21 @@ export function CreateAnimal() {
   const [images, setImages] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
 
+  const [uf, setUF] = useState("");
   const [place, setPlace] = useState("");
-  const [number, setNumber] = useState<number>();
+  const [number, setNumber] = useState("");
   const [complement, setComplement] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
-  const [zip, setZip] = useState<number>();
+  const [zip, setZip] = useState("");
   const [city, setCity] = useState("");
 
   useEffect(() => {
-    api.get(`/user/${userId}`).then(({ data }) => {
+    (async () => {
+      const { data } = await api.get(`/user/${userId}`);
+
       setCurrentUser(data);
-    });
+    })();
   }, [userId]);
-
-  useEffect(() => {
-    if (userType === "user") {
-      alert("Você não tem permissão para isso!");
-
-      history.push("/");
-    }
-  }, [userType, history]);
 
   if (!currentUser) {
     return <h1>Carregando Informações do Usuário...</h1>;
@@ -286,105 +284,23 @@ export function CreateAnimal() {
               </div>
             </div>
             <hr />
-            <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
-              <h2 className="max-w-sm mx-auto md:w-1/3">Endereço</h2>
-              <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
-                <div>
-                  <div className="relative border-box md:py-2">
-                    <label htmlFor="address-place" className="text-gray-900">
-                      Logradouro
-                    </label>
-                    <input
-                      type="text"
-                      id="address-place"
-                      value={place}
-                      onChange={(event) => setPlace(event.target.value)}
-                      className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                      placeholder="Logradouro (Rua, Av. ...)"
-                    />
-                  </div>
-                  <div className="relative border-box md:py-2">
-                    <label htmlFor="address-number" className="text-gray-900">
-                      Número
-                    </label>
-                    <input
-                      type="number"
-                      id="address-number"
-                      value={number}
-                      onChange={(event) =>
-                        setNumber(event.target.valueAsNumber)
-                      }
-                      min={0}
-                      className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                      placeholder="Número"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="relative">
-                    <label htmlFor="address-city" className="text-gray-900">
-                      Cidade
-                    </label>
-                    <input
-                      type="text"
-                      id="address-city"
-                      value={city}
-                      onChange={(event) => setCity(event.target.value)}
-                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                      placeholder="Cidade"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="relative">
-                    <label
-                      htmlFor="address-neighborhood"
-                      className="text-gray-900"
-                    >
-                      Bairro
-                    </label>
-                    <input
-                      type="text"
-                      id="address-neighborhood"
-                      className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                      value={neighborhood}
-                      onChange={(event) => setNeighborhood(event.target.value)}
-                      placeholder="Bairro"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="relative">
-                    <label htmlFor="address-number" className="text-gray-900">
-                      Complemento
-                    </label>
-                    <input
-                      type="text"
-                      id="address-complement"
-                      value={complement}
-                      onChange={(event) => setComplement(event.target.value)}
-                      placeholder="Se houver, digite o complemento aqui"
-                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="relative">
-                    <label htmlFor="address-number" className="text-gray-900">
-                      CEP
-                    </label>
-                    <input
-                      type="number"
-                      id="address-zip"
-                      value={zip}
-                      onChange={(event) => setZip(event.target.valueAsNumber)}
-                      placeholder="CEP (Ex: 13940000)"
-                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <AddressInputGroup
+              autoCompleteOnProp={true}
+              uf={uf}
+              setUF={setUF}
+              place={place}
+              setPlace={setPlace}
+              number={number}
+              setNumber={setNumber}
+              city={city}
+              setCity={setCity}
+              neighborhood={neighborhood}
+              setNeighborhood={setNeighborhood}
+              complement={complement}
+              setComplement={setComplement}
+              zip={zip}
+              setZip={setZip}
+            />
             <hr />
             <div className="w-full px-4 pb-4 text-gray-500 flex">
               {/* DELETE */}

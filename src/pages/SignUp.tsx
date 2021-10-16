@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 
 import { AuthContext } from "../contexts/AuthContext";
 
+import { AddressInputGroup } from "../components/AddressInputGroup";
+
 import moment from "moment";
 
 import api from "../services/api";
@@ -29,8 +31,9 @@ export function SignUp() {
   const [birth_date, setBirthDate] = useState("");
   const [authorizes_image, setAuthorizesImage] = useState(false);
 
+  const [uf, setUF] = useState("");
   const [place, setPlace] = useState("");
-  const [number, setNumber] = useState<number>();
+  const [number, setNumber] = useState("");
   const [complement, setComplement] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
   const [zip, setZip] = useState("");
@@ -135,7 +138,8 @@ export function SignUp() {
                   }-500 mb-4`}
                   hidden={!passwordAlreadyTyped}
                 >
-                  As Senhas {!passwordIsValid && "não"} se Correspondem!
+                  As senhas {!passwordIsValid && <span>n&#227;o</span>} se
+                  correspondem!
                 </div>
               </div>
               <div className="relative"></div>
@@ -182,83 +186,23 @@ export function SignUp() {
             </div>
           </div>
           <hr />
-          <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
-            <h2 className="max-w-sm mx-auto md:w-1/3">Endereço</h2>
-            <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
-              <div>
-                <div className="relative border-box md:py-2">
-                  <input
-                    type="text"
-                    id="address-place"
-                    required
-                    value={place}
-                    onChange={(event) => setPlace(event.target.value)}
-                    className="inline-block rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-3/6 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Logradouro (Rua, Av. ...)"
-                  />
-                  <input
-                    type="number"
-                    id="address-number"
-                    required
-                    value={number}
-                    onChange={(event) => setNumber(event.target.valueAsNumber)}
-                    className=" inline-block rounded-lg border-transparent flex-1 appearance-none border md:w-40 lg:w-40 md:ml-4 lg:ml-4 border-gray-300 py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Número"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="address-city"
-                    value={city}
-                    onChange={(event) => setCity(event.target.value)}
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Cidade"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="address-neighborhood"
-                    required
-                    value={neighborhood}
-                    onChange={(event) => setNeighborhood(event.target.value)}
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Bairro"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="address-complement"
-                    value={complement}
-                    onChange={(event) => setComplement(event.target.value)}
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="Complemento"
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="relative">
-                  <input
-                    type="text"
-                    id="address-zip"
-                    required
-                    value={zip}
-                    onChange={(event) => setZip(event.target.value)}
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    placeholder="CEP (Ex: 13940000)"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <AddressInputGroup
+            autoCompleteOnProp={true}
+            uf={uf}
+            setUF={setUF}
+            place={place}
+            setPlace={setPlace}
+            number={number}
+            setNumber={setNumber}
+            city={city}
+            setCity={setCity}
+            neighborhood={neighborhood}
+            setNeighborhood={setNeighborhood}
+            complement={complement}
+            setComplement={setComplement}
+            zip={zip}
+            setZip={setZip}
+          />
           <hr />
           <p className="ml-4">
             Ao criar a conta, você concorda com os{" "}
