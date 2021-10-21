@@ -31,46 +31,39 @@ export function ManageAnimals() {
 
   useEffect(() => {
     (async () => {
-      await api
-        .get("/animals/unavailable")
-        .then(({ data }) => {
-          setAdoptedAnimals(data);
-        })
-        .catch(() => {
-          setAdoptedAnimals(undefined);
-        });
+      try {
+        const { data } = await api.get("/animals/unavailable");
+
+        setAdoptedAnimals(data);
+      } catch {
+        setAdoptedAnimals(undefined);
+      }
     })();
     (async () => {
-      await api
-        .get("/animals/available")
-        .then(({ data }) => {
-          setAvailableAnimals(data);
-        })
-        .catch(() => {
-          setAvailableAnimals(undefined);
-        });
+      try {
+        const { data } = await api.get("/animals/available");
+        setAvailableAnimals(data);
+      } catch {
+        setAvailableAnimals(undefined);
+      }
     })();
     if (userType === "volunteer") {
       (async () => {
-        await api
-          .get("/animals")
-          .then(({ data }) => {
-            setAllAnimals(data);
-          })
-          .catch(() => {
-            setAllAnimals(undefined);
-          });
+        try {
+          const { data } = await api.get("/animals");
+          setAllAnimals(data);
+        } catch {
+          setAllAnimals(undefined);
+        }
       })();
     } else {
       (async () => {
-        await api
-          .get("/all-animals")
-          .then(({ data }) => {
-            setAllAnimals(data);
-          })
-          .catch(() => {
-            setAllAnimals(undefined);
-          });
+        try {
+          const { data } = await api.get("/all-animals");
+          setAllAnimals(data);
+        } catch {
+          setAllAnimals(undefined);
+        }
       })();
     }
   }, [userType]);
@@ -90,12 +83,12 @@ export function ManageAnimals() {
   }
 
   return (
-    <AppHeader title="Editar animais">
+    <AppHeader title='Editar animais'>
       <AnimalsTable animalsData={currentAnimals}>
         <ButtonGroup
-          leftButton="Disponíveis"
-          middleButton="Adotados"
-          rightButton="Todos os animais"
+          leftButton='Disponíveis'
+          middleButton='Adotados'
+          rightButton='Todos os animais'
           selectedButton={activeStatus}
           handleButtonChanged={handleButtonChanged}
         />
