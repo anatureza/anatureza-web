@@ -20,6 +20,7 @@ import { UserProfile } from "./pages/UserProfile";
 
 import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
+import { SendForgotPasswordResetMail } from "./pages/SendForgotPasswordResetMail";
 
 import { Dashboard } from "./pages/Dashboard";
 import { ManageReservation } from "./pages/ManageReservation";
@@ -29,6 +30,7 @@ import { Navbar } from "./components/Navbar";
 import { ManageAnimals } from "./pages/ManageAnimals";
 import { CreateAnimal } from "./pages/CreateAnimal";
 import { EditAnimal } from "./pages/EditAnimal";
+import { ResetPassword } from "./pages/ResetPassword";
 
 interface IAuthRouteData extends RouteProps {}
 
@@ -80,6 +82,11 @@ function App() {
 
           <Route path="/signin" component={SignIn} />
           <Route path="/cadastre-se" component={SignUp} />
+          <Route
+            path="/esqueci-minha-senha"
+            component={SendForgotPasswordResetMail}
+          />
+          <Route path="/reset-password" component={ResetPassword} />
 
           <Route path="/animais-adocao" component={AnimalsAdoption} />
           <Route path="/animal/:animal_id" component={AnimalProfile} />
