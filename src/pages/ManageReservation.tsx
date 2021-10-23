@@ -1,53 +1,15 @@
-import { useContext, useEffect } from "react";
-import { useState } from "react";
+import { MouseEvent, useContext, useEffect } from 'react';
+import { useState } from 'react';
 
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from '../contexts/AuthContext';
 
-import { AppHeader } from "../components/AppHeader";
-import { ButtonGroup } from "../components/ButtonGroup";
-import { ReservationsTable } from "../components/ReservationsTable";
+import { AppHeader } from '../components/AppHeader';
+import { ButtonGroup } from '../components/ButtonGroup';
+import { ReservationsTable } from '../components/ReservationsTable';
 
-import api from "../services/api";
+import api from '../services/api';
 
-interface IReservation {
-  id: string;
-  adopter_id: string;
-  animal_id: string;
-  status: string;
-  quiz_id: string;
-  scheduled_at: Date | string | null;
-  created_at: Date;
-  updated_at: Date;
-  animal: {
-    id: string;
-    volunteer_id: string;
-    address_id: string;
-    name: string;
-    description: string;
-    available: boolean;
-    kind: string;
-    gender: string;
-    birth_date: Date;
-    created_at: Date;
-    updated_at: Date;
-    main_image_url: string | null;
-  };
-  userAdopter: {
-    id: string;
-    name: string;
-    email: string;
-    phone_number: string;
-    address_id: string;
-    birth_date: Date | string;
-    type: string;
-    authorizes_image: boolean;
-    avatar: string | null;
-    created_at: Date;
-    updated_at: Date;
-    avatar_url: string | null;
-  };
-  volunteer_id: string;
-}
+import { IReservation } from '../types';
 
 export function ManageReservation() {
   const { userId } = useContext(AuthContext);
@@ -65,72 +27,70 @@ export function ManageReservation() {
     IReservation[] | undefined
   >();
 
-  const [activeStatus, setActiveStatus] = useState("Novos");
+  const [activeStatus, setActiveStatus] = useState('Novos');
 
-  const handleButtonChanged = (event: React.MouseEvent<HTMLButtonElement>) => {
+  function handleButtonChanged(event: MouseEvent<HTMLButtonElement>) {
     const buttonValue = event.currentTarget.value;
-    buttonValue === "Novos"
-      ? setActiveStatus("Novos")
-      : buttonValue === "Aprovados"
-      ? setActiveStatus("Aprovados")
-      : buttonValue === "Desaprovados"
-      ? setActiveStatus("Desaprovados")
-      : setActiveStatus("Novos");
-  };
+    buttonValue === 'Novos'
+      ? setActiveStatus('Novos')
+      : buttonValue === 'Aprovados'
+      ? setActiveStatus('Aprovados')
+      : buttonValue === 'Desaprovados'
+      ? setActiveStatus('Desaprovados')
+      : setActiveStatus('Novos');
+  }
 
   useEffect(() => {
     (async () => {
-      await api
-        .get<IReservation[]>("/reservations/new")
-        .then(({ data }) => {
-          setNewReservations(
-            data.filter((reservation) => reservation.volunteer_id === userId)
-          );
-        })
-        .catch(() => {
-          setNewReservations(undefined);
-        });
+      try {
+        const { data } = await api.get<IReservation[]>('/reservations/new');
+        setNewReservations(
+          data.filter((reservation) => reservation.volunteer_id === userId)
+        );
+      } catch {
+        setNewReservations(undefined);
+      }
     })();
 
     (async () => {
-      await api
-        .get<IReservation[]>("/reservations/approved")
-        .then(({ data }) => {
-          setApprovedReservations(
-            data.filter((reservation) => reservation.volunteer_id === userId)
-          );
-        })
-        .catch(() => {
-          setApprovedReservations(undefined);
-        });
+      try {
+        const { data } = await api.get<IReservation[]>(
+          '/reservations/approved'
+        );
+        setApprovedReservations(
+          data.filter((reservation) => reservation.volunteer_id === userId)
+        );
+      } catch {
+        setApprovedReservations(undefined);
+      }
     })();
 
     (async () => {
-      await api
-        .get<IReservation[]>("/reservations/disapproved")
-        .then(({ data }) => {
-          setDisapprovedReservations(
-            data.filter((reservation) => reservation.volunteer_id === userId)
-          );
-        })
-        .catch(() => {
-          setDisapprovedReservations(undefined);
-        });
+      try {
+        const { data } = await api.get<IReservation[]>(
+          '/reservations/disapproved'
+        );
+        setDisapprovedReservations(
+          data.filter((reservation) => reservation.volunteer_id === userId)
+        );
+      } catch {
+        setDisapprovedReservations(undefined);
+      }
     })();
   }, [userId]);
 
   useEffect(() => {
     setCurrentReservations(undefined);
 
-    if (activeStatus === "Aprovados") {
+    if (activeStatus === 'Aprovadas') {
       setCurrentReservations(approvedReservations);
     }
 
-    if (activeStatus === "Desaprovados") {
+    if (activeStatus === 'Não aprovadas') {
       setCurrentReservations(disapprovedReservations);
     }
 
-    if (activeStatus === "Novos") {
+    if (activeStatus === 'Novas') {
       setCurrentReservations(newReservations);
     }
   }, [
@@ -145,9 +105,9 @@ export function ManageReservation() {
     <AppHeader title="Pedidos de reserva">
       <ReservationsTable reservationsData={currentReservations}>
         <ButtonGroup
-          leftButton="Novos"
-          middleButton="Aprovados"
-          rightButton="Desaprovados"
+          leftButton="Novas"
+          middleButton="Aprovadas"
+          rightButton="Não aprovadas"
           selectedButton={activeStatus}
           handleButtonChanged={handleButtonChanged}
         />
