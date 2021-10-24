@@ -1,12 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from 'react';
 
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from '../contexts/AuthContext';
 
-import { AnimalsTable } from "../components/AnimalsTable";
-import { AppHeader } from "../components/AppHeader";
-import { ButtonGroup } from "../components/ButtonGroup";
+import { AnimalsTable } from '../components/AnimalsTable';
+import { AppHeader } from '../components/AppHeader';
+import { ButtonGroup } from '../components/ButtonGroup';
 
-import api from "../services/api";
+import api from '../services/api';
 
 export function ManageAnimals() {
   const { userType } = useContext(AuthContext);
@@ -16,23 +16,23 @@ export function ManageAnimals() {
   const [availableAnimals, setAvailableAnimals] = useState();
   const [adoptedAnimals, setAdoptedAnimals] = useState();
 
-  const [activeStatus, setActiveStatus] = useState("Disponíveis");
+  const [activeStatus, setActiveStatus] = useState('Disponíveis');
 
   const handleButtonChanged = (event: React.MouseEvent<HTMLButtonElement>) => {
     const buttonValue = event.currentTarget.value;
-    buttonValue === "Disponíveis"
-      ? setActiveStatus("Disponíveis")
-      : buttonValue === "Adotados"
-      ? setActiveStatus("Adotados")
-      : buttonValue === "Todos os animais"
-      ? setActiveStatus("Todos os animais")
-      : setActiveStatus("Disponíveis");
+    buttonValue === 'Disponíveis'
+      ? setActiveStatus('Disponíveis')
+      : buttonValue === 'Adotados'
+      ? setActiveStatus('Adotados')
+      : buttonValue === 'Todos os animais'
+      ? setActiveStatus('Todos os animais')
+      : setActiveStatus('Disponíveis');
   };
 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get("/animals/unavailable");
+        const { data } = await api.get('/animals/unavailable');
 
         setAdoptedAnimals(data);
       } catch {
@@ -41,16 +41,16 @@ export function ManageAnimals() {
     })();
     (async () => {
       try {
-        const { data } = await api.get("/animals/available");
+        const { data } = await api.get('/animals/available');
         setAvailableAnimals(data);
       } catch {
         setAvailableAnimals(undefined);
       }
     })();
-    if (userType === "volunteer") {
+    if (userType === 'volunteer') {
       (async () => {
         try {
-          const { data } = await api.get("/animals");
+          const { data } = await api.get('/animals');
           setAllAnimals(data);
         } catch {
           setAllAnimals(undefined);
@@ -59,7 +59,7 @@ export function ManageAnimals() {
     } else {
       (async () => {
         try {
-          const { data } = await api.get("/all-animals");
+          const { data } = await api.get('/all-animals');
           setAllAnimals(data);
         } catch {
           setAllAnimals(undefined);
@@ -69,26 +69,22 @@ export function ManageAnimals() {
   }, [userType]);
 
   useEffect(() => {
-    activeStatus === "Todos os animais"
+    activeStatus === 'Todos os animais'
       ? setCurrentAnimals(allAnimals)
-      : activeStatus === "Adotados"
+      : activeStatus === 'Adotados'
       ? setCurrentAnimals(adoptedAnimals)
-      : activeStatus === "Disponíveis"
+      : activeStatus === 'Disponíveis'
       ? setCurrentAnimals(availableAnimals)
       : setCurrentAnimals(undefined);
   }, [activeStatus, allAnimals, adoptedAnimals, availableAnimals]);
 
-  if (typeof currentAnimals === "undefined") {
-    return <h1>Carregando Animais...</h1>;
-  }
-
   return (
-    <AppHeader title='Editar animais'>
+    <AppHeader title="Editar animais">
       <AnimalsTable animalsData={currentAnimals}>
         <ButtonGroup
-          leftButton='Disponíveis'
-          middleButton='Adotados'
-          rightButton='Todos os animais'
+          leftButton="Disponíveis"
+          middleButton="Adotados"
+          rightButton="Todos os animais"
           selectedButton={activeStatus}
           handleButtonChanged={handleButtonChanged}
         />

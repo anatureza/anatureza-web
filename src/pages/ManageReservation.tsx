@@ -27,17 +27,17 @@ export function ManageReservation() {
     IReservation[] | undefined
   >();
 
-  const [activeStatus, setActiveStatus] = useState('Novos');
+  const [activeStatus, setActiveStatus] = useState('Novas');
 
   function handleButtonChanged(event: MouseEvent<HTMLButtonElement>) {
     const buttonValue = event.currentTarget.value;
-    buttonValue === 'Novos'
-      ? setActiveStatus('Novos')
-      : buttonValue === 'Aprovados'
-      ? setActiveStatus('Aprovados')
-      : buttonValue === 'Desaprovados'
-      ? setActiveStatus('Desaprovados')
-      : setActiveStatus('Novos');
+    buttonValue === 'Novas'
+      ? setActiveStatus('Novas')
+      : buttonValue === 'Aprovadas'
+      ? setActiveStatus('Aprovadas')
+      : buttonValue === 'Não aprovadas'
+      ? setActiveStatus('Não aprovadas')
+      : setActiveStatus('Novas');
   }
 
   useEffect(() => {

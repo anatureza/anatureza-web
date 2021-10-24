@@ -1,30 +1,15 @@
-import { ReactNode } from "react";
-import { AnimalsTableRow } from "./AnimalsTableRow";
+import { ReactNode } from 'react';
 
-type AnimalData = {
-  id: string;
-  name: string;
-  main_image_url: string | null;
-  description: string;
-  city: string;
-  available: boolean;
-  birth_date: string;
-  kind: string;
-  gender: string;
-  volunteer: {
-    id: string;
-    name: string;
-    phone_number: string;
-    avatar: string;
-  };
-};
+import { AnimalsTableRow } from './AnimalsTableRow';
 
-type AnimalsDataProp = {
-  animalsData: AnimalData[] | undefined;
+import { IAnimal } from '../types';
+
+interface IAnimalsDataProp {
+  animalsData: IAnimal[] | undefined;
   children: ReactNode;
-};
+}
 
-export function AnimalsTable({ animalsData, children }: AnimalsDataProp) {
+export function AnimalsTable({ animalsData, children }: IAnimalsDataProp) {
   return (
     <main>
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
@@ -32,8 +17,46 @@ export function AnimalsTable({ animalsData, children }: AnimalsDataProp) {
           <div>
             {children}
             <div className="px-4 py-6 sm:px-0">
-              <h1 className="text-xl">Gerenciar animais</h1>
-              <AnimalsTableRow animalsList={animalsData} />
+              <div className="flex flex-col mt-4 mb-2">
+                <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                  <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead className="bg-gray-50">
+                          <tr>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                              Animal
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                              ID
+                            </th>
+                            <th
+                              scope="col"
+                              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                            >
+                              Status
+                            </th>
+                            <th scope="col" className="relative px-6 py-3">
+                              <span className="sr-only">Ações</span>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                          {animalsData.map((animal) => (
+                            <AnimalsTableRow animal={animal} />
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         ) : (

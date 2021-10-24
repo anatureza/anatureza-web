@@ -1,15 +1,15 @@
-import { FormEvent, useEffect, useState } from "react";
-import { useContext } from "react";
+import { FormEvent, useEffect, useState } from 'react';
+import { useContext } from 'react';
 
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from '../contexts/AuthContext';
 
-import { AddressInputGroup } from "../components/AddressInputGroup";
+import { AddressInputGroup } from '../components/AddressInputGroup';
 
-import moment from "moment";
+import moment from 'moment';
 
-import api from "../services/api";
+import api from '../services/api';
 
 export function SignUp() {
   const history = useHistory();
@@ -17,29 +17,29 @@ export function SignUp() {
   const { authenticated } = useContext(AuthContext);
 
   if (authenticated) {
-    history.push("/");
+    history.push('/');
   }
 
   const [passwordConfirmIsValid, setPasswordConfirmIsValid] = useState(false);
   const [passwordHas8Digits, setPasswordHas8digits] = useState(false);
 
   const [passwordAlreadyTyped, setPasswordAlreadyTyped] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone_number, setPhoneNumber] = useState("");
-  const [birth_date, setBirthDate] = useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phone_number, setPhoneNumber] = useState('');
+  const [birth_date, setBirthDate] = useState('');
   const [authorizes_image, setAuthorizesImage] = useState(false);
 
-  const [uf, setUF] = useState("");
-  const [place, setPlace] = useState("");
-  const [number, setNumber] = useState("");
-  const [complement, setComplement] = useState("");
-  const [neighborhood, setNeighborhood] = useState("");
-  const [zip, setZip] = useState("");
-  const [city, setCity] = useState("");
+  const [uf, setUF] = useState('');
+  const [place, setPlace] = useState('');
+  const [number, setNumber] = useState('');
+  const [complement, setComplement] = useState('');
+  const [neighborhood, setNeighborhood] = useState('');
+  const [zip, setZip] = useState('');
+  const [city, setCity] = useState('');
 
   useEffect(() => {
     if (password.length > 0) {
@@ -64,26 +64,23 @@ export function SignUp() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    await api
-      .post("/user", {
-        name,
-        email,
-        password,
-        phone_number,
-        authorizes_image,
-        birth_date: moment(birth_date).format("YYYY/MM/DD").toString(),
-        place,
-        number,
-        complement,
-        neighborhood,
-        zip,
-        city,
-      })
-      .then(() => {
-        alert("Cadastro realizado com sucesso");
+    await api.post('/user', {
+      name,
+      email,
+      password,
+      phone_number,
+      authorizes_image,
+      birth_date: moment(birth_date).format('YYYY-MM-DD').toString(),
+      place,
+      number,
+      complement,
+      neighborhood,
+      zip,
+      city,
+    });
+    alert('Cadastro realizado com sucesso');
 
-        history.push("/signin");
-      });
+    history.push('/signin');
   }
 
   return (
@@ -143,18 +140,18 @@ export function SignUp() {
                 <div className="mt-1" hidden={!passwordAlreadyTyped}>
                   <p
                     className={`text-${
-                      passwordConfirmIsValid ? "green" : "red"
+                      passwordConfirmIsValid ? 'green' : 'red'
                     }-500`}
                   >
-                    As senhas {!passwordConfirmIsValid && <span>n&#227;o</span>}{" "}
+                    As senhas {!passwordConfirmIsValid && <span>n&#227;o</span>}{' '}
                     se correspondem!
                   </p>
                   <p
                     className={`text-${
-                      passwordHas8Digits ? "green" : "red"
+                      passwordHas8Digits ? 'green' : 'red'
                     }-500`}
                   >
-                    A senha {!passwordHas8Digits && <span>n&#227;o</span>}{" "}
+                    A senha {!passwordHas8Digits && <span>n&#227;o</span>}{' '}
                     possui pelo menos 8 digitos!
                   </p>
                 </div>
@@ -222,7 +219,7 @@ export function SignUp() {
           />
           <hr />
           <p className="ml-4">
-            Ao criar a conta, você concorda com os{" "}
+            Ao criar a conta, você concorda com os{' '}
             <a className="text-blue-800" href="/termos-de-uso" target="_blank">
               Termos de Uso
             </a>
@@ -251,8 +248,8 @@ export function SignUp() {
                 passwordAlreadyTyped &&
                 passwordHas8Digits &&
                 passwordConfirmIsValid
-                  ? "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200"
-                  : "bg-gray-600 cursor-not-allowed"
+                  ? 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200'
+                  : 'bg-gray-600 cursor-not-allowed'
               }  text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg`}
             >
               Criar conta

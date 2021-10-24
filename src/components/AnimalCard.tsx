@@ -1,49 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import DefaultImage from "../assets/images/default_image.png";
+import { IAnimal } from '../types';
 
-interface IAnimal {
-  id: string;
-  name: string;
-  available: boolean;
-  birth_date: string;
-  description: string;
-  gender: string;
-  kind: string;
-  main_image_url?: string | null;
-  created_at: string;
-  updated_at: string;
-  address_id: string;
-  address: {
-    place: string;
-    zip: number;
-    city: string;
-    complement: string;
-    id: string;
-    neighborhood: string;
-    number: string;
-    created_at: string;
-    updated_at: string;
-  };
-  volunteer_id: string;
-  user: {
-    address_id: string;
-    authorizes_image: boolean;
-    avatar?: string | null;
-    avatar_url?: string | null;
-    birth_date: string;
-    created_at: string;
-    email: string;
-    id: string;
-    name: string;
-    phone_number: string;
-    type: string;
-    updated_at: string;
-  };
-}
+import DefaultImage from '../assets/images/default_image.png';
 
 export function AnimalCard(animal: IAnimal) {
   return (
@@ -85,7 +47,7 @@ export function AnimalCard(animal: IAnimal) {
             </span>
             <div className="flex flex-col justify-between ml-4 text-sm">
               <p className="text-gray-800 truncate">
-                <span className="font-semibold">Voluntário:</span>{" "}
+                <span className="font-semibold">Voluntário:</span>{' '}
                 {`${animal.user.name}`}
               </p>
               <p className="text-gray-400">{`Contato: ${animal.user.phone_number}`}</p>

@@ -1,51 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
-import { AuthContext } from "../contexts/AuthContext";
+import { SelectImages } from '../components/SelectImages';
 
-import { Link, useParams } from "react-router-dom";
+import { AuthContext } from '../contexts/AuthContext';
 
-import { SelectImages } from "../components/SelectImages";
+import api from '../services/api';
 
-import api from "../services/api";
+import moment from 'moment';
 
-import moment from "moment";
+import { IAnimal } from '../types';
 
 interface IAnimalIdParams {
   animal_id: string;
-}
-
-interface IAnimal {
-  id: string;
-  volunteer_id: string;
-  address_id: string;
-  name: string;
-  description: string;
-  kind: string;
-  gender: string;
-  birth_date: string;
-  images?: Array<{
-    id: string;
-    path: string;
-  }>;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-    phone_number: string;
-    birth_date: Date;
-    type: string;
-    avatar?: string | null;
-  };
-  address: {
-    uf: string;
-    place: string;
-    number: number;
-    complement: string;
-    neighborhood: string;
-    zip: number;
-    city: string;
-  };
 }
 
 export function AnimalProfile() {
@@ -63,8 +30,12 @@ export function AnimalProfile() {
     })();
   }, [animal_id]);
 
-  if (typeof animal === "undefined") {
-    return <h1>Carregando dados do animal...</h1>;
+  if (!animal) {
+    return (
+      <div className="min-h-screen w-full">
+        <h1 className="text-center">Carregando dados do animal...</h1>
+      </div>
+    );
   }
 
   return (
@@ -88,7 +59,7 @@ export function AnimalProfile() {
                   type="text"
                   id="name"
                   disabled
-                  value={animal.name}
+                  value={animal.name || '...'}
                   className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent mb-4"
                 />
                 <label htmlFor="description" className="text-gray-900">
@@ -110,7 +81,7 @@ export function AnimalProfile() {
                       type="radio"
                       name="kind"
                       value="cat"
-                      checked={animal.kind === "cat"}
+                      checked={animal.kind === 'cat'}
                       disabled
                       className="h-5 w-5 text-blue-600"
                     />
@@ -121,7 +92,7 @@ export function AnimalProfile() {
                       type="radio"
                       name="kind"
                       value="dog"
-                      checked={animal.kind === "dog"}
+                      checked={animal.kind === 'dog'}
                       disabled
                       className="h-5 w-5 text-blue-600"
                     />
@@ -135,7 +106,7 @@ export function AnimalProfile() {
                       type="radio"
                       name="gender"
                       value="female"
-                      checked={animal.gender === "female"}
+                      checked={animal.gender === 'female'}
                       disabled
                       className="h-5 w-5 text-blue-600"
                     />
@@ -146,7 +117,7 @@ export function AnimalProfile() {
                       type="radio"
                       name="gender"
                       value="male"
-                      checked={animal.gender === "male"}
+                      checked={animal.gender === 'male'}
                       disabled
                       className="h-5 w-5 text-blue-600"
                     />
@@ -163,7 +134,7 @@ export function AnimalProfile() {
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     id="animal-birth_date"
                     name="birth_date"
-                    value={moment(animal.birth_date).format("YYYY-MM-DD")}
+                    value={moment(animal.birth_date).format('YYYY-MM-DD')}
                     disabled
                   />
                 </div>
@@ -225,13 +196,15 @@ export function AnimalProfile() {
             <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
               <div>
                 <div className="relative border-box md:py-2">
-                  <label htmlFor="address-place" className="text-gray-900">
-                    Logradouro
+                  <label htmlFor="address-uf" className="text-gray-900">
+                    Estado (UF)
                   </label>
                   <input
                     type="text"
-                    id="address-place"
-                    value={animal.address.uf}
+                    id="address-uf"
+                    value={
+                      animal.address.uf === 'NONE' ? '' : animal.address.uf
+                    }
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     disabled
                   />
@@ -335,7 +308,7 @@ export function AnimalProfile() {
             </div>
           ) : (
             <p className="ml-4">
-              Para adotar, você precisa estar{" "}
+              Para adotar, você precisa estar{' '}
               <a className="text-blue-800" href="/signin" target="_blank">
                 Logado
               </a>

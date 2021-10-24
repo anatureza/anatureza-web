@@ -1,52 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from 'react';
 
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from '../contexts/AuthContext';
 
-import { AppHeader } from "../components/AppHeader";
-import { ReservationsTableRow } from "../components/ReservationsTableRow";
+import { AppHeader } from '../components/AppHeader';
+import { ReservationsTableRow } from '../components/ReservationsTableRow';
 
-import api from "../services/api";
-import moment from "moment";
+import moment from 'moment';
 
-interface IReservation {
-  id: string;
-  adopter_id: string;
-  animal_id: string;
-  status: string;
-  quiz_id: string;
-  scheduled_at: Date | string | null;
-  created_at: Date;
-  updated_at: Date;
-  animal: {
-    id: string;
-    volunteer_id: string;
-    address_id: string;
-    name: string;
-    description: string;
-    available: boolean;
-    kind: string;
-    gender: string;
-    birth_date: Date;
-    created_at: Date;
-    updated_at: Date;
-    main_image_url: string | null;
-  };
-  userAdopter: {
-    id: string;
-    name: string;
-    email: string;
-    phone_number: string;
-    address_id: string;
-    birth_date: Date | string;
-    type: string;
-    authorizes_image: boolean;
-    avatar: string | null;
-    created_at: Date;
-    updated_at: Date;
-    avatar_url: string | null;
-  };
-  volunteer_id: string;
-}
+import api from '../services/api';
+
+import { IReservation } from '../types';
 
 export function Dashboard() {
   const { userId } = useContext(AuthContext);
@@ -66,28 +29,27 @@ export function Dashboard() {
 
   useEffect(() => {
     (async () => {
-      await api
-        .get<IReservation[] | undefined>("/reservations/approved")
-        .then(({ data }) => {
-          if (typeof data !== "undefined") {
-            // Get All Reservations From Current Volunteer
-            setAllReservations(
-              data.filter(
-                (reservation) =>
-                  reservation.volunteer_id === userId ||
-                  reservation.scheduled_at !== null
-              )
-            );
-          }
-        });
+      const { data } = await api.get<IReservation[] | undefined>(
+        '/reservations/approved'
+      );
+      if (typeof data !== 'undefined') {
+        // Get All Reservations From Current Volunteer
+        setAllReservations(
+          data.filter(
+            (reservation) =>
+              reservation.volunteer_id === userId ||
+              reservation.scheduled_at !== null
+          )
+        );
+      }
     })();
   }, [userId]);
 
   useEffect(() => {
-    const startOfWeek = moment().startOf("week");
-    const endOfWeek = moment().endOf("week");
+    const startOfWeek = moment().startOf('week');
+    const endOfWeek = moment().endOf('week');
 
-    if (typeof allReservations !== "undefined") {
+    if (typeof allReservations !== 'undefined') {
       setCurrentWeekReservations(
         allReservations.filter(
           (reservation) =>
@@ -115,7 +77,7 @@ export function Dashboard() {
       <main>
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            {typeof lateReservations !== "undefined" ? (
+            {typeof lateReservations !== 'undefined' ? (
               <>
                 <h1 className="text-xl">Reservas atrasadas</h1>
                 <ReservationsTableRow reservations={lateReservations} />
@@ -126,7 +88,7 @@ export function Dashboard() {
           </div>
           <hr />
           <div className="px-4 py-6 sm:px-0">
-            {typeof currentWeekReservations !== "undefined" ? (
+            {typeof currentWeekReservations !== 'undefined' ? (
               <>
                 <h1 className="text-xl">Reservas Nesta Semana</h1>
                 <ReservationsTableRow reservations={currentWeekReservations} />
@@ -137,7 +99,7 @@ export function Dashboard() {
           </div>
           <hr />
           <div className="px-4 py-6 sm:px-0">
-            {typeof nextWeekReservations !== "undefined" ? (
+            {typeof nextWeekReservations !== 'undefined' ? (
               <>
                 <h1 className="text-xl">Próximas Reservas</h1>
                 <ReservationsTableRow reservations={nextWeekReservations} />
