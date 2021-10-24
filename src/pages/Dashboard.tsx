@@ -53,7 +53,7 @@ export function Dashboard() {
       setCurrentWeekReservations(
         allReservations.filter(
           (reservation) =>
-            moment(reservation.scheduled_at).isAfter(startOfWeek) ||
+            moment(reservation.scheduled_at).isAfter(startOfWeek) &&
             moment(reservation.scheduled_at).isBefore(endOfWeek)
         )
       );
@@ -77,7 +77,8 @@ export function Dashboard() {
       <main>
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           <div className="px-4 py-6 sm:px-0">
-            {typeof lateReservations !== 'undefined' ? (
+            {typeof lateReservations !== 'undefined' &&
+            lateReservations.length > 0 ? (
               <>
                 <h1 className="text-xl">Reservas atrasadas</h1>
                 <ReservationsTableRow reservations={lateReservations} />
@@ -88,7 +89,8 @@ export function Dashboard() {
           </div>
           <hr />
           <div className="px-4 py-6 sm:px-0">
-            {typeof currentWeekReservations !== 'undefined' ? (
+            {typeof currentWeekReservations !== 'undefined' &&
+            currentWeekReservations.length > 0 ? (
               <>
                 <h1 className="text-xl">Reservas Nesta Semana</h1>
                 <ReservationsTableRow reservations={currentWeekReservations} />
@@ -99,7 +101,8 @@ export function Dashboard() {
           </div>
           <hr />
           <div className="px-4 py-6 sm:px-0">
-            {typeof nextWeekReservations !== 'undefined' ? (
+            {typeof nextWeekReservations !== 'undefined' &&
+            nextWeekReservations.length > 0 ? (
               <>
                 <h1 className="text-xl">Próximas Reservas</h1>
                 <ReservationsTableRow reservations={nextWeekReservations} />
