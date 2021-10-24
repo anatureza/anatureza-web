@@ -1,6 +1,7 @@
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import api from "../services/api";
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
+
+import api from '../services/api';
 
 type ReservationParams = {
   animal_id: string;
@@ -12,44 +13,48 @@ export function NewReservationQuiz() {
   const { animal_id } = useParams<ReservationParams>();
 
   const questions = [
-    "Por que motivos gostaria de adotar?",
-    "Você tem condições financeiras de acrescentar no seu orçamento os gastos que terá com alimentação de boa qualidade (mínimo ração Golden), vacinas (espécie específica - v10 ou quádrupla) além da antirrábica e atendimento veterinário sempre que necessário?",
-    "Qual a frequência de passeios que o animal terá?",
-    "O que pensa sobre placa de identificação com nome e dados do tutor gravados? Caso você tenha algum animal, ele possui? Usa em quais ocasiões? O que acha do uso 24 horas por dia?",
-    "Quantas pessoas moram na sua residência? Quantos adultos e quantas crianças? Qual a idade de todos? Todos querem adotar?",
-    "Você é o responsável pela residência onde o animal ficará, inclusive, financeiramente? Se não, quem o é? O que pensa essa pessoa sobre sua decisão em adotar?",
-    "Alguém na sua casa é alérgico? Se sim, a que?",
-    "Caso sua casa seja alugada, o proprietário permite, por escrito, animais? E no caso de ter que se mudar, caso para onde pretenda ir não permita animais, como lidará com a questão da guarda do animal?",
-    "Caso more em casa, o animal ficará só dentro da residência (o que inclui quintal e garagem) ou terá livre acesso para passear na rua sozinho?",
-    "Quantas horas por dia, o animal ficará sozinho?",
-    "Quem tomará conta do animal quando você e sua família viajarem?",
-    "Qual sua opinião em relação a castração? Caso tenha outros animais, eles são castrados?",
-    "Há previsão de algum evento próximo que irá alterar sua vida (casamento, nascimento, separação, mudanças etc.)?",
-    "Lidando com um fato desagradável, mas real em nossas vidas, se você ou seu cônjuge ficarem desempregados, como fica a situação do animal?",
-    "Já teve outros animais? O que aconteceu com eles?",
+    'Por que motivos gostaria de adotar?',
+    'Você tem condições financeiras de acrescentar no seu orçamento os gastos que terá com alimentação de boa qualidade (mínimo ração Golden), vacinas (espécie específica - v10 ou quádrupla) além da antirrábica e atendimento veterinário sempre que necessário?',
+    'Qual a frequência de passeios que o animal terá?',
+    'O que pensa sobre placa de identificação com nome e dados do tutor gravados? Caso você tenha algum animal, ele possui? Usa em quais ocasiões? O que acha do uso 24 horas por dia?',
+    'Quantas pessoas moram na sua residência? Quantos adultos e quantas crianças? Qual a idade de todos? Todos querem adotar?',
+    'Você é o responsável pela residência onde o animal ficará, inclusive, financeiramente? Se não, quem o é? O que pensa essa pessoa sobre sua decisão em adotar?',
+    'Alguém na sua casa é alérgico? Se sim, a que?',
+    'Caso sua casa seja alugada, o proprietário permite, por escrito, animais? E no caso de ter que se mudar, caso para onde pretenda ir não permita animais, como lidará com a questão da guarda do animal?',
+    'Caso more em casa, o animal ficará só dentro da residência (o que inclui quintal e garagem) ou terá livre acesso para passear na rua sozinho?',
+    'Quantas horas por dia, o animal ficará sozinho?',
+    'Quem tomará conta do animal quando você e sua família viajarem?',
+    'Qual sua opinião em relação a castração? Caso tenha outros animais, eles são castrados?',
+    'Há previsão de algum evento próximo que irá alterar sua vida (casamento, nascimento, separação, mudanças etc.)?',
+    'Lidando com um fato desagradável, mas real em nossas vidas, se você ou seu cônjuge ficarem desempregados, como fica a situação do animal?',
+    'Já teve outros animais? O que aconteceu com eles?',
   ];
 
-  const [first, setFirst] = useState("");
-  const [second, setSecond] = useState("");
-  const [third, setThird] = useState("");
-  const [fourth, setFourth] = useState("");
-  const [fifth, setFifth] = useState("");
-  const [sixth, setSixth] = useState("");
-  const [seventh, setSeventh] = useState("");
-  const [eighth, setEighth] = useState("");
-  const [ninth, setNinth] = useState("");
-  const [tenth, setTenth] = useState("");
-  const [eleventh, setEleventh] = useState("");
-  const [twelfth, setTwelfth] = useState("");
-  const [thirteenth, setThirteenth] = useState("");
-  const [fourteenth, setFourteenth] = useState("");
-  const [fifteenth, setFifteenth] = useState("");
+  const [first, setFirst] = useState('');
+  const [second, setSecond] = useState('');
+  const [third, setThird] = useState('');
+  const [fourth, setFourth] = useState('');
+  const [fifth, setFifth] = useState('');
+  const [sixth, setSixth] = useState('');
+  const [seventh, setSeventh] = useState('');
+  const [eighth, setEighth] = useState('');
+  const [ninth, setNinth] = useState('');
+  const [tenth, setTenth] = useState('');
+  const [eleventh, setEleventh] = useState('');
+  const [twelfth, setTwelfth] = useState('');
+  const [thirteenth, setThirteenth] = useState('');
+  const [fourteenth, setFourteenth] = useState('');
+  const [fifteenth, setFifteenth] = useState('');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    await api
-      .post(`/reservation/${animal_id}`, {
+    try {
+      await api.post(`/reservation/${animal_id}`, {
         animal_id,
         first,
         second,
@@ -66,15 +71,12 @@ export function NewReservationQuiz() {
         thirteenth,
         fourteenth,
         fifteenth,
-      })
-      .then(() => {
-        alert("Sucesso! Um de nossos voluntários entrará em contato em breve!");
-        history.push("/");
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Não Foi Possível Enviar o Formulário!");
       });
+      alert('Sucesso! Um de nossos voluntários entrará em contato em breve!');
+      history.push('/');
+    } catch {
+      alert('Não Foi Possível Enviar o Formulário!');
+    }
   }
 
   return (

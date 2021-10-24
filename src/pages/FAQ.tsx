@@ -1,59 +1,64 @@
-import { Disclosure, Transition } from "@headlessui/react";
+import { useEffect } from 'react';
+import { Disclosure, Transition } from '@headlessui/react';
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 const questions = [
   {
-    id: "1",
-    title: "Quando devo castrar meus cães e gatos?",
-    answer: "Cachorros recomenda-se com no máximo 7 meses e gatos com 6 meses",
+    id: '1',
+    title: 'Quando devo castrar meus cães e gatos?',
+    answer: 'Cachorros recomenda-se com no máximo 7 meses e gatos com 6 meses',
   },
   {
-    id: "2",
-    title: "Qual importância do vermífugo na saúde geral dos animais?",
+    id: '2',
+    title: 'Qual importância do vermífugo na saúde geral dos animais?',
     answer:
-      "Vermífugos são essenciais para manter a boa saúde dos animais, evitando" +
-      "vários problemas que podem ocorrer caso os animais estejam infestados com vermes",
+      'Vermífugos são essenciais para manter a boa saúde dos animais, evitando' +
+      'vários problemas que podem ocorrer caso os animais estejam infestados com vermes',
   },
   {
-    id: "3",
-    title: "Devo castrar os cães e gatos machos? Por quê? Há contraindicação?",
+    id: '3',
+    title: 'Devo castrar os cães e gatos machos? Por quê? Há contraindicação?',
     answer:
-      "Os machos devem ser castrados, não há contraindicação e eles não" +
-      " deixam de ser felizes ou protetores da casa (no caso de cães)" +
-      " pelo ato da castração. Ao contrário, são só benefícios na saúde e" +
-      " longevidade. Evita também o problema de marcar território e fugas atrás" +
-      " de fêmeas no cio, que ocasionam brigas e até fuga de muitos animais machos.",
+      'Os machos devem ser castrados, não há contraindicação e eles não' +
+      ' deixam de ser felizes ou protetores da casa (no caso de cães)' +
+      ' pelo ato da castração. Ao contrário, são só benefícios na saúde e' +
+      ' longevidade. Evita também o problema de marcar território e fugas atrás' +
+      ' de fêmeas no cio, que ocasionam brigas e até fuga de muitos animais machos.',
   },
   {
-    id: "4",
-    title: "Quais as principais vacinas que devo dar nos cães e gatos?",
+    id: '4',
+    title: 'Quais as principais vacinas que devo dar nos cães e gatos?',
     answer:
-      "Gatos: tríplice felina ou quádrupla e antirrábica." +
-      " Iniciam com 60 dias ( 3 doses intervalo 21 a 30" +
-      "dias). A antirrábica com4 meses de idade." +
-      " Cães: v10 (ou v8) e antirrábica. Iniciam com 45 dias de idade" +
-      " ( 3 doses com intervalo de 21- 30 dias ) ",
+      'Gatos: tríplice felina ou quádrupla e antirrábica.' +
+      ' Iniciam com 60 dias ( 3 doses intervalo 21 a 30' +
+      'dias). A antirrábica com4 meses de idade.' +
+      ' Cães: v10 (ou v8) e antirrábica. Iniciam com 45 dias de idade' +
+      ' ( 3 doses com intervalo de 21- 30 dias ) ',
   },
   {
-    id: "5",
-    title: "O que configura maus tratos?",
+    id: '5',
+    title: 'O que configura maus tratos?',
     answer:
-      "As leis contra maus tratos felizmente estão bastante severas." +
-      " Considera-se que os animais sofrem maus tratos quando não tem alimentação" +
-      " diária adequada, água limpa, espaço suficiente e limpo, abrigo contra sol" +
-      " e chuva, atendimento veterinário em caso de necessidade.",
+      'As leis contra maus tratos felizmente estão bastante severas.' +
+      ' Considera-se que os animais sofrem maus tratos quando não tem alimentação' +
+      ' diária adequada, água limpa, espaço suficiente e limpo, abrigo contra sol' +
+      ' e chuva, atendimento veterinário em caso de necessidade.',
   },
   {
-    id: "6",
-    title: "Quantas vezes devo alimentar meu pet ao dia?",
+    id: '6',
+    title: 'Quantas vezes devo alimentar meu pet ao dia?',
     answer:
-      "Em geral a maioria das pessoas alimentam seus pets 2x ao dia e essa é a" +
-      " recomendação dos fabricantes de ração.",
+      'Em geral a maioria das pessoas alimentam seus pets 2x ao dia e essa é a' +
+      ' recomendação dos fabricantes de ração.',
   },
 ];
 export function FAQ() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="bg-gray-50 pt-12">
       <div className="container mx-auto leading-6 max-w-screen-md h-screen">
@@ -70,7 +75,7 @@ export function FAQ() {
               {questions.map((question, index) => (
                 <Disclosure
                   as="div"
-                  className={index > 0 ? "mt-2" : ""}
+                  className={index > 0 ? 'mt-2' : ''}
                   key={index}
                 >
                   {({ open }) => (
@@ -80,7 +85,7 @@ export function FAQ() {
                         <FontAwesomeIcon
                           icon={faChevronUp}
                           className={`${
-                            open ? "transform rotate-180" : ""
+                            open ? 'transform rotate-180' : ''
                           } w-5 h-5 text-blue-500`}
                         />
                       </Disclosure.Button>

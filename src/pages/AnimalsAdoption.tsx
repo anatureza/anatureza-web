@@ -11,6 +11,7 @@ export function AnimalsAdoption() {
 
   useEffect(() => {
     (async () => {
+      window.scrollTo(0, 0);
       const { data } = await api.get<IAnimal[]>('/all-animals');
       setAnimals(data.filter((animal) => animal.available));
     })();
