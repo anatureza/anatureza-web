@@ -1,11 +1,11 @@
-import { FormEvent, useState, useContext } from "react";
+import { FormEvent, useState, useContext } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext } from '../contexts/AuthContext';
 
-import { faLock } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import LogoIcon from "../assets/images/logo-an-icononly.png";
-import { useHistory } from "react-router-dom";
+import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import LogoIcon from '../assets/images/logo-an-icononly.png';
 
 export function SignIn() {
   const history = useHistory();
@@ -13,11 +13,11 @@ export function SignIn() {
   const { handleLogin, authenticated } = useContext(AuthContext);
 
   if (authenticated) {
-    history.push("/");
+    history.push('/');
   }
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -38,7 +38,7 @@ export function SignIn() {
             Entre com os seus dados
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Ou{" "}
+            Ou{' '}
             <a
               href="/cadastre-se"
               className="font-medium text-blue-600 hover:text-blue-500"
@@ -86,12 +86,11 @@ export function SignIn() {
 
           <div className="flex items-center justify-end">
             <div className="text-sm">
-              <a
-                href="/recuperar-senha"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
-                Esqueceu sua senha?
-              </a>
+              <Link to="/esqueci-minha-senha">
+                <span className="font-medium text-blue-600 hover:text-blue-500">
+                  Esqueceu sua senha?
+                </span>
+              </Link>
             </div>
           </div>
 

@@ -1,13 +1,18 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUserFriends,
   faHeart,
   faDog,
-} from "@fortawesome/free-solid-svg-icons";
+} from '@fortawesome/free-solid-svg-icons';
 
-import "../styles/pages/home.css";
+import '../styles/pages/home.css';
+import { useEffect } from 'react';
 
 export function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       <section className="text-gray-600 body-font">

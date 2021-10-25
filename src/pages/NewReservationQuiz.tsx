@@ -218,7 +218,7 @@ export function Question({ answer, question, handleOnChange }: QuestionProps) {
         {question}
       </label>
       <input
-        className="flex-1 bg-gray-100 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+        className="flex-1 bg-gray-100 appearance-none border border-gray-300 w-full py-2 px-4 text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
         id="answer"
         placeholder="Insira sua resposta"
         value={answer}
