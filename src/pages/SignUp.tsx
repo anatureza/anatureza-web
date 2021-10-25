@@ -64,23 +64,27 @@ export function SignUp() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    await api.post('/user', {
-      name,
-      email,
-      password,
-      phone_number,
-      authorizes_image,
-      birth_date: moment(birth_date).format('YYYY-MM-DD').toString(),
-      place,
-      number,
-      complement,
-      neighborhood,
-      zip,
-      city,
-    });
-    alert('Cadastro realizado com sucesso');
+    try {
+      await api.post('/user', {
+        name,
+        email,
+        password,
+        phone_number,
+        authorizes_image,
+        birth_date: moment(birth_date).format('YYYY-MM-DD').toString(),
+        place,
+        number,
+        complement,
+        neighborhood,
+        zip,
+        city,
+      });
+      alert('Cadastro realizado com sucesso');
 
-    history.push('/signin');
+      history.push('/signin');
+    } catch {
+      alert('Não foi possível cadastrar-se');
+    }
   }
 
   return (

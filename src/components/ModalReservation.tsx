@@ -1,11 +1,11 @@
-import { FormEvent, Fragment, useRef } from "react";
+import { FormEvent, Fragment, useRef } from 'react';
 
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition } from '@headlessui/react';
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 
 interface IModalProps {
   isForApproval: boolean;
@@ -89,7 +89,7 @@ export function ModalReservation({
                       {title}
                     </Dialog.Title>
                     <div className="mt-2">
-                      {isForApproval && typeof setInputItem !== "undefined" && (
+                      {isForApproval && typeof setInputItem !== 'undefined' && (
                         <>
                           <label
                             htmlFor="scheduled_at"
@@ -98,14 +98,14 @@ export function ModalReservation({
                             Agendar data de Reserva
                           </label>
                           <input
-                            type="date"
+                            type="datetime-local"
                             required
                             className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                             name="scheduled_at"
                             value={inputItem}
-                            onChange={(event) =>
-                              setInputItem(event.target.value)
-                            }
+                            onChange={(event) => {
+                              setInputItem(event.target.value);
+                            }}
                           />
                         </>
                       )}
@@ -131,8 +131,8 @@ export function ModalReservation({
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:ml-3 sm:w-auto sm:text-sm"
                 >
                   {isForApproval
-                    ? "Reprovar Questionário"
-                    : "Marcar Como Desaprovado"}
+                    ? 'Reprovar Questionário'
+                    : 'Marcar Como Desaprovado'}
                 </button>
 
                 <button

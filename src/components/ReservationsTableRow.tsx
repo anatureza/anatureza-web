@@ -58,12 +58,12 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
 
     try {
       await api.post(`/reservation/approve/${reservationId}`, {
-        scheduled_at: moment(scheduled_at).format('YYYY-MM-DD').toString(),
+        scheduled_at: moment(scheduled_at).format('YYYY-MM-DD HH:mm:ss'),
       });
 
       alert('Reserva Aprovada!');
       history.go(0);
-    } catch {
+    } catch (err) {
       alert('Ocorreu algum erro!');
     }
   }
@@ -160,7 +160,7 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {!reservation.scheduled_at
                   ? 'Não marcada'
-                  : moment(reservation.scheduled_at).format('DD-MM-YYYY')}
+                  : moment(reservation.scheduled_at).format('DD-MM-YYYY hh:mm')}
               </td>
               {reservation.status !== 'adopted' && (
                 <td className="flex px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

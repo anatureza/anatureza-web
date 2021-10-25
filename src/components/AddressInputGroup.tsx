@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 interface IAddress {
   uf: string;
@@ -17,8 +17,8 @@ interface IAddress {
   setZip: Dispatch<SetStateAction<string>>;
   autoCompleteOnProp: boolean;
 }
-
 interface IViaCEPResponse {
+  erro: boolean;
   cep: string;
   logradouro: string;
   complemento: string;
@@ -42,7 +42,7 @@ export function AddressInputGroup({
   setCity,
   neighborhood,
   setNeighborhood,
-  complement = "",
+  complement = '',
   setComplement,
   zip,
   setZip,
@@ -52,13 +52,15 @@ export function AddressInputGroup({
   const [loadingZip, setLoadingZip] = useState(false);
 
   useEffect(() => {
-    if (uf.toUpperCase() === "NONE") {
-      setUF("");
+    if (uf) {
+      if (uf.toUpperCase() === 'NONE') {
+        setUF('');
+      }
     }
   }, [uf, setUF]);
 
   async function fetchViaCEP(zipInput: string) {
-    const zipRawValue = zipInput.replace(/\D+/g, "");
+    const zipRawValue = zipInput.replace(/\D+/g, '');
 
     try {
       const response = await fetch(
@@ -68,18 +70,25 @@ export function AddressInputGroup({
       if (autoCompleteOn) {
         const data: IViaCEPResponse | null = await response.json();
 
-        if (data) {
-          if (data.logradouro !== "") setPlace(data.logradouro);
-          if (data.complemento !== "") setComplement(data.complemento);
-          if (data.bairro !== "") setNeighborhood(data.bairro);
-          if (data.localidade !== "") setCity(data.localidade);
-          if (data.uf !== "") setUF(data.uf);
+        if (data && !data.erro) {
+          if (data.logradouro !== '') setPlace(data.logradouro);
+          if (data.complemento !== '') setComplement(data.complemento);
+          if (data.bairro !== '') setNeighborhood(data.bairro);
+          if (data.localidade !== '') setCity(data.localidade);
+          if (data.uf !== '') setUF(data.uf);
           setAutoCompleteOn(false);
+        } else {
+          setPlace('');
+          setComplement('');
+          setNeighborhood('');
+          setCity('');
+          setUF('');
+          setAutoCompleteOn(true);
         }
       }
     } catch {
       if (autoCompleteOn) {
-        alert("CEP Não Encontrado!");
+        alert('CEP Não Encontrado!');
       }
     }
     setLoadingZip(false);
@@ -92,7 +101,7 @@ export function AddressInputGroup({
         <div>
           <div className="relative">
             <label htmlFor="address-number" className="text-gray-900">
-              CEP{" "}
+              CEP{' '}
               <span className="text-xs text-gray-400">(Apenas números)</span>
             </label>
             <input
@@ -123,7 +132,7 @@ export function AddressInputGroup({
           <input
             type="text"
             id="address-uf"
-            value={loadingZip ? "..." : uf}
+            value={loadingZip ? '...' : uf}
             onChange={(event) => {
               setUF(event.target.value);
             }}
@@ -139,7 +148,7 @@ export function AddressInputGroup({
             <input
               type="text"
               id="address-city"
-              value={loadingZip ? "..." : city}
+              value={loadingZip ? '...' : city}
               onChange={(event) => {
                 setCity(event.target.value);
               }}
@@ -157,7 +166,7 @@ export function AddressInputGroup({
             type="text"
             id="address-neighborhood"
             className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-            value={loadingZip ? "..." : neighborhood}
+            value={loadingZip ? '...' : neighborhood}
             onChange={(event) => {
               setNeighborhood(event.target.value);
             }}
@@ -172,7 +181,7 @@ export function AddressInputGroup({
             <input
               type="text"
               id="address-place"
-              value={loadingZip ? "..." : place}
+              value={loadingZip ? '...' : place}
               onChange={(event) => {
                 setPlace(event.target.value);
               }}
@@ -187,7 +196,7 @@ export function AddressInputGroup({
             <input
               type="text"
               id="address-number"
-              value={loadingZip ? "..." : number}
+              value={loadingZip ? '...' : number}
               onChange={(event) => {
                 setNumber(event.target.value);
               }}
@@ -204,7 +213,7 @@ export function AddressInputGroup({
             <textarea
               className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               id="address-complement"
-              value={loadingZip ? "..." : complement}
+              value={loadingZip ? '...' : complement}
               onChange={(event) => {
                 setComplement(event.target.value);
               }}
