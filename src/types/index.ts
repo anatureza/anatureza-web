@@ -81,6 +81,25 @@ export interface IReservation {
     updated_at: string;
     main_image_url: string | null;
   };
+  quiz: {
+    id: string;
+    first: string;
+    second: string;
+    third: string;
+    fourth: string;
+    fifth: string;
+    sixth: string;
+    seventh: string;
+    eighth: string;
+    ninth: string;
+    tenth: string;
+    eleventh: string;
+    twelfth: string;
+    thirteenth: string;
+    fourteenth: string;
+    fifteenth: string;
+    created_at: string;
+  };
   userAdopter: {
     id: string;
     name: string;

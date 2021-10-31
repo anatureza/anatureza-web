@@ -69,10 +69,14 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
   }
 
   async function handleDisapproved() {
-    await api.post(`/reservation/disapprove/${reservationId}`);
+    try {
+      await api.post(`/reservation/disapprove/${reservationId}`);
 
-    alert('Reserva marcada como Não Aprovada!');
-    history.go(0);
+      alert('Reserva marcada como Não Aprovada!');
+      history.go(0);
+    } catch {
+      alert('Ocorreu Algum Erro!');
+    }
   }
 
   return (
@@ -160,11 +164,20 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {!reservation.scheduled_at
                   ? 'Não marcada'
-                  : moment(reservation.scheduled_at).format('DD-MM-YYYY hh:mm')}
+                  : moment(reservation.scheduled_at).format('DD-MM-YYYY HH:mm')}
               </td>
               {reservation.status !== 'adopted' && (
                 <td className="flex px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  {reservation.status === 'approved' ? (
+                  {reservation.status === 'new' ? (
+                    <span
+                      onClick={() => {
+                        handleOnClickQuiz(reservation.id);
+                      }}
+                      className="flex-1 text-blue-600 hover:text-blue-900 cursor-pointer"
+                    >
+                      Visualizar
+                    </span>
+                  ) : reservation.status === 'approved' ? (
                     <span
                       onClick={() => {
                         handleResolveReservation(reservation.id);
@@ -174,14 +187,12 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
                       Resolver
                     </span>
                   ) : (
-                    <span
-                      onClick={() => {
-                        handleOnClickQuiz(reservation.id);
-                      }}
+                    <Link
                       className="flex-1 text-blue-600 hover:text-blue-900 cursor-pointer"
+                      to={`/app/reserva/${reservation.id}`}
                     >
-                      Visualizar
-                    </span>
+                      <span>Questionário</span>
+                    </Link>
                   )}
                 </td>
               )}

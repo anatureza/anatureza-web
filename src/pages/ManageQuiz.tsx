@@ -1,0 +1,337 @@
+import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useEffect, useState, FormEvent } from 'react';
+import { useHistory, useParams } from 'react-router';
+import { Link } from 'react-router-dom';
+
+import { QuizInput } from '../components/QuizInput';
+import api from '../services/api';
+import { IReservation } from '../types';
+
+import { questions } from './NewReservationQuiz';
+
+interface IReservationParams {
+  reservation_id: string;
+}
+
+export function ManageQuiz() {
+  const { reservation_id } = useParams<IReservationParams>();
+  const history = useHistory();
+
+  const [loadingReservation, setLoadingReservation] = useState(true);
+  const [animaIsAvailable, setAnimaIsAvailable] = useState(false);
+  const [reservationIsNew, setReservationIsNew] = useState(false);
+  const [reservationIsApproved, setReservationIsApproved] = useState(false);
+
+  const [reservation, setReservation] = useState<IReservation | undefined>(
+    undefined
+  );
+  const [scheduled_at, setScheduledAt] = useState('');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      setLoadingReservation(true);
+      try {
+        const { data } = await api.get<IReservation | undefined>(
+          `/reservation/${reservation_id}`
+        );
+        if (typeof data !== 'undefined') {
+          setReservation(data);
+          setLoadingReservation(false);
+        } else {
+          alert('Dados Não Encontrados');
+        }
+      } catch {
+        alert('Não foi possível trazer dados de reserva');
+        history.goBack();
+      }
+    })();
+  }, [reservation_id, history]);
+
+  useEffect(() => {
+    if (typeof reservation !== 'undefined') {
+      setAnimaIsAvailable(reservation.animal.available);
+
+      if (reservation.status === 'new') {
+        setReservationIsNew(true);
+      } else {
+        setReservationIsNew(false);
+      }
+      if (reservation.status === 'approved') {
+        setReservationIsApproved(true);
+      } else {
+        setReservationIsApproved(false);
+      }
+    }
+  }, [reservation]);
+
+  async function handleOnSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    if (typeof reservation !== 'undefined') {
+      try {
+        if (reservation.status === 'new') {
+          await api.post(`/reservation/approve/${reservation_id}`);
+          alert('Reserva aprovada!');
+        }
+
+        if (reservation.status === 'approved') {
+          await api.post(`/reservation/adopt/${reservation_id}`);
+          alert('Animal adotado!');
+        }
+      } catch {
+        alert('Não foi possível concluir a ação!');
+      } finally {
+        history.push('/app/reservas');
+      }
+    }
+  }
+
+  async function handleDisapproveReservation() {
+    try {
+      await api.post(`/reservation/disapprove/${reservation_id}`);
+
+      alert('Reserva marcada como Não Aprovada!');
+      history.go(0);
+    } catch {
+      alert('Ocorreu Algum Erro!');
+    }
+  }
+
+  return (
+    <section className="bg-gray-100 bg-opacity-50 pt-8 pb-8">
+      <form onSubmit={handleOnSubmit}>
+        <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
+          <h1 className="text-4xl font-bold m-4">Questionário para reserva</h1>
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.first
+                : ''
+            }
+            disabled={true}
+            question={questions[0]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.second
+                : ''
+            }
+            disabled={true}
+            question={questions[1]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.third
+                : ''
+            }
+            disabled={true}
+            question={questions[2]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.fourth
+                : ''
+            }
+            disabled={true}
+            question={questions[3]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.fifth
+                : ''
+            }
+            disabled={true}
+            question={questions[4]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.sixth
+                : ''
+            }
+            disabled={true}
+            question={questions[5]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.seventh
+                : ''
+            }
+            disabled={true}
+            question={questions[6]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.eighth
+                : ''
+            }
+            disabled={true}
+            question={questions[7]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.ninth
+                : ''
+            }
+            disabled={true}
+            question={questions[8]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.tenth
+                : ''
+            }
+            disabled={true}
+            question={questions[9]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.eleventh
+                : ''
+            }
+            disabled={true}
+            question={questions[10]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.twelfth
+                : ''
+            }
+            disabled={true}
+            question={questions[11]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.thirteenth
+                : ''
+            }
+            disabled={true}
+            question={questions[12]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.fourteenth
+                : ''
+            }
+            disabled={true}
+            question={questions[13]}
+          />
+          <QuizInput
+            answer={
+              loadingReservation
+                ? '...'
+                : typeof reservation !== 'undefined'
+                ? reservation.quiz.fifteenth
+                : ''
+            }
+            disabled={true}
+            question={questions[14]}
+          />
+          <hr className="my-4" />
+          {reservationIsNew && (
+            <>
+              <label
+                htmlFor="scheduled_at"
+                className="text-sm text-gray-500 mb-4"
+              >
+                Agendar data de Reserva
+              </label>
+              <input
+                type="datetime-local"
+                required
+                className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                name="scheduled_at"
+                value={scheduled_at}
+                onChange={(event) => {
+                  setScheduledAt(event.target.value);
+                }}
+              />
+              <hr className="my-4" />
+            </>
+          )}
+
+          <div className="w-full px-4 pb-4 focus-within:text-gray-500 flex">
+            {/* CANCEL - Go Back */}
+            <Link
+              to="/app/reservas"
+              className="inline-block py-2 px-4 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+            >
+              <button type="button">Voltar</button>
+            </Link>
+            {animaIsAvailable && (
+              <button
+                type="button"
+                onClick={handleDisapproveReservation}
+                className="inline-block ml-2 py-2 px-4 left-0 inset-y-0 items-center pl-3 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
+              >
+                <FontAwesomeIcon
+                  icon={faTimesCircle}
+                  size="sm"
+                  className="mr-2 text-orange-300 group-hover:text-orange-700"
+                />
+                Reprovar reserva
+              </button>
+            )}
+
+            {reservationIsNew || reservationIsApproved ? (
+              <button
+                type="submit"
+                className="inline-block ml-2 py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              >
+                {reservationIsNew && 'Aprovar questionário'}
+                {reservationIsApproved && 'Confirmar adoção'}
+              </button>
+            ) : (
+              ''
+            )}
+          </div>
+        </div>
+      </form>
+    </section>
+  );
+}

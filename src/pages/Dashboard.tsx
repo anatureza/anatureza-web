@@ -66,7 +66,7 @@ export function Dashboard() {
 
       setNextWeekReservations(
         allReservations.filter((reservation) =>
-          moment(reservation.scheduled_at).isBefore(endOfWeek)
+          moment(reservation.scheduled_at).isAfter(endOfWeek)
         )
       );
     }

@@ -1,4 +1,4 @@
-import { FormEvent, Fragment, useRef } from 'react';
+import { Dispatch, FormEvent, Fragment, SetStateAction, useRef } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -12,9 +12,9 @@ interface IModalProps {
   title: string;
   reservationId: string;
   open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<any>>;
+  setOpen: Dispatch<SetStateAction<any>>;
   inputItem?: string;
-  setInputItem?: React.Dispatch<React.SetStateAction<any>>;
+  setInputItem?: Dispatch<SetStateAction<any>>;
   handleSubmit: (event: FormEvent) => void;
   handleDisapproved: () => void;
 }
@@ -109,10 +109,11 @@ export function ModalReservation({
                           />
                         </>
                       )}
-                      <Link to={`/app/reserva/${reservationId}`}>
-                        <p className="text-sm text-gray-500">
-                          Visualizar Questionário
-                        </p>
+                      <Link
+                        to={`/app/reserva/${reservationId}`}
+                        className="text-blue-500 hover:text-blue-300 font-semibold cursor-pointer"
+                      >
+                        Visualizar Questionário
                       </Link>
                     </div>
                   </div>
@@ -132,7 +133,7 @@ export function ModalReservation({
                 >
                   {isForApproval
                     ? 'Reprovar Questionário'
-                    : 'Marcar Como Desaprovado'}
+                    : 'Marcar como Não Aprovado'}
                 </button>
 
                 <button

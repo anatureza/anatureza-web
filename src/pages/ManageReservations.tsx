@@ -11,7 +11,7 @@ import api from '../services/api';
 
 import { IReservation } from '../types';
 
-export function ManageReservation() {
+export function ManageReservations() {
   const { userId } = useContext(AuthContext);
 
   const [newReservations, setNewReservations] = useState<
@@ -50,9 +50,7 @@ export function ManageReservation() {
       } catch {
         setNewReservations(undefined);
       }
-    })();
 
-    (async () => {
       try {
         const { data } = await api.get<IReservation[]>(
           '/reservations/approved'
@@ -63,9 +61,7 @@ export function ManageReservation() {
       } catch {
         setApprovedReservations(undefined);
       }
-    })();
 
-    (async () => {
       try {
         const { data } = await api.get<IReservation[]>(
           '/reservations/disapproved'

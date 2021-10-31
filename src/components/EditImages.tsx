@@ -1,8 +1,8 @@
-import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ChangeEvent, useState } from "react";
-import api from "../services/api";
-import { ModalDelete } from "./ModalDelete";
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChangeEvent, Dispatch, SetStateAction, useState } from 'react';
+import api from '../services/api';
+import { ModalDelete } from './ModalDelete';
 
 interface IAnimalImage {
   id: string;
@@ -12,7 +12,7 @@ interface IAnimalImage {
 interface IImageProps {
   images: IAnimalImage[];
   animalId: string;
-  setImages: React.Dispatch<React.SetStateAction<any>>;
+  setImages: Dispatch<SetStateAction<any>>;
   altAnimalName: string;
 }
 
@@ -29,8 +29,8 @@ export function EditImages({
 }: IImageProps) {
   const [modalOpen, setModalOpen] = useState(false);
 
-  const [deleteImageId, setDeleteAnimalImageId] = useState("");
-  const [deleteImagePath, setDeleteAnimalImagePath] = useState("");
+  const [deleteImageId, setDeleteAnimalImageId] = useState('');
+  const [deleteImagePath, setDeleteAnimalImagePath] = useState('');
 
   const [uploadImages, setUploadImages] = useState<File[]>([]);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
@@ -48,7 +48,7 @@ export function EditImages({
       setModalOpen(false);
       setImages(data);
     } catch {
-      alert("Ocorreu algum erro ao excluir a imagem!");
+      alert('Ocorreu algum erro ao excluir a imagem!');
     }
   }
 
@@ -72,14 +72,13 @@ export function EditImages({
 
   async function handleUploadNewImages() {
     if (uploadImages.length < 1) {
-      console.log("RETORNOU");
       return;
     }
 
     const imagesData = new FormData();
 
     uploadImages.forEach((image) => {
-      imagesData.append("images", image);
+      imagesData.append('images', image);
     });
 
     try {
@@ -91,9 +90,9 @@ export function EditImages({
       setPreviewImages([]);
       setLoadingUploadImages(true);
 
-      alert("Fotos do animal foram atualizadas com sucesso!");
+      alert('Fotos do animal foram atualizadas com sucesso!');
     } catch {
-      alert("Ocorreu algum erro ao enviar a imagem!");
+      alert('Ocorreu algum erro ao enviar a imagem!');
     }
   }
 
@@ -154,7 +153,7 @@ export function EditImages({
                 hover:opacity-90  
                 rounded-md m-0 py-20`}
               >
-                <div className="object-center left-0 top-2/4 ">
+                <div className="object-center left-0 top-2/4 cursor-pointer">
                   <label htmlFor="image[]">
                     <FontAwesomeIcon icon={faPlus} size="8x" />
                   </label>
@@ -194,7 +193,7 @@ export function EditImages({
         )}
       </div>
       <ModalDelete
-        title={"Você deseja realmente excluir esta foto?"}
+        title={'Você deseja realmente excluir esta foto?'}
         handleSubmit={() => {
           handleDeleteImage({ animal_id: animalId, image_id: deleteImageId });
         }}

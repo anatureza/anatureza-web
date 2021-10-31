@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext } from 'react';
 
 import {
   BrowserRouter,
@@ -6,31 +6,32 @@ import {
   Switch,
   Redirect,
   RouteProps,
-} from "react-router-dom";
+} from 'react-router-dom';
 
-import { AuthContext, AuthContextProvider } from "./contexts/AuthContext";
+import { AuthContext, AuthContextProvider } from './contexts/AuthContext';
 
-import { Home } from "./pages/Home";
-import { FAQ } from "./pages/FAQ";
-import { AnimalsAdoption } from "./pages/AnimalsAdoption";
-import { AnimalProfile } from "./pages/AnimalProfile";
+import { Home } from './pages/Home';
+import { FAQ } from './pages/FAQ';
+import { AnimalsAdoption } from './pages/AnimalsAdoption';
+import { AnimalProfile } from './pages/AnimalProfile';
 
-import { NewReservationQuiz } from "./pages/NewReservationQuiz";
-import { UserProfile } from "./pages/UserProfile";
+import { NewReservationQuiz } from './pages/NewReservationQuiz';
+import { UserProfile } from './pages/UserProfile';
 
-import { SignIn } from "./pages/SignIn";
-import { SignUp } from "./pages/SignUp";
-import { SendForgotPasswordResetMail } from "./pages/SendForgotPasswordResetMail";
+import { SignIn } from './pages/SignIn';
+import { SignUp } from './pages/SignUp';
+import { SendForgotPasswordResetMail } from './pages/SendForgotPasswordResetMail';
 
-import { Dashboard } from "./pages/Dashboard";
-import { ManageReservation } from "./pages/ManageReservation";
+import { Dashboard } from './pages/Dashboard';
+import { ManageReservations } from './pages/ManageReservations';
+import { ManageQuiz } from './pages/ManageQuiz';
 
-import { Footer } from "./components/Footer";
-import { Navbar } from "./components/Navbar";
-import { ManageAnimals } from "./pages/ManageAnimals";
-import { CreateAnimal } from "./pages/CreateAnimal";
-import { EditAnimal } from "./pages/EditAnimal";
-import { ResetPassword } from "./pages/ResetPassword";
+import { Footer } from './components/Footer';
+import { Navbar } from './components/Navbar';
+import { ManageAnimals } from './pages/ManageAnimals';
+import { CreateAnimal } from './pages/CreateAnimal';
+import { EditAnimal } from './pages/EditAnimal';
+import { ResetPassword } from './pages/ResetPassword';
 
 interface IAuthRouteData extends RouteProps {}
 
@@ -61,7 +62,7 @@ function ProtectedRoute({ ...rest }: IProtectedRouteData) {
     return <Redirect to="/signin" />;
   }
 
-  if (userType === "admin" || userType === "volunteer") {
+  if (userType === 'admin' || userType === 'volunteer') {
     return <Route {...rest} />;
   }
 
@@ -95,7 +96,11 @@ function App() {
           <AuthRoute path="/meus-dados" component={UserProfile} />
 
           <ProtectedRoute path="/app" exact component={Dashboard} />
-          <ProtectedRoute path="/app/reservas" component={ManageReservation} />
+          <ProtectedRoute
+            path="/app/reserva/:reservation_id"
+            component={ManageQuiz}
+          />
+          <ProtectedRoute path="/app/reservas" component={ManageReservations} />
           <ProtectedRoute path="/app/animais" component={ManageAnimals} />
           <ProtectedRoute path="/app/animal/novo" component={CreateAnimal} />
           <ProtectedRoute

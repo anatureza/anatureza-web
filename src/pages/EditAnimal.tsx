@@ -53,38 +53,47 @@ export function EditAnimal() {
 
   async function handleSave(event: FormEvent) {
     event.preventDefault();
+
     try {
-      const { data } = await api.put<IAnimal>(`/animal/${animal_id}`, {
-        name,
-        description,
-        kind,
-        gender,
-        birth_date,
-        zip,
-        uf,
-        place,
-        number,
-        complement,
-        neighborhood,
-        city,
-      });
-      setAnimalVolunteerId(data.user.id);
-      setPreviewName(data.name);
-      setName(data.name);
-      setDescription(data.description);
-      setKind(data.kind);
-      setGender(data.gender);
-      setBirthDate(data.birth_date);
-      setZip(data.address.zip);
-      setUF(data.address.uf);
-      setPlace(data.address.place);
-      setNumber(data.address.number);
-      setComplement(data.address.complement);
-      setNeighborhood(data.address.neighborhood);
-      setCity(data.address.city);
+      const { data } = await api.put<IAnimal | undefined>(
+        `/animal/${animal_id}`,
+        {
+          name,
+          description,
+          kind,
+          gender,
+          birth_date,
+          zip,
+          uf,
+          place,
+          number,
+          complement,
+          neighborhood,
+          city,
+        }
+      );
+      if (typeof data !== 'undefined') {
+        setAnimalVolunteerId(data.user.id);
+        setPreviewName(data.name);
+        setName(data.name);
+        setDescription(data.description);
+        setKind(data.kind);
+        setGender(data.gender);
+        setBirthDate(data.birth_date);
+        setZip(data.address.zip);
+        setUF(data.address.uf);
+        setPlace(data.address.place);
+        setNumber(data.address.number);
+        setComplement(data.address.complement);
+        setNeighborhood(data.address.neighborhood);
+        setCity(data.address.city);
+      } else {
+        history.go(0);
+      }
 
       alert('Animal Editado com sucesso!');
     } catch {
+      history.go(0);
       alert('Animal Não Pôde Ser Editado!');
     }
   }
@@ -144,7 +153,9 @@ export function EditAnimal() {
         <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
           <div className="p-4 bg-gray-100 border-t-2 border-blue-400 rounded-lg bg-opacity-5">
             <h1 className="text-2xl">
-              <span className="font-semibold">Editar animal: </span>
+              <span className="font-semibold">
+                {userHasPermission && 'Editar'} animal:{' '}
+              </span>
               {previewName}
             </h1>
           </div>
