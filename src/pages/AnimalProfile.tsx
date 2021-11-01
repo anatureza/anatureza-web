@@ -24,7 +24,7 @@ export function AnimalProfile() {
 
   useEffect(() => {
     (async () => {
-      const { data } = await api.get(`/animal/${animal_id}`);
+      const { data } = await api.get<IAnimal>(`/animal/${animal_id}`);
 
       setAnimal(data);
     })();
@@ -58,7 +58,7 @@ export function AnimalProfile() {
                 <input
                   type="text"
                   id="name"
-                  disabled
+                  readOnly
                   value={animal.name || '...'}
                   className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent mb-4"
                 />
@@ -72,70 +72,55 @@ export function AnimalProfile() {
                   name="comment"
                   rows={5}
                   cols={40}
-                  disabled
+                  readOnly
                 />
-                <p>Tipo do animal</p>
-                <div className="flex items-center gap-8">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="kind"
-                      value="cat"
-                      checked={animal.kind === 'cat'}
-                      disabled
-                      className="h-5 w-5 text-blue-600"
-                    />
-                    <span className="ml-2 text-gray-700">Gato</span>
+                <div className="relative">
+                  <label htmlFor="animal-kind">
+                    Tipo do animal (Gato, cachorro...)
                   </label>
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="kind"
-                      value="dog"
-                      checked={animal.kind === 'dog'}
-                      disabled
-                      className="h-5 w-5 text-blue-600"
-                    />
-                    <span className="ml-2 text-gray-700">Cachorro</span>
-                  </label>
+                  <input
+                    type="text"
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    id="animal-kind"
+                    name="animal-kind"
+                    value={
+                      animal.kind === 'dog'
+                        ? 'Cachorro'
+                        : animal.kind === 'cat'
+                        ? 'Gato '
+                        : 'Não especificado'
+                    }
+                    readOnly
+                  />
                 </div>
-                <p className="mt-4">Gênero do animal</p>
-                <div id="radio-gender" className="flex items-center gap-8">
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="female"
-                      checked={animal.gender === 'female'}
-                      disabled
-                      className="h-5 w-5 text-blue-600"
-                    />
-                    <span className="ml-2 text-gray-700">Fêmea</span>
-                  </label>
-                  <label className="inline-flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      value="male"
-                      checked={animal.gender === 'male'}
-                      disabled
-                      className="h-5 w-5 text-blue-600"
-                    />
-                    <span className="ml-2 text-gray-700">Macho</span>
-                  </label>
+                <div className="relative mt-4">
+                  <label htmlFor="animal-gender">Gênero do animal</label>
+                  <input
+                    type="text"
+                    className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    id="animal-gender"
+                    name="animal-gender"
+                    value={
+                      animal.gender === 'male'
+                        ? 'Macho'
+                        : animal.gender === 'female'
+                        ? 'Fêmea'
+                        : 'Não especificado'
+                    }
+                    readOnly
+                  />
                 </div>
               </div>
-              <div className="relative mt-6">
+              <div className="relative mt-4">
                 <div>
                   <label htmlFor="birth_date">Data de nascimento</label>
-
                   <input
                     type="date"
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     id="animal-birth_date"
                     name="birth_date"
                     value={moment(animal.birth_date).format('YYYY-MM-DD')}
-                    disabled
+                    readOnly
                   />
                 </div>
               </div>
@@ -158,7 +143,7 @@ export function AnimalProfile() {
                   <input
                     type="text"
                     id="animal-volunteer-name"
-                    disabled
+                    readOnly
                     value={animal.user.name}
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     placeholder="Nome completo"
@@ -181,7 +166,7 @@ export function AnimalProfile() {
                     <input
                       type="text"
                       id="animal-volunteer-phone_number"
-                      disabled
+                      readOnly
                       value={animal.user.phone_number}
                       className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     />
@@ -206,7 +191,7 @@ export function AnimalProfile() {
                       animal.address.uf === 'NONE' ? '' : animal.address.uf
                     }
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    disabled
+                    readOnly
                   />
                 </div>
                 <div className="relative border-box md:py-2">
@@ -218,7 +203,7 @@ export function AnimalProfile() {
                     id="address-place"
                     value={animal.address.place}
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    disabled
+                    readOnly
                   />
                 </div>
                 <div className="relative border-box md:py-2">
@@ -230,7 +215,7 @@ export function AnimalProfile() {
                     id="address-number"
                     value={animal.address.number}
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    disabled
+                    readOnly
                   />
                 </div>
               </div>
@@ -244,7 +229,7 @@ export function AnimalProfile() {
                     id="address-city"
                     value={animal.address.city}
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    disabled
+                    readOnly
                   />
                 </div>
               </div>
@@ -261,23 +246,25 @@ export function AnimalProfile() {
                     id="address-neighborhood"
                     className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     value={animal.address.neighborhood}
-                    disabled
+                    readOnly
                   />
                 </div>
               </div>
-              <div>
-                <div className="relative">
-                  <label htmlFor="address-number" className="text-gray-900">
-                    Complemento
-                  </label>
-                  <input
-                    type="text"
-                    id="address-complement"
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                    value={animal.address.complement}
-                  />
+              {animal.address.complement !== '' && (
+                <div>
+                  <div className="relative">
+                    <label htmlFor="address-number" className="text-gray-900">
+                      Complemento
+                    </label>
+                    <input
+                      type="text"
+                      id="address-complement"
+                      className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                      value={animal.address.complement}
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
               <div>
                 <div className="relative">
                   <label htmlFor="address-number" className="text-gray-900">
@@ -288,7 +275,7 @@ export function AnimalProfile() {
                     id="address-zip"
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     value={animal.address.zip}
-                    disabled
+                    readOnly
                   />
                 </div>
               </div>

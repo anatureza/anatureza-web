@@ -275,22 +275,24 @@ export function ManageQuiz() {
           <hr className="my-4" />
           {reservationIsNew && (
             <>
-              <label
-                htmlFor="scheduled_at"
-                className="text-sm text-gray-500 mb-4"
-              >
-                Agendar data de Reserva
-              </label>
-              <input
-                type="datetime-local"
-                required
-                className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                name="scheduled_at"
-                value={scheduled_at}
-                onChange={(event) => {
-                  setScheduledAt(event.target.value);
-                }}
-              />
+              <div className="m-4">
+                <label
+                  htmlFor="scheduled_at"
+                  className="text-sm text-gray-500 mb-4"
+                >
+                  Agendar data de Reserva
+                </label>
+                <input
+                  type="datetime-local"
+                  required
+                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  name="scheduled_at"
+                  value={scheduled_at}
+                  onChange={(event) => {
+                    setScheduledAt(event.target.value);
+                  }}
+                />
+              </div>
               <hr className="my-4" />
             </>
           )}

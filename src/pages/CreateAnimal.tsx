@@ -92,6 +92,7 @@ export function CreateAnimal() {
       data.append('images', image);
     });
 
+    data.append('uf', uf);
     data.append('place', place);
     data.append('number', number);
     data.append('complement', complement);
