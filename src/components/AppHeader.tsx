@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { SlideOver } from "./SlideOver";
+import { SlideOver } from './SlideOver';
 
-import { faBars } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ButtonGoBack } from './ButtonGoBack';
 
 type AppHeaderProps = {
   title: string;
@@ -18,7 +19,8 @@ export function AppHeader({ title, children }: AppHeaderProps) {
       <SlideOver open={open} setOpen={setOpen} />
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 box-border">
-          <h1 className="text-3xl font-bold text-gray-900 inline-block">
+          <ButtonGoBack />
+          <h1 className="inline-block align-bottom text-3xl pt-1 font-bold text-gray-900">
             {title}
           </h1>
           <FontAwesomeIcon

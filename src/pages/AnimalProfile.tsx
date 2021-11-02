@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { SelectImages } from '../components/SelectImages';
+import { ButtonGoBack } from '../components/ButtonGoBack';
 
 import { AuthContext } from '../contexts/AuthContext';
 
@@ -42,7 +43,8 @@ export function AnimalProfile() {
     <section className="bg-gray-100 bg-opacity-50 pt-8 pb-14">
       <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
         <div className="p-4 bg-gray-100 border-t-2 border-blue-400 rounded-lg bg-opacity-5">
-          <h1 className="text-2xl">{animal.name}</h1>
+          <ButtonGoBack />
+          <h1 className="inline-block ml-2 text-2xl">{animal.name}</h1>
           {animal.images && animal.images.length > 0 && (
             <SelectImages images={animal.images} animalName={animal.name} />
           )}
@@ -159,7 +161,7 @@ export function AnimalProfile() {
                     Número de contato
                   </label>
                   <a
-                    href={`https://api.whatsapp.com/send?phone=+5519998869951&text=Olá,%20quero%20falar%20sobre%20o%20animal%20${animal.name}`}
+                    href={`https://api.whatsapp.com/send?phone=+55${animal.user.phone_number}&text=Olá,%20quero%20falar%20sobre%20o%20animal%20${animal.name}`}
                     target="_blank"
                     rel="noreferrer"
                   >
