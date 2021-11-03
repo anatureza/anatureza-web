@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent, useContext } from 'react';
+import { useEffect, useState, FormEvent } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import {
@@ -15,7 +15,6 @@ import api from '../services/api';
 import { IReservation } from '../types';
 
 import { questions } from './NewReservationQuiz';
-import { AuthContext } from '../contexts/AuthContext';
 
 interface IReservationParams {
   reservation_id: string;
