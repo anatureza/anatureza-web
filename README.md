@@ -1,10 +1,11 @@
-# To-do ( 04/10/2021 - Monday )
+## done
 
 [x] Fix: Animal Profile not loading when Animal does not have any image
 [x] Fix Animal Images Layout
 [x] Add option to delete animals' images
-[ ] Add option to add images to existing animal
+[x] Add option to add images to existing animal
+[x] Add ViaCEP webservice to search
 
-## Maybe
+## stuff to do
 
-[ ] Add ViaCEP webservice to search
+[ ] List Reservations by animal_id on ManageReservations using query params

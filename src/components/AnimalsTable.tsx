@@ -51,7 +51,7 @@ export function AnimalsTable({ animalsData, children }: IAnimalsDataProp) {
 
                         <tbody className="bg-white divide-y divide-gray-200">
                           {animalsData.map((animal) => (
-                            <AnimalsTableRow animal={animal} />
+                            <AnimalsTableRow key={animal.id} animal={animal} />
                           ))}
                         </tbody>
                       </table>

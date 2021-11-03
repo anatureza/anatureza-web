@@ -44,7 +44,7 @@ export function AnimalProfile() {
       <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
         <div className="p-4 bg-gray-100 border-t-2 border-blue-400 rounded-lg bg-opacity-5">
           <ButtonGoBack />
-          <h1 className="inline-block ml-2 text-2xl">{animal.name}</h1>
+          <h1 className="inline-block align-bottom text-2xl">{animal.name}</h1>
           {animal.images && animal.images.length > 0 && (
             <SelectImages images={animal.images} animalName={animal.name} />
           )}
