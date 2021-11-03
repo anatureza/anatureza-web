@@ -1,14 +1,21 @@
-import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent, useContext } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
+import {
+  faExternalLinkAlt,
+  faTimesCircle,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { ButtonGoBack } from '../components/ButtonGoBack';
 import { QuizInput } from '../components/QuizInput';
+
 import api from '../services/api';
+
 import { IReservation } from '../types';
 
 import { questions } from './NewReservationQuiz';
+import { AuthContext } from '../contexts/AuthContext';
 
 interface IReservationParams {
   reservation_id: string;
@@ -18,7 +25,6 @@ export function ManageQuiz() {
   const { reservation_id } = useParams<IReservationParams>();
   const history = useHistory();
 
-  const [loadingReservation, setLoadingReservation] = useState(true);
   const [animaIsAvailable, setAnimaIsAvailable] = useState(false);
   const [reservationIsNew, setReservationIsNew] = useState(false);
   const [reservationIsApproved, setReservationIsApproved] = useState(false);
@@ -26,6 +32,7 @@ export function ManageQuiz() {
   const [reservation, setReservation] = useState<IReservation | undefined>(
     undefined
   );
+  const [loadingReservation, setLoadingReservation] = useState(true);
   const [scheduled_at, setScheduledAt] = useState('');
 
   useEffect(() => {
@@ -105,173 +112,297 @@ export function ManageQuiz() {
   return (
     <section className="bg-gray-100 bg-opacity-50 pt-8 pb-8">
       <form onSubmit={handleOnSubmit}>
-        <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
-          <h1 className="text-4xl font-bold m-4">Questionário para reserva</h1>
-          <QuizInput
-            answer={
-              loadingReservation
+        <div className="container max-w-2xl mx-auto shadow-lg md:w-3/4 rounded-lg border-t-2 border-blue-400">
+          <div className="m-4">
+            <ButtonGoBack />
+            <h1 className="inline-block align-bottom text-4xl font-bold select-none">
+              {reservation?.status === 'adopted'
+                ? 'Informações da adoção'
+                : 'Questionário da reserva'}
+            </h1>
+          </div>
+
+          <hr className="my-4" />
+
+          <div className="px-4">
+            <h6 className="text-2xl text-gray-900 font-semibold select-none">
+              Informações do animal
+            </h6>
+            {typeof reservation !== 'undefined' &&
+              reservation.animal.main_image_url !== null && (
+                <div className="p-2">
+                  <img
+                    className="h-14 w-14 object-cover rounded-md"
+                    src={`${api.defaults.baseURL}/uploads/${reservation.animal.images[0].path}`}
+                    alt="animal"
+                  />
+                </div>
+              )}
+            <p className="select-none font-semibold object-cover ">
+              Nome:{' '}
+              <span className="font-normal">
+                {typeof reservation !== 'undefined'
+                  ? reservation.animal.name
+                  : '...'}
+              </span>
+            </p>
+            <p className="select-none font-semibold">
+              Voluntário responsável:{' '}
+              <span className="font-normal">
+                {typeof reservation !== 'undefined'
+                  ? reservation.animal.user.name
+                  : '...'}
+              </span>
+            </p>
+            {typeof reservation !== 'undefined' && (
+              <Link to={`/app/animal/${reservation.animal_id}`}>
+                <span className="font-medium text-blue-400 hover:text-blue-500 hover:underline">
+                  Ver mais sobre o animal...
+                </span>
+              </Link>
+            )}
+          </div>
+
+          <hr className="my-4" />
+
+          <div className="p-4">
+            <h6 className="text-2xl text-gray-900 font-semibold select-none">
+              Informações do adotante
+            </h6>
+            {typeof reservation !== 'undefined' &&
+              reservation.userAdopter.avatar_url !== null && (
+                <div className="p-2">
+                  <img
+                    className="h-14 w-14 rounded-md"
+                    src={`${api.defaults.baseURL}/uploads/${reservation.userAdopter.avatar}`}
+                    alt="user"
+                  />
+                </div>
+              )}
+            <p>
+              <span className="font-semibold">Nome: </span>
+              {typeof reservation === 'undefined'
                 ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.first
-                : ''
-            }
-            disabled={true}
-            question={questions[0]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
+                : reservation.userAdopter.name}
+            </p>
+            <p>
+              <span className="font-semibold">Número para contato: </span>
+              {typeof reservation !== 'undefined' && (
+                <a
+                  className=""
+                  href={`https://api.whatsapp.com/send?phone=+55${
+                    reservation.userAdopter.phone_number
+                  }&text=Olá,%20quero%20falar%20sobre%20o%20animal%20${
+                    typeof reservation !== 'undefined'
+                      ? reservation.animal.name
+                      : ''
+                  }`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {typeof reservation !== 'undefined'
+                    ? reservation.userAdopter.phone_number
+                    : '...'}{' '}
+                  <FontAwesomeIcon icon={faExternalLinkAlt} />
+                </a>
+              )}
+            </p>
+            <p>
+              <span className="font-semibold">Endereço: </span>
+              {typeof reservation === 'undefined'
                 ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.second
-                : ''
-            }
-            disabled={true}
-            question={questions[1]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
+                : `${reservation.userAdopter.address.place}, ${reservation.userAdopter.address.number}, ${reservation.userAdopter.address.complement}`}
+            </p>
+            <p>
+              <span className="font-semibold">Bairro: </span>
+              {typeof reservation === 'undefined'
                 ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.third
-                : ''
-            }
-            disabled={true}
-            question={questions[2]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
+                : ` ${reservation.userAdopter.address.neighborhood}`}
+            </p>
+            <p>
+              <span className="font-semibold">Cidade: </span>
+              {typeof reservation === 'undefined'
                 ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.fourth
-                : ''
-            }
-            disabled={true}
-            question={questions[3]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
+                : ` ${reservation.userAdopter.address.city}`}
+            </p>
+            <p>
+              <span className="font-semibold">CEP: </span>
+              {typeof reservation === 'undefined'
                 ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.fifth
-                : ''
-            }
-            disabled={true}
-            question={questions[4]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.sixth
-                : ''
-            }
-            disabled={true}
-            question={questions[5]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.seventh
-                : ''
-            }
-            disabled={true}
-            question={questions[6]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.eighth
-                : ''
-            }
-            disabled={true}
-            question={questions[7]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.ninth
-                : ''
-            }
-            disabled={true}
-            question={questions[8]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.tenth
-                : ''
-            }
-            disabled={true}
-            question={questions[9]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.eleventh
-                : ''
-            }
-            disabled={true}
-            question={questions[10]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.twelfth
-                : ''
-            }
-            disabled={true}
-            question={questions[11]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.thirteenth
-                : ''
-            }
-            disabled={true}
-            question={questions[12]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.fourteenth
-                : ''
-            }
-            disabled={true}
-            question={questions[13]}
-          />
-          <QuizInput
-            answer={
-              loadingReservation
-                ? '...'
-                : typeof reservation !== 'undefined'
-                ? reservation.quiz.fifteenth
-                : ''
-            }
-            disabled={true}
-            question={questions[14]}
-          />
+                : reservation.userAdopter.address.zip}
+            </p>
+          </div>
+          <hr className="my-4" />
+          <div className="p-4">
+            <h1 className="inline-block align-bottom text-2xl font-bold">
+              Respostas
+            </h1>
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.first
+                  : ''
+              }
+              disabled={true}
+              question={questions[0]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.second
+                  : ''
+              }
+              disabled={true}
+              question={questions[1]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.third
+                  : ''
+              }
+              disabled={true}
+              question={questions[2]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.fourth
+                  : ''
+              }
+              disabled={true}
+              question={questions[3]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.fifth
+                  : ''
+              }
+              disabled={true}
+              question={questions[4]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.sixth
+                  : ''
+              }
+              disabled={true}
+              question={questions[5]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.seventh
+                  : ''
+              }
+              disabled={true}
+              question={questions[6]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.eighth
+                  : ''
+              }
+              disabled={true}
+              question={questions[7]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.ninth
+                  : ''
+              }
+              disabled={true}
+              question={questions[8]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.tenth
+                  : ''
+              }
+              disabled={true}
+              question={questions[9]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.eleventh
+                  : ''
+              }
+              disabled={true}
+              question={questions[10]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.twelfth
+                  : ''
+              }
+              disabled={true}
+              question={questions[11]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.thirteenth
+                  : ''
+              }
+              disabled={true}
+              question={questions[12]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.fourteenth
+                  : ''
+              }
+              disabled={true}
+              question={questions[13]}
+            />
+            <QuizInput
+              answer={
+                loadingReservation
+                  ? '...'
+                  : typeof reservation !== 'undefined'
+                  ? reservation.quiz.fifteenth
+                  : ''
+              }
+              disabled={true}
+              question={questions[14]}
+            />
+          </div>
           <hr className="my-4" />
           {reservationIsNew && (
             <>
@@ -285,7 +416,7 @@ export function ManageQuiz() {
                 <input
                   type="datetime-local"
                   required
-                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                   name="scheduled_at"
                   value={scheduled_at}
                   onChange={(event) => {
@@ -297,11 +428,11 @@ export function ManageQuiz() {
             </>
           )}
 
-          <div className="w-full px-4 pb-4 focus-within:text-gray-500 flex">
+          <div className="w-full pb-4 px-4 focus-within:text-gray-500 flex">
             {/* CANCEL - Go Back */}
             <Link
               to="/app/reservas"
-              className="inline-block py-2 px-4 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className="inline-block py-2 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
             >
               <button type="button">Voltar</button>
             </Link>
@@ -309,7 +440,7 @@ export function ManageQuiz() {
               <button
                 type="button"
                 onClick={handleDisapproveReservation}
-                className="inline-block ml-2 py-2 px-4 left-0 inset-y-0 items-center pl-3 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
+                className="inline-block ml-2 py-2 left-0 inset-y-0 items-center pl-3 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
               >
                 <FontAwesomeIcon
                   icon={faTimesCircle}

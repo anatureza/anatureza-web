@@ -8,14 +8,15 @@ import { AddressInputGroup } from '../components/AddressInputGroup';
 
 import { AuthContext } from '../contexts/AuthContext';
 
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faExternalLinkAlt, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import moment from 'moment';
 
 import api from '../services/api';
 
-import { IAnimal, IAnimalImage } from '../types';
+import { IAnimal, IAnimalImage, IReservation } from '../types';
+import { ButtonGoBack } from '../components/ButtonGoBack';
 
 interface IAnimalIdParams {
   animal_id: string;
@@ -50,6 +51,8 @@ export function EditAnimal() {
   const [images, setImages] = useState<IAnimalImage[]>([]);
 
   const [openModal, setOpenModal] = useState(false);
+  const [animalIsAdopted, setAnimalIsAdopted] = useState(false);
+  const [adoptedReservationId, setAdoptedReservationId] = useState<string>('');
 
   async function handleSave(event: FormEvent) {
     event.preventDefault();
@@ -131,6 +134,8 @@ export function EditAnimal() {
           setNeighborhood(data.address.neighborhood);
           setCity(data.address.city);
 
+          setAnimalIsAdopted(!data.available);
+
           setImages(data.images);
           setLoadingInfo(false);
         }
@@ -140,6 +145,20 @@ export function EditAnimal() {
       }
     })();
   }, [animal_id, history]);
+
+  useEffect(() => {
+    if (animalIsAdopted) {
+      (async () => {
+        const { data } = await api.get<IReservation | undefined>(
+          `/reservation/adopted/${animal_id}`
+        );
+
+        if (typeof data !== 'undefined') {
+          setAdoptedReservationId(data.id);
+        }
+      })();
+    }
+  }, [animalIsAdopted, animal_id]);
 
   useEffect(() => {
     setUserHasPermission(false);
@@ -152,22 +171,43 @@ export function EditAnimal() {
       <form onSubmit={handleSave}>
         <div className="container max-w-2xl mx-auto shadow-md md:w-3/4">
           <div className="p-4 bg-gray-100 border-t-2 border-blue-400 rounded-lg bg-opacity-5">
-            <h1 className="text-2xl">
+            <ButtonGoBack />
+            <h1 className="inline-block align-bottom text-2xl">
               <span className="font-semibold">
                 {userHasPermission && 'Editar'} animal:{' '}
               </span>
               {previewName}
             </h1>
           </div>
+          {animalIsAdopted && adoptedReservationId !== '' && (
+            <div className="bg-white">
+              <hr />
+              <div className="py-6">
+                <Link
+                  className="px-4 text-gray-800 hover:text-blue-900"
+                  to={`/app/reserva/${adoptedReservationId}`}
+                >
+                  <span className="hover:underline font-semibold mr-1">
+                    Visualizar informações de adoção
+                  </span>
+                  <FontAwesomeIcon icon={faExternalLinkAlt} />
+                </Link>
+              </div>
+              <hr />
+            </div>
+          )}
           <div className="space-y-6 bg-white">
             <hr />
+
             <EditImages
               altAnimalName={name}
               images={images}
               setImages={setImages}
               animalId={animal_id}
             />
+
             <hr />
+
             <div className="items-center w-full p-4 space-y-4 text-gray-800 md:inline-flex md:space-y-0">
               <h2 className="max-w-sm mx-auto md:w-1/3">
                 Informações do animal
@@ -244,7 +284,7 @@ export function EditAnimal() {
                       name="birth_date"
                       value={
                         loadingInfo
-                          ? '...'
+                          ? ''
                           : moment(birth_date).format('YYYY-MM-DD')
                       }
                       onChange={(event) => {
