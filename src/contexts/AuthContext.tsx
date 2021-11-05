@@ -1,6 +1,6 @@
-import { createContext, ReactNode } from "react";
+import { createContext, ReactNode } from 'react';
 
-import { useAuth } from "./hooks/useAuth";
+import { useAuth } from './hooks/useAuth';
 
 interface ILoginData {
   email: string;
@@ -14,6 +14,7 @@ interface IAuthContextType {
   handleLogout: () => void;
   userType: string | null;
   userId: string | null;
+  userAvatarUrl: string | null;
 }
 
 interface IAuthContextProviderProps {
@@ -30,6 +31,7 @@ export function AuthContextProvider(props: IAuthContextProviderProps) {
     handleLogout,
     userType,
     userId,
+    userAvatarUrl,
   } = useAuth();
 
   return (
@@ -41,6 +43,7 @@ export function AuthContextProvider(props: IAuthContextProviderProps) {
         handleLogout,
         userType,
         userId,
+        userAvatarUrl,
       }}
     >
       {props.children}

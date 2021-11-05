@@ -1,29 +1,18 @@
-import { Fragment, useState, useContext } from 'react';
-
+import { Fragment, useState, useContext, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import { AuthContext } from '../contexts/AuthContext';
 
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import LogoNavbar from '../assets/images/logo-an-navbar.png';
-import { useEffect } from 'react';
+import NoProfilePic from '../assets/images/no-profile-pic-icon-24.jpg';
+
 import api from '../services/api';
 
 type ClassesTypes = string[];
-
-interface IUser {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-  phone_number: string;
-  birth_date: Date;
-  type?: string;
-  avatar_url: string | null | undefined;
-}
 
 function classNames(...classes: ClassesTypes) {
   return classes.filter(Boolean).join(' ');
@@ -32,8 +21,8 @@ function classNames(...classes: ClassesTypes) {
 export function Navbar() {
   const location = useLocation();
 
-  const { handleLogout, authenticated } = useContext(AuthContext);
-  const [user, setUser] = useState<IUser | undefined | null>(null);
+  const { handleLogout, authenticated, userType, userAvatarUrl } =
+    useContext(AuthContext);
 
   const [loadingUser, setLoadingUser] = useState(true);
 
@@ -48,24 +37,18 @@ export function Navbar() {
   ];
 
   useEffect(() => {
-    (async () => {
-      if (authenticated) {
+    if (authenticated) {
+      setLoadingUser(true);
+      (async () => {
         try {
-          const { data } = await api.get('/user');
-          setUser(data);
+          await api.get('/user');
+          setLoadingUser(false);
         } catch {
           handleLogout();
         }
-      }
-    })();
-  }, [authenticated, handleLogout]);
-
-  useEffect(() => {
-    setLoadingUser(true);
-    if (user) {
-      setLoadingUser(false);
+      })();
     }
-  }, [user]);
+  }, [authenticated, handleLogout]);
 
   return (
     <Disclosure as="nav" className="bg-blue-400">
@@ -127,21 +110,16 @@ export function Navbar() {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                {user && !loadingUser ? (
+                {authenticated && !loadingUser ? (
                   <Menu as="div" className="ml-3 relative">
                     <div>
                       <Menu.Button className="bg-gray-800 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
                         <span className="sr-only">Open user menu</span>
-                        {typeof user !== 'undefined' && (
-                          <img
-                            className="h-10 w-10 object-cover rounded-full"
-                            src={
-                              user.avatar_url ||
-                              'https://icon-library.com/images/no-profile-pic-icon/no-profile-pic-icon-24.jpg'
-                            }
-                            alt="User"
-                          />
-                        )}
+                        <img
+                          className="h-10 w-10 object-cover rounded-full"
+                          src={userAvatarUrl || NoProfilePic}
+                          alt="User"
+                        />
                       </Menu.Button>
                     </div>
                     <Transition
@@ -169,7 +147,7 @@ export function Navbar() {
                           )}
                         </Menu.Item>
                         {/*Admin/Volunteer Only*/}
-                        {user.type !== 'user' && (
+                        {userType !== 'user' && (
                           <Menu.Item>
                             {({ active }) => (
                               <Link to="/app">
@@ -203,10 +181,10 @@ export function Navbar() {
                   </Menu>
                 ) : (
                   <div className="hidden md:flex items-center justify-end md:flex-1 lg:w-0">
-                    <Link to="/signin">
+                    <Link to="/login">
                       <span
                         className={`ml-8 whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white ${
-                          location.pathname === '/signin' ? 'bg-blue-500' : ''
+                          location.pathname === '/login' ? 'bg-blue-500' : ''
                         } hover:bg-blue-700`}
                       >
                         Já tem conta?

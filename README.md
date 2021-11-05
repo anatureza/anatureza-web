@@ -8,4 +8,7 @@
 
 ## stuff to do
 
+[x] Fix navbar not removing user menu after logout
+[x] Get user.avatar_url via AuthContext instead of getting user info in Navbar
+[ ] Add callback url on login
 [ ] List Reservations by animal_id on ManageReservations using query params

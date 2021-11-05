@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 
-import api from "../../services/api";
+import api from '../../services/api';
 
 interface ILoginData {
   email: string;
@@ -14,17 +14,19 @@ export function useAuth() {
 
   const [authenticated, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userType, setUserType] = useState<string | null>("");
-  const [userId, setUserId] = useState<string | null>("");
+  const [userType, setUserType] = useState<string | null>('');
+  const [userId, setUserId] = useState<string | null>('');
+  const [userAvatarUrl, setUserAvatarUrl] = useState<string | null>('');
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     if (token) {
       api.defaults.headers.Authorization = `Bearer ${token}`;
       setAuthenticated(true);
 
-      setUserId(localStorage.getItem("userId"));
-      setUserType(localStorage.getItem("userType"));
+      setUserId(localStorage.getItem('userId'));
+      setUserType(localStorage.getItem('userType'));
+      setUserAvatarUrl(localStorage.getItem('userAvatarUrl'));
     }
 
     setLoading(false);
@@ -33,21 +35,23 @@ export function useAuth() {
   async function handleLogin({ email, password }: ILoginData) {
     try {
       const {
-        data: { token, userType, userId },
-      } = await api.post("/login", { email, password });
+        data: { token, userType, userId, userAvatarUrl },
+      } = await api.post('/login', { email, password });
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("userType", userType);
-      localStorage.setItem("userId", userId);
+      localStorage.setItem('token', token);
+      localStorage.setItem('userType', userType);
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('userAvatarUrl', userAvatarUrl);
       api.defaults.headers.Authorization = `Bearer ${token}`;
 
       setAuthenticated(true);
       setUserType(userType);
       setUserId(userId);
+      setUserAvatarUrl(userAvatarUrl);
 
-      userType === "user"
-        ? history.push("/animais-adocao")
-        : history.push("/app");
+      userType === 'user'
+        ? history.push('/animais-adocao')
+        : history.push('/app');
     } catch (error) {
       console.log(error);
     }
@@ -55,15 +59,17 @@ export function useAuth() {
 
   function handleLogout() {
     setAuthenticated(false);
-    setUserType("");
-    setUserId("");
+    setUserType('');
+    setUserId('');
+    setUserAvatarUrl('');
 
-    localStorage.removeItem("token");
-    localStorage.removeItem("userType");
-    localStorage.removeItem("userId");
+    localStorage.removeItem('token');
+    localStorage.removeItem('userType');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userAvatarUrl');
     api.defaults.headers.Authorization = undefined;
 
-    history.push("/signin");
+    history.push('/login');
   }
 
   return {
@@ -73,5 +79,6 @@ export function useAuth() {
     handleLogout,
     userType,
     userId,
+    userAvatarUrl,
   };
 }

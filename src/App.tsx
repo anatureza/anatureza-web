@@ -59,7 +59,7 @@ function ProtectedRoute({ ...rest }: IProtectedRouteData) {
   }
 
   if (!authenticated) {
-    return <Redirect to="/signin" />;
+    return <Redirect to="/login" />;
   }
 
   if (userType === 'admin' || userType === 'volunteer') {
@@ -69,7 +69,7 @@ function ProtectedRoute({ ...rest }: IProtectedRouteData) {
   if (authenticated) {
     return <Redirect to="/" />;
   }
-  return <Redirect to="/signin" />;
+  return <Redirect to="/login" />;
 }
 
 function App() {
@@ -81,7 +81,7 @@ function App() {
           <Route path="/" exact component={Home} />
           <Route path="/faq" component={FAQ} />
 
-          <Route path="/signin" component={SignIn} />
+          <Route path="/login" component={SignIn} />
           <Route path="/cadastre-se" component={SignUp} />
           <Route
             path="/esqueci-minha-senha"
