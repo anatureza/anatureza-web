@@ -1,5 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
-
+import { FormEvent, useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import { UserAvatar } from '../components/UserAvatar';
@@ -7,10 +6,16 @@ import { AddressInputGroup } from '../components/AddressInputGroup';
 
 import api from '../services/api';
 
+import { AuthContext } from '../contexts/AuthContext';
+
 import { IUser } from '../types';
+import { ModalDelete } from '../components/ModalDelete';
 
 export function UserProfile() {
   const history = useHistory();
+
+  const { handleLogout } = useContext(AuthContext);
+  const [openModal, setOpenModal] = useState(false);
 
   const [previewName, setPreviewName] = useState('');
   const [name, setName] = useState('');
@@ -109,6 +114,11 @@ export function UserProfile() {
     } catch {
       alert('Ocorreu algum erro!');
     }
+  }
+
+  async function handleDeleteAccount() {
+    await api.delete('/user');
+    handleLogout();
   }
 
   return (
@@ -252,16 +262,29 @@ export function UserProfile() {
               </span>
             </div>
           </div>
-          <div className="w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
+          <div className="flex-end w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
             <button
               type="submit"
-              className="py-2 px-4  bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
             >
               Salvar altera&#231;&#245;es
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpenModal(true)}
+              className="py-2 px-4 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+            >
+              Excluir conta
             </button>
           </div>
         </div>
       </form>
+      <ModalDelete
+        title={'Você deseja excluir sua conta?'}
+        handleSubmit={handleDeleteAccount}
+        open={openModal}
+        setOpen={setOpenModal}
+      />
     </section>
   );
 }

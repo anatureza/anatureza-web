@@ -1,20 +1,17 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { useContext } from 'react';
-
+import { FormEvent, useEffect, useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 import { AuthContext } from '../contexts/AuthContext';
 
 import { AddressInputGroup } from '../components/AddressInputGroup';
-
-import moment from 'moment';
 
 import api from '../services/api';
 
 export function SignUp() {
   const history = useHistory();
 
-  const { authenticated } = useContext(AuthContext);
+  const { authenticated, handleLogin } = useContext(AuthContext);
 
   if (authenticated) {
     history.push('/');
@@ -73,15 +70,17 @@ export function SignUp() {
         authorizes_image,
         birth_date: moment(birth_date).format('YYYY-MM-DD').toString(),
         place,
+        uf,
         number,
         complement,
         neighborhood,
         zip,
         city,
       });
-      alert('Cadastro realizado com sucesso');
 
-      history.push('/signin');
+      alert('Cadastro realizado com sucesso!');
+
+      handleLogin({ email, password });
     } catch {
       alert('Não foi possível cadastrar-se');
     }
