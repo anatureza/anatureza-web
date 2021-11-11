@@ -37,6 +37,10 @@ export function UserProfile() {
   const [loadingInfo, setLoadingInfo] = useState(false);
   const [loadingAvatar, setLoadingAvatar] = useState(true);
 
+  const [cepIsValid, setCepIsValid] = useState(true);
+  const [phoneNumberIsValid, setPhoneNumberIsValid] = useState(true);
+  const [phoneNumberTyped, setPhoneNumberTyped] = useState(true);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -76,6 +80,15 @@ export function UserProfile() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
+    if (!phoneNumberIsValid) {
+      alert('Número de telefone inválido');
+      return;
+    }
+
+    if (!cepIsValid) {
+      alert('CEP Inválido');
+      return;
+    }
     try {
       const { data } = await api.put<IUser>('/user', {
         name,
@@ -213,16 +226,57 @@ export function UserProfile() {
               </div>
               <div>
                 <div className=" relative ">
-                  <label htmlFor="user-info-phone">Número de telefone</label>
+                  <label htmlFor="user-info-phone">
+                    Número de telefone{' '}
+                    <span className="text-xs text-gray-400">
+                      (Apenas números)
+                    </span>
+                  </label>
                   <input
                     type="text"
                     id="user-info-phone"
                     className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     value={loadingInfo ? '...' : phone_number}
+                    onFocus={() => {
+                      setPhoneNumberTyped(true);
+                    }}
                     onChange={(event) => {
-                      setPhoneNumber(event.target.value);
+                      const phoneRawValue = event.target.value;
+
+                      setPhoneNumber(phoneRawValue);
+
+                      const phoneNumberFormat = phoneRawValue.replace(
+                        /\D/g,
+                        ''
+                      );
+
+                      if (phoneNumberFormat === '') {
+                        setPhoneNumberIsValid(false);
+                      }
+                      if (phoneNumberFormat.length === 11) {
+                        setPhoneNumber(phoneNumberFormat);
+                        setPhoneNumberIsValid(true);
+                      } else {
+                        setPhoneNumberIsValid(false);
+                      }
                     }}
                   />
+                  <div className="mt-1" hidden={phoneNumberTyped}>
+                    <p
+                      className={`text-${
+                        phoneNumberIsValid ? 'green' : 'red'
+                      }-500`}
+                    >
+                      O Número {!phoneNumberIsValid && <span>n&#227;o</span>} é
+                      valido!
+                    </p>
+                    <p
+                      hidden={phoneNumberTyped && !phoneNumberIsValid}
+                      className={'text-red-500'}
+                    >
+                      Utilize 11 números apenas!
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -242,8 +296,10 @@ export function UserProfile() {
             setNeighborhood={setNeighborhood}
             complement={loadingInfo ? '...' : complement}
             setComplement={setComplement}
-            zip={loadingInfo ? '...' : zip}
-            setZip={setZip}
+            cep={loadingInfo ? '...' : zip}
+            setCep={setZip}
+            cepIsValid={cepIsValid}
+            setCepIsValid={setCepIsValid}
           />
           <hr />
           <div className="w-full px-4 mr-auto ">
@@ -272,7 +328,7 @@ export function UserProfile() {
             <button
               type="button"
               onClick={() => setOpenModal(true)}
-              className="py-2 px-4 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className="py-2 px-4 mt-1 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
             >
               Excluir conta
             </button>

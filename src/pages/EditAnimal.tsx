@@ -54,8 +54,15 @@ export function EditAnimal() {
   const [animalIsAdopted, setAnimalIsAdopted] = useState(false);
   const [adoptedReservationId, setAdoptedReservationId] = useState<string>('');
 
+  const [cepIsValid, setCepIsValid] = useState(true);
+
   async function handleSave(event: FormEvent) {
     event.preventDefault();
+
+    if (!cepIsValid) {
+      alert('CEP Inválido');
+      return;
+    }
 
     try {
       const { data } = await api.put<IAnimal | undefined>(
@@ -310,8 +317,10 @@ export function EditAnimal() {
               setNeighborhood={setNeighborhood}
               complement={loadingInfo ? '...' : complement}
               setComplement={setComplement}
-              zip={loadingInfo ? '...' : zip}
-              setZip={setZip}
+              cep={loadingInfo ? '...' : zip}
+              setCep={setZip}
+              cepIsValid={cepIsValid}
+              setCepIsValid={setCepIsValid}
             />
             <hr />
             <div className="w-full px-4 pb-4 text-gray-500 flex">

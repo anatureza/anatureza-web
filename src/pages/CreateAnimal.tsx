@@ -43,6 +43,8 @@ export function CreateAnimal() {
   const [zip, setZip] = useState('');
   const [city, setCity] = useState('');
 
+  const [cepIsValid, setCepIsValid] = useState(false);
+
   //Get Volunteer Info
   useEffect(() => {
     (async () => {
@@ -79,6 +81,11 @@ export function CreateAnimal() {
 
   async function handleSave(event: FormEvent) {
     event.preventDefault();
+
+    if (!cepIsValid) {
+      alert('CEP Inválido');
+      return;
+    }
 
     const data = new FormData();
 
@@ -294,8 +301,10 @@ export function CreateAnimal() {
               setNeighborhood={setNeighborhood}
               complement={complement}
               setComplement={setComplement}
-              zip={zip}
-              setZip={setZip}
+              cep={zip}
+              setCep={setZip}
+              cepIsValid={cepIsValid}
+              setCepIsValid={setCepIsValid}
             />
             <hr />
             <div className="w-full px-4 pb-4 text-gray-500 flex">

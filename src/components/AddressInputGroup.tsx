@@ -13,9 +13,11 @@ interface IAddress {
   setNeighborhood: Dispatch<SetStateAction<any>>;
   complement?: string;
   setComplement: Dispatch<SetStateAction<any>>;
-  zip: string;
-  setZip: Dispatch<SetStateAction<string>>;
+  cep: string;
+  setCep: Dispatch<SetStateAction<string>>;
   autoCompleteOnProp: boolean;
+  cepIsValid: boolean;
+  setCepIsValid: Dispatch<SetStateAction<boolean>>;
 }
 interface IViaCEPResponse {
   erro: boolean;
@@ -44,12 +46,21 @@ export function AddressInputGroup({
   setNeighborhood,
   complement = '',
   setComplement,
-  zip,
-  setZip,
+  cep,
+  setCep,
+  cepIsValid,
+  setCepIsValid,
   autoCompleteOnProp,
 }: IAddress) {
   const [autoCompleteOn, setAutoCompleteOn] = useState(autoCompleteOnProp);
-  const [loadingZip, setLoadingZip] = useState(false);
+  const [loadingCep, setLoadingCep] = useState(false);
+  const [cepIsTyped, setCepIsTyped] = useState(false);
+
+  useEffect(() => {
+    if (cep !== '') {
+      setCepIsTyped(true);
+    }
+  }, [cep]);
 
   useEffect(() => {
     if (uf) {
@@ -59,12 +70,12 @@ export function AddressInputGroup({
     }
   }, [uf, setUF]);
 
-  async function fetchViaCEP(zipInput: string) {
-    const zipRawValue = zipInput.replace(/\D+/g, '');
+  async function fetchViaCEP(cepInput: string) {
+    const cepRawValue = cepInput.replace(/\D+/g, '');
 
     try {
       const response = await fetch(
-        `https://viacep.com.br/ws/${zipRawValue}/json/`
+        `https://viacep.com.br/ws/${cepRawValue}/json/`
       );
 
       if (autoCompleteOn) {
@@ -76,7 +87,7 @@ export function AddressInputGroup({
           if (data.bairro !== '') setNeighborhood(data.bairro);
           if (data.localidade !== '') setCity(data.localidade);
           if (data.uf !== '') setUF(data.uf);
-          setAutoCompleteOn(false);
+          setCepIsValid(true);
         } else {
           setPlace('');
           setComplement('');
@@ -91,7 +102,7 @@ export function AddressInputGroup({
         alert('CEP Não Encontrado!');
       }
     }
-    setLoadingZip(false);
+    setLoadingCep(false);
   }
 
   return (
@@ -106,22 +117,41 @@ export function AddressInputGroup({
             </label>
             <input
               type="text"
-              id="address-zip"
-              value={zip}
+              id="address-cep"
+              value={cep}
+              onFocus={() => setCepIsTyped(true)}
               onChange={(event) => {
-                const zipInputValue = event.target.value;
+                const cepInputValue = event.target.value;
+                const cep = cepInputValue.replace(/\D/g, '');
 
-                setZip(zipInputValue);
+                setCep(cep);
 
-                if (zipInputValue.length >= 8) {
-                  setLoadingZip(true);
-                  fetchViaCEP(zipInputValue);
+                const validateCEP = /^[0-9]{8}$/;
+
+                if (cep.length === 8) {
+                  if (validateCEP.test(cep)) {
+                    setCepIsValid(true);
+                    setLoadingCep(true);
+                    fetchViaCEP(cep);
+                  } else {
+                    alert('CEP Inválido');
+                  }
+                } else {
+                  setCepIsValid(false);
                 }
               }}
-              maxLength={9}
+              maxLength={8}
               placeholder="CEP (Ex: 13940000)"
               className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             />
+            <div className="mt-1" hidden={!cepIsTyped}>
+              <p className={`text-${cepIsValid ? 'green' : 'red'}-500`}>
+                O CEP {!cepIsValid && <span>n&#227;o</span>} é valido!
+              </p>
+              <p hidden={cepIsTyped && cepIsValid} className={'text-red-500'}>
+                Utilize 8 números apenas!
+              </p>
+            </div>
           </div>
         </div>
 
@@ -132,7 +162,7 @@ export function AddressInputGroup({
           <input
             type="text"
             id="address-uf"
-            value={loadingZip ? '...' : uf}
+            value={loadingCep ? '...' : uf}
             onChange={(event) => {
               setUF(event.target.value);
             }}
@@ -148,7 +178,7 @@ export function AddressInputGroup({
             <input
               type="text"
               id="address-city"
-              value={loadingZip ? '...' : city}
+              value={loadingCep ? '...' : city}
               onChange={(event) => {
                 setCity(event.target.value);
               }}
@@ -166,7 +196,7 @@ export function AddressInputGroup({
             type="text"
             id="address-neighborhood"
             className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-            value={loadingZip ? '...' : neighborhood}
+            value={loadingCep ? '...' : neighborhood}
             onChange={(event) => {
               setNeighborhood(event.target.value);
             }}
@@ -181,7 +211,7 @@ export function AddressInputGroup({
             <input
               type="text"
               id="address-place"
-              value={loadingZip ? '...' : place}
+              value={loadingCep ? '...' : place}
               onChange={(event) => {
                 setPlace(event.target.value);
               }}
@@ -196,7 +226,7 @@ export function AddressInputGroup({
             <input
               type="text"
               id="address-number"
-              value={loadingZip ? '...' : number}
+              value={loadingCep ? '...' : number}
               onChange={(event) => {
                 setNumber(event.target.value);
               }}
@@ -213,7 +243,7 @@ export function AddressInputGroup({
             <textarea
               className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               id="address-complement"
-              value={loadingZip ? '...' : complement}
+              value={loadingCep ? '...' : complement}
               onChange={(event) => {
                 setComplement(event.target.value);
               }}
