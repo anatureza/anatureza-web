@@ -32,6 +32,7 @@ import { ManageAnimals } from './pages/ManageAnimals';
 import { CreateAnimal } from './pages/CreateAnimal';
 import { EditAnimal } from './pages/EditAnimal';
 import { ResetPassword } from './pages/ResetPassword';
+import { TermsOfUse } from './pages/TermsOfUse';
 
 interface IAuthRouteData extends RouteProps {}
 
@@ -80,6 +81,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/faq" component={FAQ} />
+          <Route path="/termos-de-uso" component={TermsOfUse} />
 
           <Route path="/login" component={SignIn} />
           <Route path="/cadastre-se" component={SignUp} />
