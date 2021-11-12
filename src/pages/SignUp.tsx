@@ -120,6 +120,9 @@ export function SignUp() {
             <h2 className="max-w-sm mx-auto md:w-1/3">Dados de Acesso</h2>
             <div className="max-w-sm mx-auto md:w-2/3">
               <div className=" relative ">
+                <label htmlFor="user-info-email" className="text-gray-700">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="user-info-email"
@@ -187,8 +190,9 @@ export function SignUp() {
             <h2 className="max-w-sm mx-auto md:w-1/3">Informações Pessoais</h2>
             <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
               <div className="relative">
-                <label htmlFor="birth_date">Data de nascimento</label>
-
+                <label htmlFor="user-birthDate" className="text-gray-700">
+                  Data de nascimento
+                </label>
                 <input
                   type="date"
                   className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
@@ -199,6 +203,9 @@ export function SignUp() {
                 />
               </div>
               <div className="relative">
+                <label htmlFor="" className="text-gray-700">
+                  Nome completo
+                </label>
                 <input
                   type="text"
                   id="user-info-name"
@@ -206,11 +213,11 @@ export function SignUp() {
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                  placeholder="Nome completo"
+                  placeholder="João da Silva"
                 />
               </div>
               <div className="relative">
-                <label htmlFor="user-info-phone">
+                <label htmlFor="user-info-phone" className="text-gray-700">
                   Número de telefone{' '}
                   <span className="text-xs text-gray-400">
                     (Apenas números)
