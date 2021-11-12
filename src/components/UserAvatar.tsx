@@ -1,27 +1,37 @@
-import { ChangeEvent, useState } from "react";
-import { useHistory } from "react-router";
+import { ChangeEvent, useContext, useState } from 'react';
 
-import api from "../services/api";
+import { AuthContext } from '../contexts/AuthContext';
+
+import api from '../services/api';
+import { IUser } from '../types';
+
 interface IAvatar {
   loadingAvatar: boolean;
   setLoadingAvatar: React.Dispatch<React.SetStateAction<any>>;
+  setUserPreviewAvatar: React.Dispatch<React.SetStateAction<any>>;
 }
 
-export function UserAvatar({ loadingAvatar, setLoadingAvatar }: IAvatar) {
-  const history = useHistory();
+export function UserAvatar({
+  loadingAvatar,
+  setLoadingAvatar,
+  setUserPreviewAvatar,
+}: IAvatar) {
+  const { handleUploadAvatar } = useContext(AuthContext);
 
   const [avatar, setAvatar] = useState<File>();
 
-  function handleUpdateAvatar() {
-    if (typeof avatar !== "undefined") {
+  async function handleUpdateAvatar() {
+    if (typeof avatar !== 'undefined') {
       const data = new FormData();
 
-      data.append("avatar", avatar);
+      data.append('avatar', avatar);
 
-      api.patch("/user/avatar", data).then(() => {
-        alert("Avatar Alterado com sucesso!");
-        history.go(0);
-      });
+      const response = await api.patch<IUser>('/user/avatar', data);
+      if (response.data.avatar_url !== null) {
+        setUserPreviewAvatar(response.data.avatar_url);
+        handleUploadAvatar({ newUserAvatarUrl: response.data.avatar_url });
+      }
+      alert('Avatar Alterado com sucesso!');
     }
   }
 

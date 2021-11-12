@@ -44,6 +44,7 @@ export function Navbar() {
           await api.get('/user');
           setLoadingUser(false);
         } catch {
+          setLoadingUser(false);
           handleLogout();
         }
       })();

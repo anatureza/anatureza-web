@@ -160,6 +160,7 @@ export function UserProfile() {
           <UserAvatar
             loadingAvatar={loadingAvatar}
             setLoadingAvatar={setLoadingAvatar}
+            setUserPreviewAvatar={setUserPreviewAvatar}
           />
           <hr />
           <div className="items-center w-full p-8 space-y-4 text-gray-500 md:inline-flex md:space-y-0">

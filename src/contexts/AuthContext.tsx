@@ -7,6 +7,10 @@ interface ILoginData {
   password: string;
 }
 
+interface IUserAvatarUrl {
+  newUserAvatarUrl: string;
+}
+
 interface IAuthContextType {
   loading: boolean;
   authenticated: boolean;
@@ -15,6 +19,7 @@ interface IAuthContextType {
   userType: string | null;
   userId: string | null;
   userAvatarUrl: string | null;
+  handleUploadAvatar: ({ newUserAvatarUrl }: IUserAvatarUrl) => void;
 }
 
 interface IAuthContextProviderProps {
@@ -32,6 +37,7 @@ export function AuthContextProvider(props: IAuthContextProviderProps) {
     userType,
     userId,
     userAvatarUrl,
+    handleUploadAvatar,
   } = useAuth();
 
   return (
@@ -44,6 +50,7 @@ export function AuthContextProvider(props: IAuthContextProviderProps) {
         userType,
         userId,
         userAvatarUrl,
+        handleUploadAvatar,
       }}
     >
       {props.children}
