@@ -60,18 +60,18 @@ export function FAQ() {
   }, []);
 
   return (
-    <div className="bg-gray-50 pt-12">
-      <div className="container mx-auto leading-6 max-w-screen-md h-screen">
+    <div className="bg-gray-50 pt-8 pb-8 lg:min-h-screen">
+      <div className="container mx-auto leading-6 max-w-screen-md ">
         <div className="block box-border w-auto">
-          <div className="top text-center mb-4">
-            <h2 className="font-sans text-4xl">Perguntas Frequentes</h2>
+          <div className="top text-center">
+            <h2 className="font-sans text-4xl mb-1">Perguntas Frequentes</h2>
             <p className="text-gray-600">
               Algumas dúvidas mais recorrentes que recebemos
             </p>
           </div>
-          <hr />
-          <div className="w-full px-4 pt-16 mb-32">
-            <div className="w-full max-w-md p-2 mx-auto  bg-white shadow-sm rounded-2xl max-h-screen overflow-y-auto">
+          <hr className="my-2" />
+          <div className="w-full px-4 pt-8">
+            <div className="w-full max-w-md mx-auto bg-white shadow-sm rounded-2xl p-2">
               {questions.map((question, index) => (
                 <Disclosure
                   as="div"
@@ -97,7 +97,7 @@ export function FAQ() {
                         leaveFrom="transform scale-100 opacity-100"
                         leaveTo="transform scale-95 opacity-0"
                       >
-                        <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500">
+                        <Disclosure.Panel className="px-4 pt-4 text-sm text-gray-500">
                           {question.answer}
                         </Disclosure.Panel>
                       </Transition>
