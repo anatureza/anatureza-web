@@ -117,8 +117,8 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
           {reservations.map((reservation, index) => (
             <tr key={index}>
               <td className="px-6 py-4 whitespace-nowrap">
-                <Link to={`/app/animal/${reservation.animal.id}`}>
-                  <div className="flex items-center">
+                <div className="flex items-center">
+                  <Link to={`/app/reservas?animalId=${reservation.animal.id}`}>
                     <div className="flex-shrink-0 h-10 w-10">
                       {reservation.animal.main_image_url ? (
                         <img
@@ -138,16 +138,20 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
                         />
                       )}
                     </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">
+                  </Link>
+                  <div className="ml-4">
+                    <Link
+                      to={`/app/reservas?animalId=${reservation.animal.id}`}
+                    >
+                      <div className="text-sm font-medium text-gray-900 cursor-pointer select-none">
                         {reservation.animal.name}
                       </div>
-                      <div className="text-sm text-gray-500">
-                        {reservation.animal.description}
-                      </div>
+                    </Link>
+                    <div className="text-sm text-gray-500">
+                      Nº para contato: {reservation.animal.user.phone_number}
                     </div>
                   </div>
-                </Link>
+                </div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm text-gray-900">

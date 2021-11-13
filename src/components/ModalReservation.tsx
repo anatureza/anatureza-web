@@ -113,7 +113,7 @@ export function ModalReservation({
                         to={`/app/reserva/${reservationId}`}
                         className="text-blue-500 hover:text-blue-300 font-semibold cursor-pointer"
                       >
-                        Visualizar Questionário
+                        Visualizar dados da reserva
                       </Link>
                     </div>
                   </div>
