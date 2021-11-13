@@ -27,7 +27,7 @@ export function AppHeader({ title, children }: AppHeaderProps) {
             icon={faBars}
             size="lg"
             className="inline-block float-right cursor-pointer"
-            onClick={() => setOpen((opened) => !opened)}
+            onClick={() => setOpen(true)}
           />
         </div>
       </header>

@@ -1,4 +1,4 @@
-import { Dispatch, Fragment, useContext } from 'react';
+import { Dispatch, Fragment, SetStateAction, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Dialog, Transition } from '@headlessui/react';
 
@@ -16,7 +16,7 @@ import { AuthContext } from '../contexts/AuthContext';
 
 type SlideOverProps = {
   open: boolean;
-  setOpen: Dispatch<React.SetStateAction<boolean>>;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 type ClassesTypes = string[];
