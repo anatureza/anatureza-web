@@ -9,12 +9,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ButtonGoBack } from '../components/ButtonGoBack';
 import { QuizInput } from '../components/QuizInput';
+import { questions } from './NewReservationQuiz';
 
 import api from '../services/api';
 
 import { IReservation } from '../types';
 
-import { questions } from './NewReservationQuiz';
+import NoProfilePic from '../assets/images/no-profile-pic-icon-24.jpg';
 
 interface IReservationParams {
   reservation_id: string;
@@ -117,7 +118,7 @@ export function ManageQuiz() {
             <h1 className="inline-block align-bottom text-4xl font-bold select-none">
               {reservation?.status === 'adopted'
                 ? 'Informações da adoção'
-                : 'Questionário da reserva'}
+                : 'Gerenciar reserva'}
             </h1>
           </div>
 
@@ -156,7 +157,8 @@ export function ManageQuiz() {
             {typeof reservation !== 'undefined' && (
               <Link to={`/app/animal/${reservation.animal_id}`}>
                 <span className="font-medium text-blue-400 hover:text-blue-500 hover:underline">
-                  Ver mais sobre o animal...
+                  Ver mais sobre o animal{' '}
+                  <FontAwesomeIcon icon={faExternalLinkAlt} />
                 </span>
               </Link>
             )}
@@ -168,16 +170,15 @@ export function ManageQuiz() {
             <h6 className="text-2xl text-gray-900 font-semibold select-none">
               Informações do adotante
             </h6>
-            {typeof reservation !== 'undefined' &&
-              reservation.userAdopter.avatar_url !== null && (
-                <div className="p-2">
-                  <img
-                    className="h-14 w-14 rounded-md"
-                    src={`${api.defaults.baseURL}/uploads/${reservation.userAdopter.avatar}`}
-                    alt="user"
-                  />
-                </div>
-              )}
+            {typeof reservation !== 'undefined' && (
+              <div className="p-2">
+                <img
+                  className="h-14 w-14 rounded-md"
+                  src={reservation.userAdopter.avatar_url || NoProfilePic}
+                  alt="user"
+                />
+              </div>
+            )}
             <p>
               <span className="font-semibold">Nome: </span>
               {typeof reservation === 'undefined'
@@ -230,11 +231,30 @@ export function ManageQuiz() {
                 ? '...'
                 : reservation.userAdopter.address.zip}
             </p>
+            {typeof reservation !== 'undefined' && (
+              <p>
+                <span className="font-semibold p-2">
+                  O Usuário{' '}
+                  <span
+                    className={`${
+                      reservation.userAdopter.authorizes_image
+                        ? 'text-green-600'
+                        : 'text-red-600'
+                    } font-medium`}
+                  >
+                    {reservation.userAdopter.authorizes_image
+                      ? 'Aceita'
+                      : 'Não'}
+                  </span>{' '}
+                  a divulgação de imagem
+                </span>
+              </p>
+            )}
           </div>
           <hr className="my-4" />
           <div className="p-4">
             <h1 className="inline-block align-bottom text-2xl font-bold">
-              Respostas
+              Respostas do questionário
             </h1>
             <QuizInput
               answer={
