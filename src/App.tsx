@@ -46,7 +46,7 @@ function AuthRoute({ ...rest }: ICustomRouteData) {
   }
 
   if (!authenticated) {
-    <Redirect to="/login" />;
+    return <Redirect to="/login" />;
   }
 
   return <Route {...rest} />;
