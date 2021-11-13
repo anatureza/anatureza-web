@@ -1,3 +1,5 @@
+import { faFrown } from '@fortawesome/free-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 
 import { AnimalCard } from '../components/AnimalCard';
@@ -69,7 +71,12 @@ export function AnimalsAdoption() {
             </p>
           </div>
           <div className="text-end">
-            <form className="flex flex-col md:flex-row w-3/4 md:w-full max-w-sm md:space-x-3 space-y-3 md:space-y-0 justify-center">
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+              }}
+              className="flex flex-col md:flex-row w-3/4 md:w-full max-w-sm md:space-x-3 space-y-3 md:space-y-0 justify-center"
+            >
               <div className="relative md:grid-cols-4">
                 <input
                   type="search"
@@ -91,13 +98,22 @@ export function AnimalsAdoption() {
               ))}
             </>
           )}
-          {filteredAnimals.length === 0 && (
-            <div className="container">
-              <h1>Nenhum animal encontrado</h1>
-            </div>
-          )}
         </div>
-        {searchValue === '' && (
+        {filteredAnimals.length === 0 && (
+          <div className="container min-h-screen w-full text-center">
+            <span className="m-0 w-full h-full text-gray-700">
+              <FontAwesomeIcon
+                className="inline-block"
+                icon={faFrown}
+                size={'8x'}
+              />{' '}
+              <span className="block font-medium">
+                Nenhum animal encontrado
+              </span>
+            </span>
+          </div>
+        )}
+        {searchValue === '' && filteredAnimals.length > 0 && (
           <div className="w-full py-8 px-12">
             <button
               onClick={loadMoreAnimals}
