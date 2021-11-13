@@ -225,6 +225,42 @@ export function Navbar() {
                   </span>
                 </Link>
               ))}
+              {!authenticated && (
+                <>
+                  <Link to={'/login'}>
+                    <span
+                      className={`${
+                        location.pathname === '/login'
+                          ? 'bg-gray-600 bg-opacity-50 text-white'
+                          : 'text-gray-300 hover:bg-gray-700 hover:bg-opacity-75 hover:text-white'
+                      }
+                          px-3 py-2 rounded-md text-sm font-medium`}
+                      aria-current={
+                        location.pathname === '/login' ? 'page' : undefined
+                      }
+                    >
+                      {'Fazer Login'}
+                    </span>
+                  </Link>
+                  <Link to={'/cadastre-se'}>
+                    <span
+                      className={`${
+                        location.pathname === '/cadastre-se'
+                          ? 'bg-gray-600 bg-opacity-50 text-white'
+                          : 'text-gray-300 hover:bg-gray-700 hover:bg-opacity-75 hover:text-white'
+                      }
+                          px-3 py-2 rounded-md text-sm font-medium`}
+                      aria-current={
+                        location.pathname === '/cadastre-se'
+                          ? 'page'
+                          : undefined
+                      }
+                    >
+                      {'Cadastre-se'}
+                    </span>
+                  </Link>
+                </>
+              )}
             </div>
           </Disclosure.Panel>
         </>
