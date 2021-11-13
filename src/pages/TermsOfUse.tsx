@@ -1,15 +1,15 @@
 export function TermsOfUse() {
   return (
-    <div className="bg-gray-50 mt-8">
-      <div className="container mx-auto leading-6 max-w-screen-md min-h-screen mb-8">
+    <div className="bg-gray-50 pt-12 pb-12">
+      <div className="container mx-auto leading-6 max-w-screen-md min-h-screen pb-8 bg-white rounded-2xl shadow-sm">
         <div className="block box-border w-auto">
           <div className="top text-center mb-4">
             <h1 className="font-sans text-4xl">Termos de Uso</h1>
           </div>
           <hr />
-          <div className="w-full mt-8 mb-8 bg-white">
+          <div className="w-full mt-8 mb-8">
             <h2 className="text-lg font-medium ml-6">Me comprometo a,</h2>
-            <div className="w-full max-w-md mx-auto bg-white shadow-sm rounded-2xl">
+            <div className="w-full max-w-md mx-auto">
               <ol className="list-inside list-decimal py-1">
                 <li>
                   Garantir o bem-estar e a saúde psicológica, respeitando suas
@@ -61,7 +61,7 @@ export function TermsOfUse() {
             <h2 className="text-lg font-medium mt-4 ml-6">
               Estou ciente de que,
             </h2>
-            <div className="w-full max-w-md mx-auto bg-white shadow-sm rounded-2xl">
+            <div className="w-full max-w-md mx-auto">
               <ul className="list-inside list-disc">
                 <li>
                   Um cão ou gato pode viver até 15 anos ou mais, e durante todo
