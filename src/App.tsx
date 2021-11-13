@@ -12,6 +12,7 @@ import { AuthContext, AuthContextProvider } from './contexts/AuthContext';
 
 import { Home } from './pages/Home';
 import { FAQ } from './pages/FAQ';
+import { TermsOfUse } from './pages/TermsOfUse';
 import { AnimalsAdoption } from './pages/AnimalsAdoption';
 import { AnimalProfile } from './pages/AnimalProfile';
 
@@ -25,6 +26,7 @@ import { SendForgotPasswordResetMail } from './pages/SendForgotPasswordResetMail
 import { Dashboard } from './pages/Dashboard';
 import { ManageReservations } from './pages/ManageReservations';
 import { ManageQuiz } from './pages/ManageQuiz';
+import { ManageUsers } from './pages/ManageUsers';
 
 import { Footer } from './components/Footer';
 import { Navbar } from './components/Navbar';
@@ -32,13 +34,10 @@ import { ManageAnimals } from './pages/ManageAnimals';
 import { CreateAnimal } from './pages/CreateAnimal';
 import { EditAnimal } from './pages/EditAnimal';
 import { ResetPassword } from './pages/ResetPassword';
-import { TermsOfUse } from './pages/TermsOfUse';
 
-interface IAuthRouteData extends RouteProps {}
+interface ICustomRouteData extends RouteProps {}
 
-interface IProtectedRouteData extends RouteProps {}
-
-function AuthRoute({ ...rest }: IAuthRouteData) {
+function AuthRoute({ ...rest }: ICustomRouteData) {
   const { loading, authenticated } = useContext(AuthContext);
 
   if (loading) {
@@ -52,7 +51,7 @@ function AuthRoute({ ...rest }: IAuthRouteData) {
   return <Route {...rest} />;
 }
 
-function ProtectedRoute({ ...rest }: IProtectedRouteData) {
+function ProtectedRoute({ ...rest }: ICustomRouteData) {
   const { loading, authenticated, userType } = useContext(AuthContext);
 
   if (loading) {
@@ -70,6 +69,28 @@ function ProtectedRoute({ ...rest }: IProtectedRouteData) {
   if (authenticated) {
     return <Redirect to="/" />;
   }
+  return <Redirect to="/login" />;
+}
+
+function AdminRoute({ ...rest }: ICustomRouteData) {
+  const { loading, authenticated, userType } = useContext(AuthContext);
+
+  if (loading) {
+    return <h1>Carregando...</h1>;
+  }
+
+  if (!authenticated) {
+    return <Redirect to="/login" />;
+  }
+
+  if (userType === 'admin') {
+    return <Route {...rest} />;
+  }
+
+  if (authenticated) {
+    return <Redirect to="/" />;
+  }
+
   return <Redirect to="/login" />;
 }
 
@@ -104,6 +125,7 @@ function App() {
           />
           <ProtectedRoute path="/app/reservas" component={ManageReservations} />
           <ProtectedRoute path="/app/animais" component={ManageAnimals} />
+          <AdminRoute path="/app/usuarios" component={ManageUsers} />
           <ProtectedRoute path="/app/animal/novo" component={CreateAnimal} />
           <ProtectedRoute
             path="/app/animal/:animal_id"
