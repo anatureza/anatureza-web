@@ -303,7 +303,7 @@ export function AnimalProfile() {
           ) : (
             <p className="ml-4">
               Para adotar, você precisa estar{' '}
-              <a className="text-blue-800" href="/signin" target="_blank">
+              <a className="text-blue-800" href="/login" target="_blank">
                 Logado
               </a>
             </p>

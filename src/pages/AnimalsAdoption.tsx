@@ -1,7 +1,6 @@
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { faFrown } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import { AnimalCard } from '../components/AnimalCard';
 
@@ -10,8 +9,6 @@ import api from '../services/api';
 import { IAnimal } from '../types';
 
 export function AnimalsAdoption() {
-  const history = useHistory();
-
   const [allAnimals, setAllAnimals] = useState<IAnimal[]>([]);
 
   const [animals, setAnimals] = useState<IAnimal[]>([]);
@@ -25,26 +22,20 @@ export function AnimalsAdoption() {
       })
     : animals;
 
-  const handleLoadAnimals = useCallback(
-    async (page, animalsPerPage) => {
-      try {
-        const animalsFromLoadAnimals = await loadAnimals();
+  const handleLoadAnimals = useCallback(async (page, animalsPerPage) => {
+    try {
+      const animalsFromLoadAnimals = await loadAnimals();
 
-        setAnimals(animalsFromLoadAnimals.slice(page, animalsPerPage));
-        setAllAnimals(animalsFromLoadAnimals);
-      } catch {
-        alert('Não encontramos nenhum animal');
-        history.push('/');
-      }
-    },
-    [history]
-  );
+      setAnimals(animalsFromLoadAnimals.slice(page, animalsPerPage));
+      setAllAnimals(animalsFromLoadAnimals);
+    } catch {
+      alert('Não encontramos nenhum animal');
+    }
+  }, []);
 
   const noMoreAnimals = page + animalsPerPage >= allAnimals.length;
 
   async function loadAnimals() {
-    window.scrollTo(0, 0);
-
     const { data } = await api.get<IAnimal[]>('/available-animals');
     return data;
   }

@@ -113,7 +113,7 @@ function App() {
           />
           <Route path="/reset-password" component={ResetPassword} />
 
-          <Route path="/animais-adocao" component={AnimalsAdoption} />
+          <Route path="/animais-adocao" component={AnimalsAdoption} exact />
           <Route path="/animal/:animal_id" component={AnimalProfile} />
 
           <AuthRoute path="/adotar/:animal_id" component={NewReservationQuiz} />
