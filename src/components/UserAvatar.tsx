@@ -32,6 +32,7 @@ export function UserAvatar({
         handleUploadAvatar({ newUserAvatarUrl: response.data.avatar_url });
       }
       alert('Avatar Alterado com sucesso!');
+      setLoadingAvatar(true);
     }
   }
 
