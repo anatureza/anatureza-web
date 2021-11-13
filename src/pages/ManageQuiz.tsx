@@ -53,7 +53,7 @@ export function ManageQuiz() {
           alert('Dados Não Encontrados');
         }
       } catch {
-        alert('Não foi possível trazer dados de reserva');
+        alert('Reserva não encontrada!');
         history.goBack();
       }
     })();

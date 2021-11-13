@@ -10,6 +10,7 @@ import {
 
 import { AuthContext, AuthContextProvider } from './contexts/AuthContext';
 
+import { Page404 } from './pages/Page404';
 import { Home } from './pages/Home';
 import { FAQ } from './pages/FAQ';
 import { TermsOfUse } from './pages/TermsOfUse';
@@ -116,21 +117,31 @@ function App() {
           <Route path="/animal/:animal_id" component={AnimalProfile} />
 
           <AuthRoute path="/adotar/:animal_id" component={NewReservationQuiz} />
-          <AuthRoute path="/meus-dados" component={UserProfile} />
+          <AuthRoute path="/meus-dados" component={UserProfile} exact />
 
           <ProtectedRoute path="/app" exact component={Dashboard} />
           <ProtectedRoute
             path="/app/reserva/:reservation_id"
             component={ManageQuiz}
           />
-          <ProtectedRoute path="/app/reservas" component={ManageReservations} />
-          <ProtectedRoute path="/app/animais" component={ManageAnimals} />
-          <AdminRoute path="/app/usuarios" component={ManageUsers} />
-          <ProtectedRoute path="/app/animal/novo" component={CreateAnimal} />
+          <ProtectedRoute
+            path="/app/reservas"
+            component={ManageReservations}
+            exact
+          />
+          <ProtectedRoute path="/app/animais" component={ManageAnimals} exact />
+          <AdminRoute path="/app/usuarios" component={ManageUsers} exact />
+          <ProtectedRoute
+            path="/app/animal/novo"
+            component={CreateAnimal}
+            exact
+          />
           <ProtectedRoute
             path="/app/animal/:animal_id"
             component={EditAnimal}
           />
+
+          <Route path="*" component={Page404} />
         </Switch>
         <Footer />
       </AuthContextProvider>

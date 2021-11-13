@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 
 import { SelectImages } from '../components/SelectImages';
 import { ButtonGoBack } from '../components/ButtonGoBack';
@@ -19,17 +19,22 @@ interface IAnimalIdParams {
 export function AnimalProfile() {
   const { authenticated } = useContext(AuthContext);
 
+  const history = useHistory();
+
   const { animal_id } = useParams<IAnimalIdParams>();
 
   const [animal, setAnimal] = useState<IAnimal>();
 
   useEffect(() => {
     (async () => {
-      const { data } = await api.get<IAnimal>(`/animal/${animal_id}`);
-
-      setAnimal(data);
+      try {
+        const { data } = await api.get<IAnimal>(`/animal/${animal_id}`);
+        setAnimal(data);
+      } catch {
+        history.push('/');
+      }
     })();
-  }, [animal_id]);
+  }, [animal_id, history]);
 
   if (!animal) {
     return (
