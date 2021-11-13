@@ -1,6 +1,7 @@
 import { faFrown } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { AnimalCard } from '../components/AnimalCard';
 
@@ -9,11 +10,13 @@ import api from '../services/api';
 import { IAnimal } from '../types';
 
 export function AnimalsAdoption() {
+  const history = useHistory();
+
   const [allAnimals, setAllAnimals] = useState<IAnimal[]>([]);
 
   const [animals, setAnimals] = useState<IAnimal[]>([]);
   const [page, setPage] = useState(0);
-  const [animalsPerPage] = useState(1);
+  const [animalsPerPage] = useState(6);
   const [searchValue, setSearchValue] = useState<string>('');
 
   const filteredAnimals = !!searchValue
@@ -22,17 +25,26 @@ export function AnimalsAdoption() {
       })
     : animals;
 
-  const handleLoadAnimals = useCallback(async (page, animalsPerPage) => {
-    const animalsFromLoadAnimals = await loadAnimals();
+  const handleLoadAnimals = useCallback(
+    async (page, animalsPerPage) => {
+      try {
+        const animalsFromLoadAnimals = await loadAnimals();
 
-    setAnimals(animalsFromLoadAnimals.slice(page, animalsPerPage));
-    setAllAnimals(animalsFromLoadAnimals);
-  }, []);
+        setAnimals(animalsFromLoadAnimals.slice(page, animalsPerPage));
+        setAllAnimals(animalsFromLoadAnimals);
+      } catch {
+        alert('Não encontramos nenhum animal');
+        history.push('/');
+      }
+    },
+    [history]
+  );
 
   const noMoreAnimals = page + animalsPerPage >= allAnimals.length;
 
   async function loadAnimals() {
     window.scrollTo(0, 0);
+
     const { data } = await api.get<IAnimal[]>('/available-animals');
     return data;
   }
@@ -59,7 +71,7 @@ export function AnimalsAdoption() {
 
   return (
     <>
-      <div className="w-full bg-white p-12">
+      <div className="w-full bg-gray-100 p-12">
         <div className="header flex items-end justify-between mb-12">
           <div className="title">
             <p className="text-4xl font-bold text-gray-800 mb-4">
@@ -90,7 +102,7 @@ export function AnimalsAdoption() {
             </form>
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-12">
           {filteredAnimals.length > 0 && (
             <>
               {filteredAnimals.map((animal) => (
@@ -119,10 +131,14 @@ export function AnimalsAdoption() {
               onClick={loadMoreAnimals}
               disabled={noMoreAnimals}
               className={`${
-                noMoreAnimals ? 'bg-gray-700' : 'bg-blue-700 hover:bg-blue-500'
+                noMoreAnimals
+                  ? 'bg-gray-700 cursor-not-allowed'
+                  : 'bg-blue-700 hover:bg-blue-500'
               } text-white p-4 w-full rounded-lg font-semibold`}
             >
-              Carregar mais animais
+              {noMoreAnimals
+                ? 'Não existem mais animais'
+                : 'Carregar mais animais'}
             </button>
           </div>
         )}
