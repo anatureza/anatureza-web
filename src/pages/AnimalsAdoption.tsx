@@ -13,7 +13,7 @@ export function AnimalsAdoption() {
 
   const [animals, setAnimals] = useState<IAnimal[]>([]);
   const [page, setPage] = useState(0);
-  const [animalsPerPage] = useState(6);
+  const [animalsPerPage] = useState(8);
   const [searchValue, setSearchValue] = useState<string>('');
 
   const filteredAnimals = !!searchValue
