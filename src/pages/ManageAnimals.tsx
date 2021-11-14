@@ -47,25 +47,14 @@ export function ManageAnimals() {
         setAvailableAnimals(undefined);
       }
     })();
-    if (userType === 'volunteer') {
-      (async () => {
-        try {
-          const { data } = await api.get('/animals');
-          setAllAnimals(data);
-        } catch {
-          setAllAnimals(undefined);
-        }
-      })();
-    } else {
-      (async () => {
-        try {
-          const { data } = await api.get('/all-animals');
-          setAllAnimals(data);
-        } catch {
-          setAllAnimals(undefined);
-        }
-      })();
-    }
+    (async () => {
+      try {
+        const { data } = await api.get('/all-animals');
+        setAllAnimals(data);
+      } catch {
+        setAllAnimals(undefined);
+      }
+    })();
   }, [userType]);
 
   useEffect(() => {
