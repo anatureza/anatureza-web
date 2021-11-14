@@ -127,6 +127,8 @@ export function EditAnimal() {
         const { data } = await api.get(`/animal/${animal_id}`);
 
         if (typeof data !== 'undefined') {
+          setAnimalVolunteerId(data.volunteer_id);
+
           setPreviewName(data.name);
           setName(data.name);
           setDescription(data.description);
