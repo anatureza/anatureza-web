@@ -14,6 +14,7 @@ interface IImageProps {
   animalId: string;
   setImages: Dispatch<SetStateAction<any>>;
   altAnimalName: string;
+  userHasPermission: boolean;
 }
 
 interface IHandleDeleteImage {
@@ -26,6 +27,7 @@ export function EditImages({
   altAnimalName,
   setImages,
   animalId,
+  userHasPermission,
 }: IImageProps) {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -53,21 +55,23 @@ export function EditImages({
   }
 
   function handleSelectNewImages(event: ChangeEvent<HTMLInputElement>) {
-    if (!event.target.files) {
-      setLoadingUploadImages(true);
-      return;
+    if (userHasPermission) {
+      if (!event.target.files) {
+        setLoadingUploadImages(true);
+        return;
+      }
+
+      const selectedImages = Array.from(event.target.files);
+
+      setUploadImages(selectedImages);
+
+      const selectedImagesPreview = selectedImages.map((image) => {
+        return URL.createObjectURL(image);
+      });
+
+      setPreviewImages(selectedImagesPreview);
+      setLoadingUploadImages(false);
     }
-
-    const selectedImages = Array.from(event.target.files);
-
-    setUploadImages(selectedImages);
-
-    const selectedImagesPreview = selectedImages.map((image) => {
-      return URL.createObjectURL(image);
-    });
-
-    setPreviewImages(selectedImagesPreview);
-    setLoadingUploadImages(false);
   }
 
   async function handleUploadNewImages() {
@@ -99,7 +103,9 @@ export function EditImages({
   return (
     <>
       <div className="p-4 h-full">
-        <h1 className="text-xl">Editar imagens do animal</h1>
+        {userHasPermission && images.length > 0 && (
+          <h1 className="text-xl">Editar imagens do animal</h1>
+        )}
         <div className="flex">
           <div className={`flex-auto grid grid-cols-3 gap-x-1 gap-y-1 my-2`}>
             {images.map((image) => (
@@ -107,9 +113,12 @@ export function EditImages({
                 key={image.id}
                 className={`relative h-full border-0 cursor-pointer rounded-md bg-none outline-none`}
                 onClick={() => {
-                  setDeleteAnimalImageId(image.id);
-                  setDeleteAnimalImagePath(image.path);
-                  setModalOpen(true);
+                  console.log(userHasPermission);
+                  if (userHasPermission) {
+                    setDeleteAnimalImageId(image.id);
+                    setDeleteAnimalImagePath(image.path);
+                    setModalOpen(true);
+                  }
                 }}
               >
                 <img
@@ -117,15 +126,17 @@ export function EditImages({
                   alt={altAnimalName}
                   className="h-72 w-full object-cover"
                 />
-                <div className="absolute h-full w-full inset-0 opacity-0 hover:opacity-80 hover:bg-red-50 m-0 py-20">
-                  <div className="object-center left-0 top-2/4 text-red-600 text-center">
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                      size="8x"
-                      className="opacity-50"
-                    />
+                {userHasPermission && (
+                  <div className="absolute h-full w-full inset-0 opacity-0 hover:opacity-80 hover:bg-red-50 m-0 py-20">
+                    <div className="object-center left-0 top-2/4 text-red-600 text-center">
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        size="8x"
+                        className="opacity-50"
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
             {/* Preview Images Array */}
@@ -141,32 +152,34 @@ export function EditImages({
                 />
               </div>
             ))}
-            <div
-              className={`relative h-full border-0 cursor-pointer bg-none outline-none`}
-            >
-              {/* Background color div */}
-              <div className="h-72 w-full bg-gray-50 rounded-md"></div>
-
+            {userHasPermission && (
               <div
-                className={`absolute h-full w-full inset-0 
+                className={`relative h-full border-0 cursor-pointer bg-none outline-none`}
+              >
+                {/* Background color div */}
+                <div className="h-72 w-full bg-gray-50 rounded-md"></div>
+
+                <div
+                  className={`absolute h-full w-full inset-0 
                 text-blue-600 text-center opacity-60 
                 hover:opacity-90  
                 rounded-md m-0 py-20`}
-              >
-                <div className="object-center left-0 top-2/4 cursor-pointer">
-                  <label htmlFor="image[]">
-                    <FontAwesomeIcon icon={faPlus} size="8x" />
-                  </label>
-                  <input
-                    type="file"
-                    id="image[]"
-                    multiple
-                    onChange={handleSelectNewImages}
-                    className="mt-1 sr-only"
-                  />
+                >
+                  <div className="object-center left-0 top-2/4 cursor-pointer">
+                    <label htmlFor="image[]">
+                      <FontAwesomeIcon icon={faPlus} size="8x" />
+                    </label>
+                    <input
+                      type="file"
+                      id="image[]"
+                      multiple
+                      onChange={handleSelectNewImages}
+                      className="mt-1 sr-only"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
         {!loadingUploadImages && (

@@ -213,6 +213,7 @@ export function EditAnimal() {
               images={images}
               setImages={setImages}
               animalId={animal_id}
+              userHasPermission={userHasPermission}
             />
 
             <hr />
@@ -229,6 +230,7 @@ export function EditAnimal() {
                   <input
                     type="text"
                     id="name"
+                    disabled={!userHasPermission}
                     value={loadingInfo ? '...' : name}
                     onChange={(event) => {
                       setName(event.target.value);
@@ -241,6 +243,7 @@ export function EditAnimal() {
                   <textarea
                     className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     id="description"
+                    disabled={!userHasPermission}
                     value={loadingInfo ? '...' : description}
                     onChange={(event) => {
                       setDescription(event.target.value);
