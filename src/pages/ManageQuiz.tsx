@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent, useContext } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import {
@@ -16,6 +16,7 @@ import api from '../services/api';
 import { IReservation } from '../types';
 
 import NoProfilePic from '../assets/images/no-profile-pic-icon-24.jpg';
+import { AuthContext } from '../contexts/AuthContext';
 
 interface IReservationParams {
   reservation_id: string;
@@ -24,6 +25,8 @@ interface IReservationParams {
 export function ManageQuiz() {
   const { reservation_id } = useParams<IReservationParams>();
   const history = useHistory();
+
+  const { userId, userType } = useContext(AuthContext);
 
   const [animaIsAvailable, setAnimaIsAvailable] = useState(false);
   const [reservationIsNew, setReservationIsNew] = useState(false);
@@ -35,9 +38,18 @@ export function ManageQuiz() {
   const [loadingReservation, setLoadingReservation] = useState(true);
   const [scheduled_at, setScheduledAt] = useState('');
 
+  const [animalVolunteerId, setAnimalVolunteerId] = useState('');
+  const [userHasPermission, setUserHasPermission] = useState(false);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    setUserHasPermission(false);
+    if (userId === animalVolunteerId) setUserHasPermission(true);
+    if (userType === 'admin') setUserHasPermission(true);
+  }, [userId, userType, animalVolunteerId]);
 
   useEffect(() => {
     (async () => {
@@ -48,6 +60,9 @@ export function ManageQuiz() {
         );
         if (typeof data !== 'undefined') {
           setReservation(data);
+
+          setAnimalVolunteerId(data.animal.volunteer_id);
+
           setLoadingReservation(false);
         } else {
           alert('Dados Não Encontrados');
@@ -449,37 +464,44 @@ export function ManageQuiz() {
 
           <div className="w-full pb-4 px-4 focus-within:text-gray-500 flex">
             {/* CANCEL - Go Back */}
-            <Link
-              to="/app/reservas"
-              className="inline-block py-2 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+            <button
+              className="inline-block py-2 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
+              type="button"
+              onClick={() => {
+                history.goBack();
+              }}
             >
-              <button type="button">Voltar</button>
-            </Link>
-            {animaIsAvailable && (
-              <button
-                type="button"
-                onClick={handleDisapproveReservation}
-                className="inline-block ml-2 py-2 left-0 inset-y-0 items-center pl-3 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
-              >
-                <FontAwesomeIcon
-                  icon={faTimesCircle}
-                  size="sm"
-                  className="mr-2 text-orange-300 group-hover:text-orange-700"
-                />
-                Reprovar reserva
-              </button>
-            )}
+              Voltar
+            </button>
+            {userHasPermission && (
+              <>
+                {animaIsAvailable && (
+                  <button
+                    type="button"
+                    onClick={handleDisapproveReservation}
+                    className="inline-block ml-2 py-2 left-0 inset-y-0 items-center pl-3 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
+                  >
+                    <FontAwesomeIcon
+                      icon={faTimesCircle}
+                      size="sm"
+                      className="mr-2 text-orange-300 group-hover:text-orange-700"
+                    />
+                    Reprovar reserva
+                  </button>
+                )}
 
-            {reservationIsNew || reservationIsApproved ? (
-              <button
-                type="submit"
-                className="inline-block ml-2 py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
-              >
-                {reservationIsNew && 'Aprovar questionário'}
-                {reservationIsApproved && 'Confirmar adoção'}
-              </button>
-            ) : (
-              ''
+                {reservationIsNew || reservationIsApproved ? (
+                  <button
+                    type="submit"
+                    className="inline-block ml-2 py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+                  >
+                    {reservationIsNew && 'Aprovar questionário'}
+                    {reservationIsApproved && 'Confirmar adoção'}
+                  </button>
+                ) : (
+                  ''
+                )}
+              </>
             )}
           </div>
         </div>
