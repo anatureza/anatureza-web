@@ -1,16 +1,20 @@
-import { FormEvent, useState } from "react";
-import { useHistory } from "react-router";
+import { FormEvent, useContext, useState } from 'react';
+import { useHistory } from 'react-router';
 
-import { faLock } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import api from "../services/api";
+import api from '../services/api';
+
+import { AuthContext } from '../contexts/AuthContext';
 
 export function SendForgotPasswordResetMail() {
   const history = useHistory();
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [loadingEmail, setLoadingEmail] = useState(false);
+
+  const { authenticated, handleLogout } = useContext(AuthContext);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -21,11 +25,17 @@ export function SendForgotPasswordResetMail() {
     setLoadingEmail(true);
 
     try {
-      await api.post("/user/password/forgot", { email });
-      alert("Sucesso! Verifique seu email para redefinir sua senha!");
-      history.push("/");
+      await api.post('/user/password/forgot', { email });
+      alert('Sucesso! Verifique seu email para redefinir sua senha!');
+
+      if (authenticated) {
+        handleLogout();
+        return;
+      }
+
+      history.push('/');
     } catch {
-      alert("Não foi possível enviar o e-mail");
+      alert('Não foi possível enviar o e-mail');
     } finally {
       setLoadingEmail(false);
     }
@@ -38,7 +48,7 @@ export function SendForgotPasswordResetMail() {
           <div className="text-center w-full h-20">
             <FontAwesomeIcon
               icon={faLock}
-              size={"8x"}
+              size={'8x'}
               className="mx-auto w-full h-20 text-gray-700"
             />
           </div>
@@ -46,7 +56,7 @@ export function SendForgotPasswordResetMail() {
             Esqueceu sua senha?
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Ou{" "}
+            Ou{' '}
             <a
               href="/cadastre-se"
               className="font-medium text-blue-600 hover:text-blue-500"

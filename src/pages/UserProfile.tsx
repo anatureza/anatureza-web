@@ -1,5 +1,5 @@
 import { FormEvent, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { Link, useHistory } from 'react-router-dom';
 
 import { UserAvatar } from '../components/UserAvatar';
 import { AddressInputGroup } from '../components/AddressInputGroup';
@@ -178,14 +178,16 @@ export function UserProfile() {
               </div>
             </div>
             <div className="text-center md:w-3/12 md:pl-6">
-              <button
-                type="button"
-                className={
-                  'py-2 px-4 text-gray-50 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg focus:ring-red-500 focus:ring-offset-red-200 bg-red-600 hover:bg-red-700 '
-                }
-              >
-                Mudar Senha
-              </button>
+              <Link to="/esqueci-minha-senha">
+                <button
+                  type="button"
+                  className={
+                    'py-2 px-4 text-gray-50 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg focus:ring-red-500 focus:ring-offset-red-200 bg-red-600 hover:bg-red-700 '
+                  }
+                >
+                  Mudar Senha
+                </button>
+              </Link>
             </div>
           </div>
           <hr />
