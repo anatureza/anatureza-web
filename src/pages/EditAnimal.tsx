@@ -83,7 +83,7 @@ export function EditAnimal() {
         }
       );
       if (typeof data !== 'undefined') {
-        setAnimalVolunteerId(data.user.id);
+        setAnimalVolunteerId(data.volunteer_id);
         setPreviewName(data.name);
         setName(data.name);
         setDescription(data.description);
