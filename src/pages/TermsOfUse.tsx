@@ -1,4 +1,10 @@
+import { useEffect } from 'react';
+
 export function TermsOfUse() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="bg-gray-50 pt-12 pb-12">
       <div className="container mx-auto leading-6 max-w-screen-md min-h-screen pb-8 bg-white rounded-2xl shadow-sm">

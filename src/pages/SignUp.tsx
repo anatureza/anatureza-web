@@ -43,6 +43,10 @@ export function SignUp() {
   const [phoneNumberTyped, setPhoneNumberTyped] = useState(false);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (password.length > 0) {
       setPasswordAlreadyTyped(true);
 

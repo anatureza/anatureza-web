@@ -46,6 +46,10 @@ export function Dashboard() {
   }, [userId]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const startOfWeek = moment().startOf('week');
     const endOfWeek = moment().endOf('week');
 

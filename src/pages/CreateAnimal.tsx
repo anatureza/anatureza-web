@@ -45,6 +45,10 @@ export function CreateAnimal() {
 
   const [cepIsValid, setCepIsValid] = useState(false);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   //Get Volunteer Info
   useEffect(() => {
     (async () => {

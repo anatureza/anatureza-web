@@ -30,6 +30,10 @@ export function ManageAnimals() {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     (async () => {
       try {
         const { data } = await api.get('/animals/unavailable');
