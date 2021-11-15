@@ -85,6 +85,13 @@ export function SignUp() {
       return;
     }
 
+    const now = moment();
+    const momentBirthDate = moment(birth_date);
+    if (momentBirthDate.isSameOrAfter(now)) {
+      alert('Data de nascimento inválida');
+      return;
+    }
+
     try {
       await api.post('/user', {
         name,

@@ -9,6 +9,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { AddressInputGroup } from '../components/AddressInputGroup';
 
 import api from '../services/api';
+import moment from 'moment';
 
 interface IUser {
   name: string;
@@ -88,6 +89,13 @@ export function CreateAnimal() {
 
     if (!cepIsValid) {
       alert('CEP Inválido');
+      return;
+    }
+
+    const now = moment();
+    const momentBirthDate = moment(birth_date);
+    if (momentBirthDate.isSameOrAfter(now)) {
+      alert('Data de nascimento inválida');
       return;
     }
 

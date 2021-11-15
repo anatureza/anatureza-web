@@ -10,6 +10,7 @@ import { AuthContext } from '../contexts/AuthContext';
 
 import { IUser } from '../types';
 import { ModalDelete } from '../components/ModalDelete';
+import moment from 'moment';
 
 export function UserProfile() {
   const history = useHistory();
@@ -89,11 +90,19 @@ export function UserProfile() {
       alert('CEP Inválido');
       return;
     }
+
+    const now = moment();
+    const momentBirthDate = moment(birth_date);
+    if (momentBirthDate.isSameOrAfter(now)) {
+      alert('Data de nascimento inválida');
+      return;
+    }
+
     try {
       const { data } = await api.put<IUser>('/user', {
         name,
         phone_number,
-        birth_date,
+        birth_date: moment(birth_date).format('YYYY-MM-DD').toString(),
         place,
         number,
         uf,
@@ -321,17 +330,24 @@ export function UserProfile() {
               </span>
             </div>
           </div>
-          <div className="flex-end w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
+          <div className="flex-col w-full px-4 pb-4 ml-auto text-gray-500 space-y-2">
             <button
               type="submit"
-              className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className="py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
             >
               Salvar altera&#231;&#245;es
             </button>
             <button
+              className="inline-block py-2 px-4 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              type="button"
+              onClick={history.goBack}
+            >
+              Cancelar (Voltar)
+            </button>
+            <button
               type="button"
               onClick={() => setOpenModal(true)}
-              className="py-2 px-4 mt-1 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className="py-2 px-4 bg-red-600 w-full hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
             >
               Excluir conta
             </button>

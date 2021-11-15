@@ -64,6 +64,13 @@ export function EditAnimal() {
       return;
     }
 
+    const now = moment();
+    const momentBirthDate = moment(birth_date);
+    if (momentBirthDate.isSameOrAfter(now)) {
+      alert('Data de nascimento inválida');
+      return;
+    }
+
     try {
       const { data } = await api.put<IAnimal | undefined>(
         `/animal/${animal_id}`,
@@ -334,12 +341,14 @@ export function EditAnimal() {
             <hr />
             <div className="w-full px-4 pb-4 text-gray-500 flex">
               {/* CANCEL - Go Back */}
-              <Link
-                to="/app/animais"
+
+              <button
                 className="inline-block py-2 px-4 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+                type="button"
+                onClick={history.goBack}
               >
-                <button type="button">Cancelar (Voltar)</button>
-              </Link>
+                Cancelar (Voltar)
+              </button>
               {userHasPermission && (
                 <>
                   <button
