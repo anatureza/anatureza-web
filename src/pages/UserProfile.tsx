@@ -238,7 +238,7 @@ export function UserProfile() {
               </div>
               <div>
                 <div className=" relative ">
-                  <label htmlFor="user-info-phone">
+                  <label htmlFor="user-info-phone" className="text-gray-700">
                     Número de telefone{' '}
                     <span className="text-xs text-gray-400">
                       (Apenas números)
@@ -247,7 +247,7 @@ export function UserProfile() {
                   <input
                     type="text"
                     id="user-info-phone"
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    required
                     value={loadingInfo ? '...' : phone_number}
                     onFocus={() => {
                       setPhoneNumberTyped(true);
@@ -272,18 +272,21 @@ export function UserProfile() {
                         setPhoneNumberIsValid(false);
                       }
                     }}
+                    maxLength={11}
+                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    placeholder="Ex: 19967895499"
                   />
-                  <div className="mt-1" hidden={phoneNumberTyped}>
+                  <div className="mt-1" hidden={!phoneNumberTyped}>
                     <p
                       className={`text-${
                         phoneNumberIsValid ? 'green' : 'red'
                       }-600`}
                     >
-                      O Número {!phoneNumberIsValid && <span>n&#227;o</span>} é
-                      valido!
+                      O número {!phoneNumberIsValid && <span>n&#227;o</span>} é
+                      válido!
                     </p>
                     <p
-                      hidden={phoneNumberTyped && !phoneNumberIsValid}
+                      hidden={phoneNumberTyped && phoneNumberIsValid}
                       className={'text-red-500'}
                     >
                       Utilize 11 números apenas!

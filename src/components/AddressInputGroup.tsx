@@ -146,7 +146,7 @@ export function AddressInputGroup({
             />
             <div className="mt-1" hidden={!cepIsTyped}>
               <p className={`text-${cepIsValid ? 'green' : 'red'}-600`}>
-                O CEP {!cepIsValid && <span>n&#227;o</span>} é valido!
+                O CEP {!cepIsValid && <span>n&#227;o</span>} é válido!
               </p>
               <p hidden={cepIsTyped && cepIsValid} className={'text-red-500'}>
                 Utilize 8 números apenas!

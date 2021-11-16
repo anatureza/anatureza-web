@@ -270,7 +270,7 @@ export function SignUp() {
                     }-600`}
                   >
                     O número {!phoneNumberIsValid && <span>n&#227;o</span>} é
-                    valido!
+                    válido!
                   </p>
                   <p
                     hidden={phoneNumberTyped && phoneNumberIsValid}
