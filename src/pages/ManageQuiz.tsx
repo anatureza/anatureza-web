@@ -36,6 +36,8 @@ export function ManageQuiz() {
   const [animaIsAvailable, setAnimaIsAvailable] = useState(false);
   const [reservationIsNew, setReservationIsNew] = useState(false);
   const [reservationIsApproved, setReservationIsApproved] = useState(false);
+  const [reservationIsDisapproved, setReservationIsDisapproved] =
+    useState(false);
 
   const [reservation, setReservation] = useState<IReservation | undefined>(
     undefined
@@ -90,50 +92,20 @@ export function ManageQuiz() {
       } else {
         setReservationIsNew(false);
       }
+
       if (reservation.status === 'approved') {
         setReservationIsApproved(true);
       } else {
         setReservationIsApproved(false);
       }
+
+      if (reservation.status === 'disapproved') {
+        setReservationIsApproved(true);
+      } else {
+        setReservationIsDisapproved(false);
+      }
     }
   }, [reservation]);
-
-  async function handleApproveReservation() {
-    if (typeof reservation !== 'undefined') {
-      //Get last scheduled reservation from animal
-      try {
-        const {
-          data: { lastScheduledAt },
-        } = await api.get<IScheduledAt>(
-          `/reservation/last/${reservation.animal_id}`
-        );
-
-        if (typeof lastScheduledAt !== 'boolean') {
-          // scheduled_at from another reservation of the same animal
-          const momentLastScheduled = moment(lastScheduledAt);
-
-          // scheduled_at from current reservation
-          const momentScheduledAt = moment(scheduled_at);
-
-          if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
-            const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
-              lastScheduledAt
-            ).format('DD/MM/YYYY HH:mm')}`;
-            setLastScheduledAtError(error);
-            alert(error);
-
-            return;
-          }
-        }
-      } catch {
-        alert('Não foi possível aprovar a reserva.');
-        return;
-      }
-
-      await api.post(`/reservation/approve/${reservation_id}`);
-      alert('Reserva aprovada!');
-    }
-  }
 
   async function handleOnSubmit(event: FormEvent) {
     event.preventDefault();
@@ -141,7 +113,43 @@ export function ManageQuiz() {
     if (typeof reservation !== 'undefined') {
       try {
         if (reservation.status === 'new') {
-          handleApproveReservation();
+          //Get last scheduled reservation from animal
+          try {
+            const {
+              data: { lastScheduledAt },
+            } = await api.get<IScheduledAt>(
+              `/reservation/last/${reservation.animal_id}`
+            );
+
+            if (typeof lastScheduledAt !== 'boolean') {
+              // scheduled_at from another reservation of the same animal
+              const momentLastScheduled = moment(lastScheduledAt);
+
+              // scheduled_at from current reservation
+              const momentScheduledAt = moment(scheduled_at);
+
+              if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
+                const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
+                  lastScheduledAt
+                ).format('DD/MM/YYYY HH:mm')}`;
+                setLastScheduledAtError(error);
+                alert(error);
+
+                return;
+              }
+            }
+          } catch {
+            alert('Não foi possível aprovar a reserva.');
+            return;
+          }
+
+          try {
+            await api.post(`/reservation/approve/${reservation_id}`);
+            alert('Reserva aprovada!');
+          } catch {
+            alert('Não foi possível concluir a ação!');
+            return;
+          }
         }
 
         if (reservation.status === 'approved') {
@@ -152,7 +160,7 @@ export function ManageQuiz() {
         }
       } catch {
         alert('Não foi possível concluir a ação!');
-      } finally {
+
         return;
       }
     }
@@ -526,7 +534,7 @@ export function ManageQuiz() {
             </button>
             {userHasPermission && (
               <>
-                {animaIsAvailable && (
+                {reservationIsDisapproved && (
                   <button
                     type="button"
                     onClick={handleDisapproveReservation}
