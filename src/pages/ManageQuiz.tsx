@@ -17,9 +17,14 @@ import { IReservation } from '../types';
 
 import NoProfilePic from '../assets/images/no-profile-pic-icon-24.jpg';
 import { AuthContext } from '../contexts/AuthContext';
+import moment from 'moment';
 
 interface IReservationParams {
   reservation_id: string;
+}
+
+interface IScheduledAt {
+  lastScheduledAt: string;
 }
 
 export function ManageQuiz() {
@@ -40,6 +45,8 @@ export function ManageQuiz() {
 
   const [animalVolunteerId, setAnimalVolunteerId] = useState('');
   const [userHasPermission, setUserHasPermission] = useState(false);
+
+  const [lastScheduledAtError, setLastScheduledAtError] = useState('');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -91,24 +98,59 @@ export function ManageQuiz() {
     }
   }, [reservation]);
 
+  async function handleApproveReservation() {
+    if (typeof reservation !== 'undefined') {
+      //Get last scheduled reservation from animal
+      try {
+        const {
+          data: { lastScheduledAt },
+        } = await api.get<IScheduledAt>(
+          `/reservation/last/${reservation.animal_id}`
+        );
+
+        // scheduled_at from another reservation of the same animal
+        const momentLastScheduled = moment(lastScheduledAt);
+
+        // scheduled_at from current reservation
+        const momentScheduledAt = moment(scheduled_at);
+
+        if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
+          const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
+            lastScheduledAt
+          ).format('DD/MM/YYYY HH:mm')}`;
+          setLastScheduledAtError(error);
+          alert(error);
+
+          return;
+        }
+      } catch {
+        alert('Não foi possível aprovar a reserva.');
+        return;
+      }
+      await api.post(`/reservation/approve/${reservation_id}`);
+      alert('Reserva aprovada!');
+    }
+  }
+
   async function handleOnSubmit(event: FormEvent) {
     event.preventDefault();
 
     if (typeof reservation !== 'undefined') {
       try {
         if (reservation.status === 'new') {
-          await api.post(`/reservation/approve/${reservation_id}`);
-          alert('Reserva aprovada!');
+          handleApproveReservation();
         }
 
         if (reservation.status === 'approved') {
           await api.post(`/reservation/adopt/${reservation_id}`);
           alert('Animal adotado!');
+          history.push('/app/reservas');
+          return;
         }
       } catch {
         alert('Não foi possível concluir a ação!');
       } finally {
-        history.push('/app/reservas');
+        return;
       }
     }
   }
@@ -457,6 +499,12 @@ export function ManageQuiz() {
                     setScheduledAt(event.target.value);
                   }}
                 />
+                {lastScheduledAtError !== '' && (
+                  <>
+                    <span className="text-red-600">{lastScheduledAtError}</span>
+                    <br />
+                  </>
+                )}
               </div>
               <hr className="my-4" />
             </>

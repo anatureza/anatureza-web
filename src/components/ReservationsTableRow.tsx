@@ -16,6 +16,10 @@ interface IReservationsProp {
   reservations: IReservation[];
 }
 
+interface IScheduledAt {
+  lastScheduledAt: string;
+}
+
 export function ReservationsTableRow({ reservations }: IReservationsProp) {
   const history = useHistory();
 
@@ -26,9 +30,13 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
   const [scheduled_at, setScheduledAt] = useState('');
   const [reservationId, setReservationId] = useState('');
 
-  function handleOnClickQuiz(formReservationId: string) {
+  const [animalId, setAnimalId] = useState('');
+  const [lastScheduledAtError, setLastScheduledAtError] = useState('');
+
+  function handleOnClickQuiz(formReservationId: string, animal_id: string) {
     setModalTitle('Confirmar Reserva');
     setReservationId(formReservationId);
+    setAnimalId(animal_id);
     setIsForApproval(true);
     setOpen(true);
   }
@@ -55,6 +63,32 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
 
   async function handleOnSubmitReservation(event: FormEvent) {
     event.preventDefault();
+
+    //Get last scheduled reservation from animal
+    try {
+      const {
+        data: { lastScheduledAt },
+      } = await api.get<IScheduledAt>(`/reservation/last/${animalId}`);
+
+      // scheduled_at from another reservation of the same animal
+      const momentLastScheduled = moment(lastScheduledAt);
+
+      // scheduled_at from current reservation
+      const momentScheduledAt = moment(scheduled_at);
+
+      if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
+        const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
+          lastScheduledAt
+        ).format('DD/MM/YYYY HH:mm')}`;
+        setLastScheduledAtError(error);
+        alert(error);
+
+        return;
+      }
+    } catch {
+      alert('Não foi possível aprovar a reserva.');
+      return;
+    }
 
     try {
       await api.post(`/reservation/approve/${reservationId}`, {
@@ -175,7 +209,10 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
                   {reservation.status === 'new' ? (
                     <span
                       onClick={() => {
-                        handleOnClickQuiz(reservation.id);
+                        handleOnClickQuiz(
+                          reservation.id,
+                          reservation.animal_id
+                        );
                       }}
                       className="flex-1 text-blue-600 hover:text-blue-900 cursor-pointer"
                     >
@@ -216,6 +253,7 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
           isForApproval ? handleOnSubmitReservation : handleOnSubmitAdoption
         }
         handleDisapproved={handleDisapproved}
+        lastScheduledAtError={lastScheduledAtError}
       />
     </>
   );
