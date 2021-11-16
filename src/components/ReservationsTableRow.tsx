@@ -70,15 +70,16 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
         data: { lastScheduledAt },
       } = await api.get<IScheduledAt>(`/reservation/last/${animalId}`);
 
+      // scheduled_at from current reservation
+      const momentScheduledAt = moment(scheduled_at);
+
       if (typeof lastScheduledAt !== 'boolean') {
         // scheduled_at from another reservation of the same animal
         const momentLastScheduled = moment(lastScheduledAt);
 
-        // scheduled_at from current reservation
-        const momentScheduledAt = moment(scheduled_at);
-
+        // throw error if there already is a reservation scheduled after current reservation
         if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
-          const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
+          const error = `Data de reserva inválida última data de reserva de animal: ${moment(
             lastScheduledAt
           ).format('DD/MM/YYYY HH:mm')}`;
           setLastScheduledAtError(error);
@@ -86,6 +87,14 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
 
           return;
         }
+      }
+
+      if (momentScheduledAt.isSameOrBefore(moment())) {
+        const error = `Data de reserva inválida, a reserva deve ser futura`;
+        setLastScheduledAtError(error);
+        alert(error);
+
+        return;
       }
     } catch {
       alert('Não foi possível aprovar a reserva.');

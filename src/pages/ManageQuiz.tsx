@@ -33,7 +33,7 @@ export function ManageQuiz() {
 
   const { userId, userType } = useContext(AuthContext);
 
-  const [animaIsAvailable, setAnimaIsAvailable] = useState(false);
+  const [reservationIsAdopted, setReservationIsAdopted] = useState(false);
   const [reservationIsNew, setReservationIsNew] = useState(false);
   const [reservationIsApproved, setReservationIsApproved] = useState(false);
   const [reservationIsDisapproved, setReservationIsDisapproved] =
@@ -60,6 +60,7 @@ export function ManageQuiz() {
     if (userType === 'admin') setUserHasPermission(true);
   }, [userId, userType, animalVolunteerId]);
 
+  //Get reservation info
   useEffect(() => {
     (async () => {
       setLoadingReservation(true);
@@ -75,18 +76,17 @@ export function ManageQuiz() {
           setLoadingReservation(false);
         } else {
           alert('Dados Não Encontrados');
+          history.push('/app/reservas');
         }
       } catch {
         alert('Reserva não encontrada!');
-        history.goBack();
+        history.push('/app/reservas');
       }
     })();
   }, [reservation_id, history]);
 
   useEffect(() => {
     if (typeof reservation !== 'undefined') {
-      setAnimaIsAvailable(reservation.animal.available);
-
       if (reservation.status === 'new') {
         setReservationIsNew(true);
       } else {
@@ -100,9 +100,15 @@ export function ManageQuiz() {
       }
 
       if (reservation.status === 'disapproved') {
-        setReservationIsApproved(true);
+        setReservationIsDisapproved(true);
       } else {
         setReservationIsDisapproved(false);
+      }
+
+      if (reservation.status === 'adopted') {
+        setReservationIsAdopted(true);
+      } else {
+        setReservationIsAdopted(false);
       }
     }
   }, [reservation]);
@@ -121,15 +127,16 @@ export function ManageQuiz() {
               `/reservation/last/${reservation.animal_id}`
             );
 
+            // scheduled_at from current reservation
+            const momentScheduledAt = moment(scheduled_at);
+
             if (typeof lastScheduledAt !== 'boolean') {
               // scheduled_at from another reservation of the same animal
               const momentLastScheduled = moment(lastScheduledAt);
 
-              // scheduled_at from current reservation
-              const momentScheduledAt = moment(scheduled_at);
-
+              // throw error if there already is a reservation scheduled after current reservation
               if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
-                const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
+                const error = `Data de reserva inválida última data de reserva de animal: ${moment(
                   lastScheduledAt
                 ).format('DD/MM/YYYY HH:mm')}`;
                 setLastScheduledAtError(error);
@@ -138,14 +145,26 @@ export function ManageQuiz() {
                 return;
               }
             }
+
+            if (momentScheduledAt.isSameOrBefore(moment())) {
+              const error = `Data de reserva inválida, a reserva deve ser futura`;
+              setLastScheduledAtError(error);
+              alert(error);
+
+              return;
+            }
           } catch {
             alert('Não foi possível aprovar a reserva.');
             return;
           }
 
           try {
-            await api.post(`/reservation/approve/${reservation_id}`);
+            await api.post(`/reservation/approve/${reservation_id}`, {
+              scheduled_at: moment(scheduled_at).format('YYYY-MM-DD HH:mm:ss'),
+            });
             alert('Reserva aprovada!');
+            window.scrollTo(0, 0);
+            history.go(0);
           } catch {
             alert('Não foi possível concluir a ação!');
             return;
@@ -155,7 +174,8 @@ export function ManageQuiz() {
         if (reservation.status === 'approved') {
           await api.post(`/reservation/adopt/${reservation_id}`);
           alert('Animal adotado!');
-          history.push('/app/reservas');
+          window.scrollTo(0, 0);
+          history.go(0);
           return;
         }
       } catch {
@@ -171,6 +191,7 @@ export function ManageQuiz() {
       await api.post(`/reservation/disapprove/${reservation_id}`);
 
       alert('Reserva marcada como Não Aprovada!');
+      window.scrollTo(0, 0);
       history.go(0);
     } catch {
       alert('Ocorreu Algum Erro!');
@@ -193,6 +214,20 @@ export function ManageQuiz() {
           <hr className="my-4" />
 
           <div className="px-4">
+            {!reservationIsAdopted && (
+              <h6 className="text-bg text-gray-900 font-semibold select-none">
+                Status da reserva:{' '}
+                {reservationIsNew && (
+                  <span className="text-blue-600">Nova</span>
+                )}
+                {reservationIsApproved && (
+                  <span className="text-green-600">Aprovada</span>
+                )}
+                {reservationIsDisapproved && (
+                  <span className="text-red-600">Não aprovada</span>
+                )}
+              </h6>
+            )}
             <h6 className="text-2xl text-gray-900 font-semibold select-none">
               Informações do animal
             </h6>
@@ -534,7 +569,7 @@ export function ManageQuiz() {
             </button>
             {userHasPermission && (
               <>
-                {reservationIsDisapproved && (
+                {reservationIsNew || reservationIsApproved ? (
                   <button
                     type="button"
                     onClick={handleDisapproveReservation}
@@ -547,6 +582,8 @@ export function ManageQuiz() {
                     />
                     Reprovar reserva
                   </button>
+                ) : (
+                  ''
                 )}
 
                 {reservationIsNew || reservationIsApproved ? (
