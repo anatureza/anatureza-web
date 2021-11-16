@@ -145,7 +145,7 @@ export function AddressInputGroup({
               className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             />
             <div className="mt-1" hidden={!cepIsTyped}>
-              <p className={`text-${cepIsValid ? 'green' : 'red'}-500`}>
+              <p className={`text-${cepIsValid ? 'green' : 'red'}-600`}>
                 O CEP {!cepIsValid && <span>n&#227;o</span>} é valido!
               </p>
               <p hidden={cepIsTyped && cepIsValid} className={'text-red-500'}>

@@ -178,7 +178,7 @@ export function SignUp() {
                   <p
                     className={`text-${
                       passwordConfirmIsValid ? 'green' : 'red'
-                    }-500`}
+                    }-600`}
                   >
                     As senhas {!passwordConfirmIsValid && <span>n&#227;o</span>}{' '}
                     se correspondem!
@@ -186,7 +186,7 @@ export function SignUp() {
                   <p
                     className={`text-${
                       passwordHas8Digits ? 'green' : 'red'
-                    }-500`}
+                    }-600`}
                   >
                     A senha {!passwordHas8Digits && <span>n&#227;o</span>}{' '}
                     possui pelo menos 8 digitos!
@@ -267,7 +267,7 @@ export function SignUp() {
                   <p
                     className={`text-${
                       phoneNumberIsValid ? 'green' : 'red'
-                    }-500`}
+                    }-600`}
                   >
                     O número {!phoneNumberIsValid && <span>n&#227;o</span>} é
                     valido!

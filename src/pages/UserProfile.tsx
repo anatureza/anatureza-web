@@ -277,7 +277,7 @@ export function UserProfile() {
                     <p
                       className={`text-${
                         phoneNumberIsValid ? 'green' : 'red'
-                      }-500`}
+                      }-600`}
                     >
                       O Número {!phoneNumberIsValid && <span>n&#227;o</span>} é
                       valido!
