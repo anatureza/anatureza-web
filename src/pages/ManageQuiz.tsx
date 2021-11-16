@@ -24,7 +24,7 @@ interface IReservationParams {
 }
 
 interface IScheduledAt {
-  lastScheduledAt: string;
+  lastScheduledAt: string | boolean;
 }
 
 export function ManageQuiz() {
@@ -108,25 +108,28 @@ export function ManageQuiz() {
           `/reservation/last/${reservation.animal_id}`
         );
 
-        // scheduled_at from another reservation of the same animal
-        const momentLastScheduled = moment(lastScheduledAt);
+        if (typeof lastScheduledAt !== 'boolean') {
+          // scheduled_at from another reservation of the same animal
+          const momentLastScheduled = moment(lastScheduledAt);
 
-        // scheduled_at from current reservation
-        const momentScheduledAt = moment(scheduled_at);
+          // scheduled_at from current reservation
+          const momentScheduledAt = moment(scheduled_at);
 
-        if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
-          const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
-            lastScheduledAt
-          ).format('DD/MM/YYYY HH:mm')}`;
-          setLastScheduledAtError(error);
-          alert(error);
+          if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
+            const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
+              lastScheduledAt
+            ).format('DD/MM/YYYY HH:mm')}`;
+            setLastScheduledAtError(error);
+            alert(error);
 
-          return;
+            return;
+          }
         }
       } catch {
         alert('Não foi possível aprovar a reserva.');
         return;
       }
+
       await api.post(`/reservation/approve/${reservation_id}`);
       alert('Reserva aprovada!');
     }

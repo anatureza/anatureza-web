@@ -17,7 +17,7 @@ interface IReservationsProp {
 }
 
 interface IScheduledAt {
-  lastScheduledAt: string;
+  lastScheduledAt: string | boolean;
 }
 
 export function ReservationsTableRow({ reservations }: IReservationsProp) {
@@ -70,20 +70,22 @@ export function ReservationsTableRow({ reservations }: IReservationsProp) {
         data: { lastScheduledAt },
       } = await api.get<IScheduledAt>(`/reservation/last/${animalId}`);
 
-      // scheduled_at from another reservation of the same animal
-      const momentLastScheduled = moment(lastScheduledAt);
+      if (typeof lastScheduledAt !== 'boolean') {
+        // scheduled_at from another reservation of the same animal
+        const momentLastScheduled = moment(lastScheduledAt);
 
-      // scheduled_at from current reservation
-      const momentScheduledAt = moment(scheduled_at);
+        // scheduled_at from current reservation
+        const momentScheduledAt = moment(scheduled_at);
 
-      if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
-        const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
-          lastScheduledAt
-        ).format('DD/MM/YYYY HH:mm')}`;
-        setLastScheduledAtError(error);
-        alert(error);
+        if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
+          const error = `Data de nascimento inválida: última data de reserva de animal: ${moment(
+            lastScheduledAt
+          ).format('DD/MM/YYYY HH:mm')}`;
+          setLastScheduledAtError(error);
+          alert(error);
 
-        return;
+          return;
+        }
       }
     } catch {
       alert('Não foi possível aprovar a reserva.');
