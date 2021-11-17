@@ -101,7 +101,7 @@ export function UsersTable({ usersData, children }: IUsersDataProp) {
                     ) : (
                       <div className="p-10 text-center">
                         <h1 className="text-2xl text-gray-700">
-                          Usuário encontrado
+                          Nenhum usuário encontrado
                         </h1>
                       </div>
                     )}
