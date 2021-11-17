@@ -118,7 +118,10 @@ export function Navbar() {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-10 w-10 object-cover rounded-full"
-                          src={userAvatarUrl || NoProfilePic}
+                          src={
+                            userAvatarUrl ||
+                            'https://icon-library.com/images/no-profile-picture-icon/no-profile-picture-icon-18.jpg'
+                          }
                           alt="User"
                         />
                       </Menu.Button>
