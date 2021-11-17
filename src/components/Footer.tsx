@@ -36,7 +36,7 @@ export function Footer() {
             />
           </a>
           <a
-            href="https://www.instagram.com/osamantesdanatureza/"
+            href="https://www.youtube.com/channel/UCvg9nSsPqw_mfNYGWRPFsdw"
             target="_blank"
             rel="noreferrer"
             className="text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors duration-200"
