@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 
 import { SelectImages } from '../components/SelectImages';
 import { ButtonGoBack } from '../components/ButtonGoBack';
@@ -19,17 +19,26 @@ interface IAnimalIdParams {
 export function AnimalProfile() {
   const { authenticated } = useContext(AuthContext);
 
+  const history = useHistory();
+
   const { animal_id } = useParams<IAnimalIdParams>();
 
   const [animal, setAnimal] = useState<IAnimal>();
 
   useEffect(() => {
-    (async () => {
-      const { data } = await api.get<IAnimal>(`/animal/${animal_id}`);
+    window.scrollTo(0, 0);
+  }, []);
 
-      setAnimal(data);
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await api.get<IAnimal>(`/animal/${animal_id}`);
+        setAnimal(data);
+      } catch {
+        history.push('/');
+      }
     })();
-  }, [animal_id]);
+  }, [animal_id, history]);
 
   if (!animal) {
     return (
@@ -298,7 +307,7 @@ export function AnimalProfile() {
           ) : (
             <p className="ml-4">
               Para adotar, você precisa estar{' '}
-              <a className="text-blue-800" href="/signin" target="_blank">
+              <a className="text-blue-800" href="/login" target="_blank">
                 Logado
               </a>
             </p>

@@ -1,58 +1,70 @@
-import { Dispatch, Fragment } from "react";
+import { Dispatch, Fragment, SetStateAction, useContext } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Dialog, Transition } from '@headlessui/react';
 
-import { Dialog, Transition } from "@headlessui/react";
-
-import { Link, useLocation } from "react-router-dom";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCalendar,
   faCat,
   faPlusCircle,
   faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-import { faBell } from "@fortawesome/free-regular-svg-icons";
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons';
+import { faBell } from '@fortawesome/free-regular-svg-icons';
+
+import { AuthContext } from '../contexts/AuthContext';
 
 type SlideOverProps = {
   open: boolean;
-  setOpen: Dispatch<React.SetStateAction<boolean>>;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 type ClassesTypes = string[];
 
 function classNames(...classes: ClassesTypes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export function SlideOver({ open, setOpen }: SlideOverProps) {
   const location = useLocation();
 
+  const { userType } = useContext(AuthContext);
+
   const adminNavigation = [
     {
-      name: "Dashboard",
-      href: "/app",
-      current: location.pathname === "/app",
+      name: 'Dashboard',
+      href: '/app',
+      current: location.pathname === '/app',
       icon: faBell,
     },
     {
-      name: "Reservas",
-      href: "/app/reservas",
-      current: location.pathname === "/app/reservas",
+      name: 'Reservas',
+      href: '/app/reservas',
+      current: location.pathname === '/app/reservas',
       icon: faCalendar,
     },
     {
-      name: "Animais",
-      href: "/app/animais",
-      current: location.pathname === "/app/animais",
+      name: 'Animais',
+      href: '/app/animais',
+      current: location.pathname === '/app/animais',
       icon: faCat,
     },
     {
-      name: "Adicionar animal",
-      href: "/app/animal/novo",
-      current: location.pathname === "/app/animal/new",
+      name: 'Adicionar animal',
+      href: '/app/animal/novo',
+      current: location.pathname === '/app/animal/new',
       icon: faPlusCircle,
     },
   ];
+
+  if (userType === 'admin') {
+    adminNavigation.push({
+      name: 'Gerenciar usuários',
+      href: '/app/usuarios',
+      current: location.pathname === '/app/usuarios',
+      icon: faUsers,
+    });
+  }
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -122,11 +134,11 @@ export function SlideOver({ open, setOpen }: SlideOverProps) {
                             key={item.name}
                             className={classNames(
                               item.current
-                                ? "bg-gray-600 bg-opacity-50 text-white"
-                                : "text-gray-300 hover:bg-gray-700 hover:bg-opacity-75 hover:text-white",
-                              "px-3 py-2 rounded-md text-sm font-medium"
+                                ? 'bg-gray-600 bg-opacity-50 text-white'
+                                : 'text-gray-400 hover:bg-gray-700 hover:bg-opacity-75 hover:text-white',
+                              'px-3 py-2 rounded-md text-sm font-medium'
                             )}
-                            aria-current={item.current ? "page" : undefined}
+                            aria-current={item.current ? 'page' : undefined}
                           >
                             <FontAwesomeIcon
                               className="mr-2"

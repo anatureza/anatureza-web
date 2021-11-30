@@ -46,6 +46,10 @@ export function Dashboard() {
   }, [userId]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const startOfWeek = moment().startOf('week');
     const endOfWeek = moment().endOf('week');
 
@@ -76,7 +80,7 @@ export function Dashboard() {
     <AppHeader title="Dashboard">
       <main>
         <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
+          <div className="px-4 py-6 sm:px-0 overflow-auto">
             {typeof lateReservations !== 'undefined' &&
             lateReservations.length > 0 ? (
               <>
@@ -88,7 +92,7 @@ export function Dashboard() {
             )}
           </div>
           <hr />
-          <div className="px-4 py-6 sm:px-0">
+          <div className="px-4 py-6 sm:px-0 overflow-auto">
             {typeof currentWeekReservations !== 'undefined' &&
             currentWeekReservations.length > 0 ? (
               <>
@@ -100,7 +104,7 @@ export function Dashboard() {
             )}
           </div>
           <hr />
-          <div className="px-4 py-6 sm:px-0">
+          <div className="px-4 py-6 sm:px-0 overflow-auto">
             {typeof nextWeekReservations !== 'undefined' &&
             nextWeekReservations.length > 0 ? (
               <>

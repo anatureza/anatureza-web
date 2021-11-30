@@ -51,6 +51,17 @@ export function NewReservationQuiz() {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        await api.get(`/animal/${animal_id}`);
+      } catch {
+        alert('Animal não encontrado');
+        history.push('/animais-adocao');
+      }
+    })();
+  }, [animal_id, history]);
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 

@@ -1,10 +1,10 @@
-import { FormEvent, useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { FormEvent, useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router';
 
-import { faUnlock } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUnlock } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import api from "../services/api";
+import api from '../services/api';
 
 export function ResetPassword() {
   const history = useHistory();
@@ -15,8 +15,8 @@ export function ResetPassword() {
 
   const query = useQuery();
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const [token, setToken] = useState<string | null>();
 
@@ -26,12 +26,16 @@ export function ResetPassword() {
   const [passwordAlreadyTyped, setPasswordAlreadyTyped] = useState(false);
 
   useEffect(() => {
-    if (query.get("token")) {
-      const queryParamsToken = query.get("token");
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (query.get('token')) {
+      const queryParamsToken = query.get('token');
       setToken(queryParamsToken);
     } else {
-      alert("Token não foi identificado!");
-      history.push("/");
+      alert('Token não foi identificado!');
+      history.push('/');
       return;
     }
   }, [history, query]);
@@ -61,14 +65,14 @@ export function ResetPassword() {
 
     if (passwordHas8Digits && passwordConfirmIsValid) {
       try {
-        await api.post("/user/password/reset", { password, token });
+        await api.post('/user/password/reset', { password, token });
 
-        alert("Senha redefinida com sucesso");
+        alert('Senha redefinida com sucesso');
 
-        history.push("/");
+        history.push('/');
       } catch {
-        alert("Não foi possível redefinir a senha!");
-        history.push("/esqueci-minha-senha");
+        alert('Não foi possível redefinir a senha!');
+        history.push('/esqueci-minha-senha');
       }
     }
   }
@@ -80,7 +84,7 @@ export function ResetPassword() {
           <div className="text-center w-full h-20">
             <FontAwesomeIcon
               icon={faUnlock}
-              size={"8x"}
+              size={'8x'}
               className="mx-auto w-full h-20 text-gray-700"
             />
           </div>
@@ -126,12 +130,12 @@ export function ResetPassword() {
           </div>
           <div className="mt-1 mb-4" hidden={!passwordAlreadyTyped}>
             <p
-              className={`text-${passwordConfirmIsValid ? "green" : "red"}-500`}
+              className={`text-${passwordConfirmIsValid ? 'green' : 'red'}-500`}
             >
               As senhas {!passwordConfirmIsValid && <span>n&#227;o</span>} se
               correspondem!
             </p>
-            <p className={`text-${passwordHas8Digits ? "green" : "red"}-500`}>
+            <p className={`text-${passwordHas8Digits ? 'green' : 'red'}-500`}>
               A senha {!passwordHas8Digits && <span>n&#227;o</span>} possui pelo
               menos 8 digitos!
             </p>
@@ -147,8 +151,8 @@ export function ResetPassword() {
                 passwordAlreadyTyped &&
                 setPasswordHas8digits &&
                 passwordConfirmIsValid
-                  ? "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  : "bg-gray-800 cursor-not-allowed"
+                  ? 'bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500'
+                  : 'bg-gray-800 cursor-not-allowed'
               }`}
             >
               Redefinir a senha

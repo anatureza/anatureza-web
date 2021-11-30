@@ -9,6 +9,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { AddressInputGroup } from '../components/AddressInputGroup';
 
 import api from '../services/api';
+import moment from 'moment';
 
 interface IUser {
   name: string;
@@ -42,6 +43,12 @@ export function CreateAnimal() {
   const [neighborhood, setNeighborhood] = useState('');
   const [zip, setZip] = useState('');
   const [city, setCity] = useState('');
+
+  const [cepIsValid, setCepIsValid] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   //Get Volunteer Info
   useEffect(() => {
@@ -79,6 +86,18 @@ export function CreateAnimal() {
 
   async function handleSave(event: FormEvent) {
     event.preventDefault();
+
+    if (!cepIsValid) {
+      alert('CEP Inválido');
+      return;
+    }
+
+    const now = moment();
+    const momentBirthDate = moment(birth_date);
+    if (momentBirthDate.isSameOrAfter(now)) {
+      alert('Data de nascimento inválida');
+      return;
+    }
 
     const data = new FormData();
 
@@ -294,8 +313,10 @@ export function CreateAnimal() {
               setNeighborhood={setNeighborhood}
               complement={complement}
               setComplement={setComplement}
-              zip={zip}
-              setZip={setZip}
+              cep={zip}
+              setCep={setZip}
+              cepIsValid={cepIsValid}
+              setCepIsValid={setCepIsValid}
             />
             <hr />
             <div className="w-full px-4 pb-4 text-gray-500 flex">

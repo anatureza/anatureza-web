@@ -1,5 +1,5 @@
 import { FormEvent, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { Link, useHistory } from 'react-router-dom';
 
 import { UserAvatar } from '../components/UserAvatar';
 import { AddressInputGroup } from '../components/AddressInputGroup';
@@ -10,6 +10,7 @@ import { AuthContext } from '../contexts/AuthContext';
 
 import { IUser } from '../types';
 import { ModalDelete } from '../components/ModalDelete';
+import moment from 'moment';
 
 export function UserProfile() {
   const history = useHistory();
@@ -36,6 +37,10 @@ export function UserProfile() {
 
   const [loadingInfo, setLoadingInfo] = useState(false);
   const [loadingAvatar, setLoadingAvatar] = useState(true);
+
+  const [cepIsValid, setCepIsValid] = useState(true);
+  const [phoneNumberIsValid, setPhoneNumberIsValid] = useState(true);
+  const [phoneNumberTyped, setPhoneNumberTyped] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -76,11 +81,28 @@ export function UserProfile() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
+    if (!phoneNumberIsValid) {
+      alert('Número de telefone inválido');
+      return;
+    }
+
+    if (!cepIsValid) {
+      alert('CEP Inválido');
+      return;
+    }
+
+    const now = moment();
+    const momentBirthDate = moment(birth_date);
+    if (momentBirthDate.isSameOrAfter(now)) {
+      alert('Data de nascimento inválida');
+      return;
+    }
+
     try {
       const { data } = await api.put<IUser>('/user', {
         name,
         phone_number,
-        birth_date,
+        birth_date: moment(birth_date).format('YYYY-MM-DD').toString(),
         place,
         number,
         uf,
@@ -147,6 +169,7 @@ export function UserProfile() {
           <UserAvatar
             loadingAvatar={loadingAvatar}
             setLoadingAvatar={setLoadingAvatar}
+            setUserPreviewAvatar={setUserPreviewAvatar}
           />
           <hr />
           <div className="items-center w-full p-8 space-y-4 text-gray-500 md:inline-flex md:space-y-0">
@@ -164,14 +187,16 @@ export function UserProfile() {
               </div>
             </div>
             <div className="text-center md:w-3/12 md:pl-6">
-              <button
-                type="button"
-                className={
-                  'py-2 px-4 text-gray-50 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg focus:ring-red-500 focus:ring-offset-red-200 bg-red-600 hover:bg-red-700 '
-                }
-              >
-                Mudar Senha
-              </button>
+              <Link to="/esqueci-minha-senha">
+                <button
+                  type="button"
+                  className={
+                    'py-2 px-4 text-gray-50 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg focus:ring-red-500 focus:ring-offset-red-200 bg-red-600 hover:bg-red-700 '
+                  }
+                >
+                  Mudar Senha
+                </button>
+              </Link>
             </div>
           </div>
           <hr />
@@ -213,16 +238,60 @@ export function UserProfile() {
               </div>
               <div>
                 <div className=" relative ">
-                  <label htmlFor="user-info-phone">Número de telefone</label>
+                  <label htmlFor="user-info-phone" className="text-gray-700">
+                    Número de telefone{' '}
+                    <span className="text-xs text-gray-400">
+                      (Apenas números)
+                    </span>
+                  </label>
                   <input
                     type="text"
                     id="user-info-phone"
-                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    required
                     value={loadingInfo ? '...' : phone_number}
-                    onChange={(event) => {
-                      setPhoneNumber(event.target.value);
+                    onFocus={() => {
+                      setPhoneNumberTyped(true);
                     }}
+                    onChange={(event) => {
+                      const phoneRawValue = event.target.value;
+
+                      setPhoneNumber(phoneRawValue);
+
+                      const phoneNumberFormat = phoneRawValue.replace(
+                        /\D/g,
+                        ''
+                      );
+
+                      if (phoneNumberFormat === '') {
+                        setPhoneNumberIsValid(false);
+                      }
+                      if (phoneNumberFormat.length === 11) {
+                        setPhoneNumber(phoneNumberFormat);
+                        setPhoneNumberIsValid(true);
+                      } else {
+                        setPhoneNumberIsValid(false);
+                      }
+                    }}
+                    maxLength={11}
+                    className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    placeholder="Ex: 19967895499"
                   />
+                  <div className="mt-1" hidden={!phoneNumberTyped}>
+                    <p
+                      className={`text-${
+                        phoneNumberIsValid ? 'green' : 'red'
+                      }-600`}
+                    >
+                      O número {!phoneNumberIsValid && <span>n&#227;o</span>} é
+                      válido!
+                    </p>
+                    <p
+                      hidden={phoneNumberTyped && phoneNumberIsValid}
+                      className={'text-red-500'}
+                    >
+                      Utilize 11 números apenas!
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -242,8 +311,10 @@ export function UserProfile() {
             setNeighborhood={setNeighborhood}
             complement={loadingInfo ? '...' : complement}
             setComplement={setComplement}
-            zip={loadingInfo ? '...' : zip}
-            setZip={setZip}
+            cep={loadingInfo ? '...' : zip}
+            setCep={setZip}
+            cepIsValid={cepIsValid}
+            setCepIsValid={setCepIsValid}
           />
           <hr />
           <div className="w-full px-4 mr-auto ">
@@ -262,17 +333,24 @@ export function UserProfile() {
               </span>
             </div>
           </div>
-          <div className="flex-end w-full px-4 pb-4 ml-auto text-gray-500 md:w-1/3">
+          <div className="flex-col w-full px-4 pb-4 ml-auto text-gray-500 space-y-2">
             <button
               type="submit"
-              className="py-2 px-4 bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className="py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
             >
               Salvar altera&#231;&#245;es
             </button>
             <button
+              className="inline-block py-2 px-4 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              type="button"
+              onClick={history.goBack}
+            >
+              Cancelar (Voltar)
+            </button>
+            <button
               type="button"
               onClick={() => setOpenModal(true)}
-              className="py-2 px-4 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+              className="py-2 px-4 bg-red-600 w-full hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
             >
               Excluir conta
             </button>

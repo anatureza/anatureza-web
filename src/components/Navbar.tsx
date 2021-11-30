@@ -44,6 +44,7 @@ export function Navbar() {
           await api.get('/user');
           setLoadingUser(false);
         } catch {
+          setLoadingUser(false);
           handleLogout();
         }
       })();
@@ -117,7 +118,10 @@ export function Navbar() {
                         <span className="sr-only">Open user menu</span>
                         <img
                           className="h-10 w-10 object-cover rounded-full"
-                          src={userAvatarUrl || NoProfilePic}
+                          src={
+                            userAvatarUrl ||
+                            'https://icon-library.com/images/no-profile-picture-icon/no-profile-picture-icon-18.jpg'
+                          }
                           alt="User"
                         />
                       </Menu.Button>
@@ -224,6 +228,42 @@ export function Navbar() {
                   </span>
                 </Link>
               ))}
+              {!authenticated && (
+                <>
+                  <Link to={'/login'}>
+                    <span
+                      className={`${
+                        location.pathname === '/login'
+                          ? 'bg-gray-600 bg-opacity-50 text-white'
+                          : 'text-gray-300 hover:bg-gray-700 hover:bg-opacity-75 hover:text-white'
+                      }
+                          px-3 py-2 rounded-md text-sm font-medium`}
+                      aria-current={
+                        location.pathname === '/login' ? 'page' : undefined
+                      }
+                    >
+                      {'Fazer Login'}
+                    </span>
+                  </Link>
+                  <Link to={'/cadastre-se'}>
+                    <span
+                      className={`${
+                        location.pathname === '/cadastre-se'
+                          ? 'bg-gray-600 bg-opacity-50 text-white'
+                          : 'text-gray-300 hover:bg-gray-700 hover:bg-opacity-75 hover:text-white'
+                      }
+                          px-3 py-2 rounded-md text-sm font-medium`}
+                      aria-current={
+                        location.pathname === '/cadastre-se'
+                          ? 'page'
+                          : undefined
+                      }
+                    >
+                      {'Cadastre-se'}
+                    </span>
+                  </Link>
+                </>
+              )}
             </div>
           </Disclosure.Panel>
         </>

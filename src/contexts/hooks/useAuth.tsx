@@ -9,6 +9,10 @@ interface ILoginData {
   password: string;
 }
 
+interface IUserAvatarUrl {
+  newUserAvatarUrl: string;
+}
+
 export function useAuth() {
   const history = useHistory();
 
@@ -26,7 +30,14 @@ export function useAuth() {
 
       setUserId(localStorage.getItem('userId'));
       setUserType(localStorage.getItem('userType'));
-      setUserAvatarUrl(localStorage.getItem('userAvatarUrl'));
+
+      const userAvatarUrlFromLocalStorage =
+        localStorage.getItem('userAvatarUrl');
+      if (userAvatarUrlFromLocalStorage === 'null') {
+        setUserAvatarUrl(null);
+      } else {
+        setUserAvatarUrl(userAvatarUrlFromLocalStorage);
+      }
     }
 
     setLoading(false);
@@ -57,6 +68,11 @@ export function useAuth() {
     }
   }
 
+  function handleUploadAvatar({ newUserAvatarUrl }: IUserAvatarUrl) {
+    localStorage.setItem('userAvatarUrl', newUserAvatarUrl);
+    setUserAvatarUrl(newUserAvatarUrl);
+  }
+
   function handleLogout() {
     setAuthenticated(false);
     setUserType('');
@@ -80,5 +96,6 @@ export function useAuth() {
     userType,
     userId,
     userAvatarUrl,
+    handleUploadAvatar,
   };
 }

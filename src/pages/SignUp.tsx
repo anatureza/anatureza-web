@@ -38,6 +38,14 @@ export function SignUp() {
   const [zip, setZip] = useState('');
   const [city, setCity] = useState('');
 
+  const [cepIsValid, setCepIsValid] = useState(false);
+  const [phoneNumberIsValid, setPhoneNumberIsValid] = useState(false);
+  const [phoneNumberTyped, setPhoneNumberTyped] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     if (password.length > 0) {
       setPasswordAlreadyTyped(true);
@@ -60,6 +68,29 @@ export function SignUp() {
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
+
+    if (!passwordConfirmIsValid || !passwordHas8Digits) {
+      alert('Senha Inválida');
+      return;
+    }
+
+    if (!phoneNumberIsValid) {
+      alert('Número de telefone inválido');
+
+      return;
+    }
+
+    if (!cepIsValid) {
+      alert('CEP inválido');
+      return;
+    }
+
+    const now = moment();
+    const momentBirthDate = moment(birth_date);
+    if (momentBirthDate.isSameOrAfter(now)) {
+      alert('Data de nascimento inválida');
+      return;
+    }
 
     try {
       await api.post('/user', {
@@ -100,6 +131,9 @@ export function SignUp() {
             <h2 className="max-w-sm mx-auto md:w-1/3">Dados de Acesso</h2>
             <div className="max-w-sm mx-auto md:w-2/3">
               <div className=" relative ">
+                <label htmlFor="user-info-email" className="text-gray-700">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="user-info-email"
@@ -144,7 +178,7 @@ export function SignUp() {
                   <p
                     className={`text-${
                       passwordConfirmIsValid ? 'green' : 'red'
-                    }-500`}
+                    }-600`}
                   >
                     As senhas {!passwordConfirmIsValid && <span>n&#227;o</span>}{' '}
                     se correspondem!
@@ -152,7 +186,7 @@ export function SignUp() {
                   <p
                     className={`text-${
                       passwordHas8Digits ? 'green' : 'red'
-                    }-500`}
+                    }-600`}
                   >
                     A senha {!passwordHas8Digits && <span>n&#227;o</span>}{' '}
                     possui pelo menos 8 digitos!
@@ -167,8 +201,9 @@ export function SignUp() {
             <h2 className="max-w-sm mx-auto md:w-1/3">Informações Pessoais</h2>
             <div className="max-w-sm mx-auto space-y-5 md:w-2/3">
               <div className="relative">
-                <label htmlFor="birth_date">Data de nascimento</label>
-
+                <label htmlFor="user-birthDate" className="text-gray-700">
+                  Data de nascimento
+                </label>
                 <input
                   type="date"
                   className="rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
@@ -179,6 +214,9 @@ export function SignUp() {
                 />
               </div>
               <div className="relative">
+                <label htmlFor="" className="text-gray-700">
+                  Nome completo
+                </label>
                 <input
                   type="text"
                   id="user-info-name"
@@ -186,24 +224,68 @@ export function SignUp() {
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                  placeholder="Nome completo"
+                  placeholder="João da Silva"
                 />
               </div>
               <div className="relative">
+                <label htmlFor="user-info-phone" className="text-gray-700">
+                  Número de telefone{' '}
+                  <span className="text-xs text-gray-400">
+                    (Apenas números)
+                  </span>
+                </label>
                 <input
                   type="text"
                   id="user-info-phone"
                   required
                   value={phone_number}
-                  onChange={(event) => setPhoneNumber(event.target.value)}
+                  onFocus={() => {
+                    setPhoneNumberTyped(true);
+                  }}
+                  onChange={(event) => {
+                    const phoneRawValue = event.target.value;
+
+                    setPhoneNumber(phoneRawValue);
+
+                    const phoneNumberFormat = phoneRawValue.replace(/\D/g, '');
+
+                    if (phoneNumberFormat === '') {
+                      setPhoneNumberIsValid(false);
+                    }
+                    if (phoneNumberFormat.length === 11) {
+                      setPhoneNumber(phoneNumberFormat);
+                      setPhoneNumberIsValid(true);
+                    } else {
+                      setPhoneNumberIsValid(false);
+                    }
+                  }}
+                  maxLength={11}
                   className=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
-                  placeholder="Telefone (Ex: 19 999999999)"
+                  placeholder="Ex: 19967895499"
                 />
+                <div className="mt-1" hidden={!phoneNumberTyped}>
+                  <p
+                    className={`text-${
+                      phoneNumberIsValid ? 'green' : 'red'
+                    }-600`}
+                  >
+                    O número {!phoneNumberIsValid && <span>n&#227;o</span>} é
+                    válido!
+                  </p>
+                  <p
+                    hidden={phoneNumberTyped && phoneNumberIsValid}
+                    className={'text-red-500'}
+                  >
+                    Utilize 11 números apenas!
+                  </p>
+                </div>
               </div>
             </div>
           </div>
           <hr />
           <AddressInputGroup
+            setCepIsValid={setCepIsValid}
+            cepIsValid={cepIsValid}
             autoCompleteOnProp={true}
             uf={uf}
             setUF={setUF}
@@ -217,8 +299,8 @@ export function SignUp() {
             setNeighborhood={setNeighborhood}
             complement={complement}
             setComplement={setComplement}
-            zip={zip}
-            setZip={setZip}
+            cep={zip}
+            setCep={setZip}
           />
           <hr />
           <p className="ml-4">
@@ -250,7 +332,9 @@ export function SignUp() {
               className={`py-2 px-4 ${
                 passwordAlreadyTyped &&
                 passwordHas8Digits &&
-                passwordConfirmIsValid
+                passwordConfirmIsValid &&
+                cepIsValid &&
+                phoneNumberIsValid
                   ? 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-blue-200'
                   : 'bg-gray-600 cursor-not-allowed'
               }  text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg`}

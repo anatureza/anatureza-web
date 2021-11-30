@@ -54,8 +54,22 @@ export function EditAnimal() {
   const [animalIsAdopted, setAnimalIsAdopted] = useState(false);
   const [adoptedReservationId, setAdoptedReservationId] = useState<string>('');
 
+  const [cepIsValid, setCepIsValid] = useState(true);
+
   async function handleSave(event: FormEvent) {
     event.preventDefault();
+
+    if (!cepIsValid) {
+      alert('CEP Inválido');
+      return;
+    }
+
+    const now = moment();
+    const momentBirthDate = moment(birth_date);
+    if (momentBirthDate.isSameOrAfter(now)) {
+      alert('Data de nascimento inválida');
+      return;
+    }
 
     try {
       const { data } = await api.put<IAnimal | undefined>(
@@ -76,7 +90,7 @@ export function EditAnimal() {
         }
       );
       if (typeof data !== 'undefined') {
-        setAnimalVolunteerId(data.user.id);
+        setAnimalVolunteerId(data.volunteer_id);
         setPreviewName(data.name);
         setName(data.name);
         setDescription(data.description);
@@ -114,12 +128,18 @@ export function EditAnimal() {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     (async () => {
       try {
         setLoadingInfo(true);
         const { data } = await api.get(`/animal/${animal_id}`);
 
         if (typeof data !== 'undefined') {
+          setAnimalVolunteerId(data.volunteer_id);
+
           setPreviewName(data.name);
           setName(data.name);
           setDescription(data.description);
@@ -204,6 +224,7 @@ export function EditAnimal() {
               images={images}
               setImages={setImages}
               animalId={animal_id}
+              userHasPermission={userHasPermission}
             />
 
             <hr />
@@ -220,6 +241,7 @@ export function EditAnimal() {
                   <input
                     type="text"
                     id="name"
+                    disabled={!userHasPermission}
                     value={loadingInfo ? '...' : name}
                     onChange={(event) => {
                       setName(event.target.value);
@@ -232,6 +254,7 @@ export function EditAnimal() {
                   <textarea
                     className="flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
                     id="description"
+                    disabled={!userHasPermission}
                     value={loadingInfo ? '...' : description}
                     onChange={(event) => {
                       setDescription(event.target.value);
@@ -310,18 +333,22 @@ export function EditAnimal() {
               setNeighborhood={setNeighborhood}
               complement={loadingInfo ? '...' : complement}
               setComplement={setComplement}
-              zip={loadingInfo ? '...' : zip}
-              setZip={setZip}
+              cep={loadingInfo ? '...' : zip}
+              setCep={setZip}
+              cepIsValid={cepIsValid}
+              setCepIsValid={setCepIsValid}
             />
             <hr />
             <div className="w-full px-4 pb-4 text-gray-500 flex">
               {/* CANCEL - Go Back */}
-              <Link
-                to="/app/animais"
+
+              <button
                 className="inline-block py-2 px-4 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+                type="button"
+                onClick={history.goBack}
               >
-                <button type="button">Cancelar (Voltar)</button>
-              </Link>
+                Cancelar (Voltar)
+              </button>
               {userHasPermission && (
                 <>
                   <button

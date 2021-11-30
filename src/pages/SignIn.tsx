@@ -19,10 +19,14 @@ export function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleSubmit(event: FormEvent) {
+  const [incorrectInfo, setIncorrectInfo] = useState(false);
+
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    handleLogin({ email, password });
+    await handleLogin({ email, password });
+
+    setIncorrectInfo(true);
   }
 
   return (
@@ -83,6 +87,13 @@ export function SignIn() {
               />
             </div>
           </div>
+          {incorrectInfo && (
+            <div className="flex items-center justify-start">
+              <span className="font-medium text-red-600">
+                Email/Senha Incorreto(s)!
+              </span>
+            </div>
+          )}
 
           <div className="flex items-center justify-end">
             <div className="text-sm">

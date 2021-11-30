@@ -1,11 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faFacebook,
-  faInstagram,
-  faYoutube,
-} from '@fortawesome/free-brands-svg-icons';
+import { faInstagram, faYoutube } from '@fortawesome/free-brands-svg-icons';
 
 export function Footer() {
   return (
@@ -29,17 +25,6 @@ export function Footer() {
         </ul>
         <div className="pt-8 flex max-w-xs mx-auto items-center justify-between">
           <a
-            href="https://www.facebook.com"
-            target="_blank"
-            rel="noreferrer"
-            className="text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors duration-200"
-          >
-            <FontAwesomeIcon
-              icon={faFacebook}
-              className="text-xl hover:text-gray-800 dark:hover:text-white transition-colors duration-200"
-            />
-          </a>
-          <a
             href="https://www.instagram.com/osamantesdanatureza/"
             target="_blank"
             rel="noreferrer"
@@ -51,7 +36,7 @@ export function Footer() {
             />
           </a>
           <a
-            href="https://www.instagram.com/osamantesdanatureza/"
+            href="https://www.youtube.com/channel/UCvg9nSsPqw_mfNYGWRPFsdw"
             target="_blank"
             rel="noreferrer"
             className="text-gray-400 hover:text-gray-800 dark:hover:text-white transition-colors duration-200"

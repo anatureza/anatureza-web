@@ -1,4 +1,4 @@
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState, FormEvent, useContext } from 'react';
 import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import {
@@ -9,24 +9,35 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { ButtonGoBack } from '../components/ButtonGoBack';
 import { QuizInput } from '../components/QuizInput';
+import { questions } from './NewReservationQuiz';
 
 import api from '../services/api';
 
 import { IReservation } from '../types';
 
-import { questions } from './NewReservationQuiz';
+import NoProfilePic from '../assets/images/no-profile-pic-icon-24.jpg';
+import { AuthContext } from '../contexts/AuthContext';
+import moment from 'moment';
 
 interface IReservationParams {
   reservation_id: string;
+}
+
+interface IScheduledAt {
+  lastScheduledAt: string | boolean;
 }
 
 export function ManageQuiz() {
   const { reservation_id } = useParams<IReservationParams>();
   const history = useHistory();
 
-  const [animaIsAvailable, setAnimaIsAvailable] = useState(false);
+  const { userId, userType } = useContext(AuthContext);
+
+  const [reservationIsAdopted, setReservationIsAdopted] = useState(false);
   const [reservationIsNew, setReservationIsNew] = useState(false);
   const [reservationIsApproved, setReservationIsApproved] = useState(false);
+  const [reservationIsDisapproved, setReservationIsDisapproved] =
+    useState(false);
 
   const [reservation, setReservation] = useState<IReservation | undefined>(
     undefined
@@ -34,10 +45,22 @@ export function ManageQuiz() {
   const [loadingReservation, setLoadingReservation] = useState(true);
   const [scheduled_at, setScheduledAt] = useState('');
 
+  const [animalVolunteerId, setAnimalVolunteerId] = useState('');
+  const [userHasPermission, setUserHasPermission] = useState(false);
+
+  const [lastScheduledAtError, setLastScheduledAtError] = useState('');
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    setUserHasPermission(false);
+    if (userId === animalVolunteerId) setUserHasPermission(true);
+    if (userType === 'admin') setUserHasPermission(true);
+  }, [userId, userType, animalVolunteerId]);
+
+  //Get reservation info
   useEffect(() => {
     (async () => {
       setLoadingReservation(true);
@@ -47,30 +70,45 @@ export function ManageQuiz() {
         );
         if (typeof data !== 'undefined') {
           setReservation(data);
+
+          setAnimalVolunteerId(data.animal.volunteer_id);
+
           setLoadingReservation(false);
         } else {
           alert('Dados Não Encontrados');
+          history.push('/app/reservas');
         }
       } catch {
-        alert('Não foi possível trazer dados de reserva');
-        history.goBack();
+        alert('Reserva não encontrada!');
+        history.push('/app/reservas');
       }
     })();
   }, [reservation_id, history]);
 
   useEffect(() => {
     if (typeof reservation !== 'undefined') {
-      setAnimaIsAvailable(reservation.animal.available);
-
       if (reservation.status === 'new') {
         setReservationIsNew(true);
       } else {
         setReservationIsNew(false);
       }
+
       if (reservation.status === 'approved') {
         setReservationIsApproved(true);
       } else {
         setReservationIsApproved(false);
+      }
+
+      if (reservation.status === 'disapproved') {
+        setReservationIsDisapproved(true);
+      } else {
+        setReservationIsDisapproved(false);
+      }
+
+      if (reservation.status === 'adopted') {
+        setReservationIsAdopted(true);
+      } else {
+        setReservationIsAdopted(false);
       }
     }
   }, [reservation]);
@@ -81,18 +119,69 @@ export function ManageQuiz() {
     if (typeof reservation !== 'undefined') {
       try {
         if (reservation.status === 'new') {
-          await api.post(`/reservation/approve/${reservation_id}`);
-          alert('Reserva aprovada!');
+          //Get last scheduled reservation from animal
+          try {
+            const {
+              data: { lastScheduledAt },
+            } = await api.get<IScheduledAt>(
+              `/reservation/last/${reservation.animal_id}`
+            );
+
+            // scheduled_at from current reservation
+            const momentScheduledAt = moment(scheduled_at);
+
+            if (typeof lastScheduledAt !== 'boolean') {
+              // scheduled_at from another reservation of the same animal
+              const momentLastScheduled = moment(lastScheduledAt);
+
+              // throw error if there already is a reservation scheduled after current reservation
+              if (momentScheduledAt.isSameOrBefore(momentLastScheduled)) {
+                const error = `Data de reserva inválida última data de reserva de animal: ${moment(
+                  lastScheduledAt
+                ).format('DD/MM/YYYY HH:mm')}`;
+                setLastScheduledAtError(error);
+                alert(error);
+
+                return;
+              }
+            }
+
+            if (momentScheduledAt.isSameOrBefore(moment())) {
+              const error = `Data de reserva inválida, a reserva deve ser futura`;
+              setLastScheduledAtError(error);
+              alert(error);
+
+              return;
+            }
+          } catch {
+            alert('Não foi possível aprovar a reserva.');
+            return;
+          }
+
+          try {
+            await api.post(`/reservation/approve/${reservation_id}`, {
+              scheduled_at: moment(scheduled_at).format('YYYY-MM-DD HH:mm:ss'),
+            });
+            alert('Reserva aprovada!');
+            window.scrollTo(0, 0);
+            history.go(0);
+          } catch {
+            alert('Não foi possível concluir a ação!');
+            return;
+          }
         }
 
         if (reservation.status === 'approved') {
           await api.post(`/reservation/adopt/${reservation_id}`);
           alert('Animal adotado!');
+          window.scrollTo(0, 0);
+          history.go(0);
+          return;
         }
       } catch {
         alert('Não foi possível concluir a ação!');
-      } finally {
-        history.push('/app/reservas');
+
+        return;
       }
     }
   }
@@ -102,6 +191,7 @@ export function ManageQuiz() {
       await api.post(`/reservation/disapprove/${reservation_id}`);
 
       alert('Reserva marcada como Não Aprovada!');
+      window.scrollTo(0, 0);
       history.go(0);
     } catch {
       alert('Ocorreu Algum Erro!');
@@ -117,13 +207,27 @@ export function ManageQuiz() {
             <h1 className="inline-block align-bottom text-4xl font-bold select-none">
               {reservation?.status === 'adopted'
                 ? 'Informações da adoção'
-                : 'Questionário da reserva'}
+                : 'Gerenciar reserva'}
             </h1>
           </div>
 
           <hr className="my-4" />
 
           <div className="px-4">
+            {!reservationIsAdopted && (
+              <h6 className="text-bg text-gray-900 font-semibold select-none">
+                Status da reserva:{' '}
+                {reservationIsNew && (
+                  <span className="text-blue-600">Nova</span>
+                )}
+                {reservationIsApproved && (
+                  <span className="text-green-600">Aprovada</span>
+                )}
+                {reservationIsDisapproved && (
+                  <span className="text-red-600">Não aprovada</span>
+                )}
+              </h6>
+            )}
             <h6 className="text-2xl text-gray-900 font-semibold select-none">
               Informações do animal
             </h6>
@@ -156,7 +260,8 @@ export function ManageQuiz() {
             {typeof reservation !== 'undefined' && (
               <Link to={`/app/animal/${reservation.animal_id}`}>
                 <span className="font-medium text-blue-400 hover:text-blue-500 hover:underline">
-                  Ver mais sobre o animal...
+                  Ver mais sobre o animal{' '}
+                  <FontAwesomeIcon icon={faExternalLinkAlt} />
                 </span>
               </Link>
             )}
@@ -168,16 +273,15 @@ export function ManageQuiz() {
             <h6 className="text-2xl text-gray-900 font-semibold select-none">
               Informações do adotante
             </h6>
-            {typeof reservation !== 'undefined' &&
-              reservation.userAdopter.avatar_url !== null && (
-                <div className="p-2">
-                  <img
-                    className="h-14 w-14 rounded-md"
-                    src={`${api.defaults.baseURL}/uploads/${reservation.userAdopter.avatar}`}
-                    alt="user"
-                  />
-                </div>
-              )}
+            {typeof reservation !== 'undefined' && (
+              <div className="p-2">
+                <img
+                  className="h-14 w-14 rounded-md"
+                  src={reservation.userAdopter.avatar_url || NoProfilePic}
+                  alt="user"
+                />
+              </div>
+            )}
             <p>
               <span className="font-semibold">Nome: </span>
               {typeof reservation === 'undefined'
@@ -230,11 +334,30 @@ export function ManageQuiz() {
                 ? '...'
                 : reservation.userAdopter.address.zip}
             </p>
+            {typeof reservation !== 'undefined' && (
+              <p>
+                <span className="font-semibold p-2">
+                  O Usuário{' '}
+                  <span
+                    className={`${
+                      reservation.userAdopter.authorizes_image
+                        ? 'text-green-600'
+                        : 'text-red-600'
+                    } font-medium`}
+                  >
+                    {reservation.userAdopter.authorizes_image
+                      ? 'Aceita'
+                      : 'Não'}
+                  </span>{' '}
+                  a divulgação de imagem
+                </span>
+              </p>
+            )}
           </div>
           <hr className="my-4" />
           <div className="p-4">
             <h1 className="inline-block align-bottom text-2xl font-bold">
-              Respostas
+              Respostas do questionário
             </h1>
             <QuizInput
               answer={
@@ -422,6 +545,12 @@ export function ManageQuiz() {
                     setScheduledAt(event.target.value);
                   }}
                 />
+                {lastScheduledAtError !== '' && (
+                  <>
+                    <span className="text-red-600">{lastScheduledAtError}</span>
+                    <br />
+                  </>
+                )}
               </div>
               <hr className="my-4" />
             </>
@@ -429,37 +558,46 @@ export function ManageQuiz() {
 
           <div className="w-full pb-4 px-4 focus-within:text-gray-500 flex">
             {/* CANCEL - Go Back */}
-            <Link
-              to="/app/reservas"
-              className="inline-block py-2 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+            <button
+              className="inline-block py-2 bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 focus:ring-offset-gray-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
+              type="button"
+              onClick={() => {
+                history.goBack();
+              }}
             >
-              <button type="button">Voltar</button>
-            </Link>
-            {animaIsAvailable && (
-              <button
-                type="button"
-                onClick={handleDisapproveReservation}
-                className="inline-block ml-2 py-2 left-0 inset-y-0 items-center pl-3 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
-              >
-                <FontAwesomeIcon
-                  icon={faTimesCircle}
-                  size="sm"
-                  className="mr-2 text-orange-300 group-hover:text-orange-700"
-                />
-                Reprovar reserva
-              </button>
-            )}
+              Voltar
+            </button>
+            {userHasPermission && (
+              <>
+                {reservationIsNew || reservationIsApproved ? (
+                  <button
+                    type="button"
+                    onClick={handleDisapproveReservation}
+                    className="inline-block ml-2 py-2 left-0 inset-y-0 items-center pl-3 bg-red-600 hover:bg-red-700 focus:ring-red-500 focus:ring-offset-red-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg"
+                  >
+                    <FontAwesomeIcon
+                      icon={faTimesCircle}
+                      size="sm"
+                      className="mr-2 text-orange-300 group-hover:text-orange-700"
+                    />
+                    Reprovar reserva
+                  </button>
+                ) : (
+                  ''
+                )}
 
-            {reservationIsNew || reservationIsApproved ? (
-              <button
-                type="submit"
-                className="inline-block ml-2 py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
-              >
-                {reservationIsNew && 'Aprovar questionário'}
-                {reservationIsApproved && 'Confirmar adoção'}
-              </button>
-            ) : (
-              ''
+                {reservationIsNew || reservationIsApproved ? (
+                  <button
+                    type="submit"
+                    className="inline-block ml-2 py-2 px-4 bg-green-600 hover:bg-green-700 focus:ring-green-500 focus:ring-offset-green-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg "
+                  >
+                    {reservationIsNew && 'Aprovar questionário'}
+                    {reservationIsApproved && 'Confirmar adoção'}
+                  </button>
+                ) : (
+                  ''
+                )}
+              </>
             )}
           </div>
         </div>

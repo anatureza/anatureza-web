@@ -17,6 +17,7 @@ interface IModalProps {
   setInputItem?: Dispatch<SetStateAction<any>>;
   handleSubmit: (event: FormEvent) => void;
   handleDisapproved: () => void;
+  lastScheduledAtError: string;
 }
 
 export function ModalReservation({
@@ -29,6 +30,7 @@ export function ModalReservation({
   setInputItem,
   handleSubmit,
   handleDisapproved,
+  lastScheduledAtError,
 }: IModalProps) {
   const cancelButtonRef = useRef(null);
 
@@ -107,13 +109,17 @@ export function ModalReservation({
                               setInputItem(event.target.value);
                             }}
                           />
+                          <span className="text-red-600">
+                            {lastScheduledAtError}
+                          </span>
+                          <br />
                         </>
                       )}
                       <Link
                         to={`/app/reserva/${reservationId}`}
                         className="text-blue-500 hover:text-blue-300 font-semibold cursor-pointer"
                       >
-                        Visualizar Questionário
+                        Visualizar dados da reserva
                       </Link>
                     </div>
                   </div>
