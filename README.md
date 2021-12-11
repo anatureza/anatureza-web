@@ -26,7 +26,7 @@
 
 - To run this app properly, you have to be running the back-end server, you can clone it [here](https://github.com/anatureza/anapi) and follow the README instructions for installing.
   <br />
-  To clone and run this app, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. If you feel like, you can install [yarn](https://classic.yarnpkg.com/en/docs/install/) globally to use alongside or instead of npm. From your command line:
+- To clone and run this app, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)) installed on your computer. If you feel like, you can install [yarn](https://classic.yarnpkg.com/en/docs/install/) globally to use alongside or instead of npm. From your command line:
 
 ```bash
 # Clone this repository
@@ -48,7 +48,7 @@ After you installed all dependencies, you're ready to run the app.
 $ yarn start
 ```
 
-Now the app will be running on `http://localhost:3333`
+Now the app will be running on `http://localhost:3000`
 
 # Technologies
 
